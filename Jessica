@@ -1,12 +1,28 @@
 import time
+import random
 
-def timeout_talk(): prend un élément au hasard dans la liste, a appeler avec timeout, qui va calculer le temps passé depuis la réponse d'Eliza
-    lst = ["Ne voulez-vous pas m'en dire plus?" , "Etes-vous toujours là?" , "Si vous souhaitez de l'aide, il faut       parler!" , "Allons, dites-m'en encore un peu!"]
-   	i = random.randint(0, len(lst) - 1)  
-   	elem = lst[i] 
-        
-            
+
+def timeout_talk(): #relance Eliza a l'aide de timeout 
+    lst = ["Ne voulez-vous pas m'en dire plus?" , "Etes-vous toujours là?" , "Si vous souhaitez de l'aide, il faut me parler!" , "Allons, dites-m'en encore un peu!"]
+    i = random.randint(0, len(lst) - 1)  
+    elem = lst[i] 
+    print elem
+       
+
+
 def wait():
 	time.sleep(2) #temps d'attente: deux secondes (reflexion)
-	print "Hello" #Ici, au lieu de Hello, on aura la réponse d'Eliza
+	print "Hello" #Ici, au lieu de Hello, on aura un return avec la réponse d'Eliza
+
+
+
+def timeout(): 	#appelle timeout_talk après 100 secondes d'inactivité de la part de l'utilisateur
+#Attention, prevoir une remise à zéro dés qu'on a une saisie clavier (je ne sais pas encore où)
+	count = 0
+	while count != 100:
+		time.sleep(1)
+		count += 1
+		if count == 100:
+			timeout_talk()
+
   
