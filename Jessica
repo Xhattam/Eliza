@@ -1,0 +1,15 @@
+import time
+
+def timeout(): #relance conversation apres 120 secondes # JESSICA
+        lst = ["Ne voulez-vous pas m'en dire plus?" , "Etes-vous toujours là?" , "Si vous souhaitez de l'aide, il faut       parler!" , "Allons, dites-m'en encore un peu!"]
+        i = random.randint(0, len(lst) - 1)  
+        elem = lst[i] 
+        while True:
+            print elem
+            time.sleep(120) #Temps d'attente: 120 seconde
+            
+            
+def wait():
+  time.sleep(2) #temps d'attente: une seconde (reflexion)
+	print "Hello" #Ici, au lieu de Hello, on aura la réponse d'Eliza
+  
