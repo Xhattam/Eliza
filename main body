@@ -1,0 +1,60 @@
+import time
+# -*- coding: utf-8 -*-
+"""
+Created on Tue Apr 23 10:36:29 2013
+
+@author: Jessica Tanon
+"""
+class Eliza: 
+
+    def __init__(self):
+        self.input = input #ste
+        self.tokenInput = tokenInput #e-List 
+        self.subjectInput = sujetInput #String 
+        self.subjectResponse = sujetReponse #String 
+        self.verb = verb #String 
+        self.output = output #String 
+        self.stack = stack #e-List 
+        self.userName = userName #String (static)/Null 
+        self.personInput = personInput #Int 
+        self.personResponse = personResponse #Int 
+        self.elapsedTime = elapsedTime 
+        self.taggedSentence = taggedSentence #T-List 
+        self.objectInput = objectInput #String 
+        self.objectResponse = objectResponse #String 
+        self.radical = radical #String 
+        
+        
+    def tokenize():#decoupage en mots # KIRA
+    def tagging(): #etiquetage # MARINE
+    def timeout(): #relance conversation apres 120 secondes # JESSICA
+    def stackRead(): #lecture de la pile # MARINE
+    def stackWrite(): #ecriture de la pile # MARINE
+    
+    def defaultOutput(): #phrases bateau si aucune reponse # KIRA
+    def getUserName(): #prenom de l'utilisateur # KIRA
+    def oneInOneOut(): #une entree, une sortie # JESSICA
+    def endConversation(): #bouton terminer # JESSICA
+    def wait(): #si temps d'execution est ultra rapide #JESSICA
+    def setPhrase(): #phrases a trous #KIRA
+    
+    def subjectCorrespondance(): #pronoms sujet # BENJAMIN
+    def pronounCorrespondance(): # #COD, COI, possessifs reflexifs # BENJAMIN
+    def verbIdentification(): # reconnaissance du verbe # BENJAMIN
+    def negation(): # KIRA
+    
+    def lefff(): #fichier + champs verb # BENJAMIN
+    
+    def resetFields(): #sauf prenom et pile # MARINE
+    
+    def politeness(): #protocole de politesse # JESSICA
+    def psychologicalVerbs(): ##verbes psychhologiques # JESSICA 
+
+    def window(): #JESSICA
+    #def easter(): #JESSICA
+    
+    
+    
+    
+
+    
