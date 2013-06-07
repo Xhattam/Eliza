@@ -1,11 +1,19 @@
-import time
-# -*- coding: utf-8 -*-
+#!/usr/bin/python3.2        #EN PREMIERE LIGNE: executable (voir s'il ne faut pas changer la version en fonction du chemin d'accès vers l'interpréteu
+# -*- coding: utf-8 -*-     #EN SECONDE LIGNE: ENCODING
+
+                            
+#import time                #ENSUITE: les modules importés
+#import random
+
+
 """
 Created on Tue Apr 23 10:36:29 2013
 
 @author: Jessica Tanon
 """
-class Eliza: 
+
+
+class Eliza:                #ENFIN nom de la classe
 
     def __init__(self):
         self.input = input #ste
