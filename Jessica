@@ -26,3 +26,5 @@ def timeout(): 	#appelle timeout_talk après 100 secondes d'inactivité de la pa
 			timeout_talk()
 
   
+print timeout()
+print wait()
