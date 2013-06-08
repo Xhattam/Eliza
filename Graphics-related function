@@ -1,0 +1,43 @@
+"""
+Author: Jessica Tanon
+Created on the 08/06/2013
+"""
+
+import Tkinter
+
+root = Tkinter.Tk()
+
+eliza = Tkinter.Label(text = "Eliza", borderwidth = 10, font = "Arial 14")
+send_button = Tkinter.Button(text = "Envoyer")
+quit_button = Tkinter.Button(text = "Quitter Eliza")
+# buttons need to be associated with events
+
+display = Tkinter.Text(font = "Times 10")
+user_entry = Tkinter.Entry()
+
+
+user_entry.config(width = 85) # user entry
+display.config(width = 100, height = 15) # displays Eliza's replies
+
+display.insert("0.0", "Bonjour, je suis Eliza. Que puis-je faire pour vous?")
+
+#test = user_entry.get()
+#print ("test"+test) 
+
+send_button.config(state = Tkinter.DISABLED) 
+  # use this while Eliza's answer is being calculated
+  # will disable the "Envoyer" button and will work with the oneIn/oneOut issue 
+  
+send_button.config(state = Tkinter.NORMAL) 
+  # use this after Eliza's answer was sent (to put at the end of the "send answer" function (to be created))
+
+eliza.grid()
+display.grid()
+user_entry.grid()
+
+send_button.grid(row = 6, column = 0, sticky = "s" + "e")
+quit_button.grid(row = 6, column = 0, sticky = "s" + "w")
+
+root.mainloop()
+
+
