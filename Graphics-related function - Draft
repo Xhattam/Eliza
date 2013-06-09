@@ -1,35 +1,26 @@
+# -*- coding: utf-8 -*-
+
+import Tkinter
+
 """
 Author: JTanon
 Created on the 08/06/2013
 """
 
-import Tkinter
-
 root = Tkinter.Tk()
 
 eliza = Tkinter.Label(text = "Eliza", borderwidth = 10, font = "Arial 14")
-send_button = Tkinter.Button(text = "Envoyer")
-quit_button = Tkinter.Button(text = "Quitter Eliza")
-# buttons need to be associated with events
-
 display = Tkinter.Text(font = "Times 10")
 user_entry = Tkinter.Entry()
+send_button = Tkinter.Button(text = "Envoyer")#, command = user_entry.get)
+quit_button = Tkinter.Button(text = "Quitter Eliza", command = root.destroy)
 
 
-user_entry.config(width = 85) # user entry
-display.config(width = 100, height = 15) # displays Eliza's replies
+user_entry.config(width = 85) # user's entry
+display.config(width = 100, height = 15) # displays Eliza's answer
+display.insert("0.0", "Eliza: Bonjour, je suis Eliza. Que puis-je faire pour vous?")
 
-display.insert("0.0", "Bonjour, je suis Eliza. Que puis-je faire pour vous?")
-
-#test = user_entry.get()
-#print ("test"+test) 
-
-send_button.config(state = Tkinter.DISABLED) 
-  # use this while Eliza's answer is being calculated
-  # will disable the "Envoyer" button and will work with the oneIn/oneOut issue 
-  
-send_button.config(state = Tkinter.NORMAL) 
-  # use this after Eliza's answer was sent (to put at the end of the "send answer" function (to be created))
+send_button.config(state = Tkinter.NORMAL) # add in the function that will display Eliza's answer
 
 eliza.grid()
 display.grid()
@@ -38,6 +29,30 @@ user_entry.grid()
 send_button.grid(row = 6, column = 0, sticky = "s" + "e")
 quit_button.grid(row = 6, column = 0, sticky = "s" + "w")
 
+
+def enter(event): # Missing: click on "Envoyer" case (needs to deal with both mouse and keyboard input)
+  if event.keysym == "Return" or event.num == 1:
+		entry = user_entry.get()
+		#self.stackWrite(self, str+(entry.strip())) adds user's entry to stack
+		print ("Test: "+entry)
+		display.insert(Tkinter.END, "\n"+user_entry.get())
+		user_entry.delete(0, len(user_entry.get()))
+		send_button.config(state = Tkinter.DISABLED)
+		user_entry.config(state = Tkinter.DISABLED)
+
+		#Gets user input
+		#Adds input to stack
+		#Displays user's entry in main window while deleting it from user_entry window
+		#Disables "Envoyer" button and "Return" key
+
+user_entry.bind("<Key>", enter)
+#user_entry.bind("Button-1", enter)
+user_entry.focus_set()
+send_button.focus_set()
+
 root.mainloop()
+
+
+
 
 
