@@ -30,7 +30,7 @@ send_button.grid(row = 6, column = 0, sticky = "s" + "e")
 quit_button.grid(row = 6, column = 0, sticky = "s" + "w")
 
 
-def enter(event): # Missing: click on "Envoyer" case (needs to deal with both mouse and keyboard input)
+def enter(event): 
   if event.keysym == "Return" or event.num == 1:
 		entry = user_entry.get()
 		#self.stackWrite(self, str+(entry.strip())) adds user's entry to stack
@@ -46,7 +46,8 @@ def enter(event): # Missing: click on "Envoyer" case (needs to deal with both mo
 		#Disables "Envoyer" button and "Return" key
 
 user_entry.bind("<Key>", enter)
-#user_entry.bind("Button-1", enter)
+send_button.bind("<Button-1>", enter)
+send_button.bind("<Key>", enter)
 user_entry.focus_set()
 send_button.focus_set()
 
