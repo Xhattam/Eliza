@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+
 import Tkinter
 import time
 
@@ -10,7 +11,7 @@ Created on the 08/06/2013
 
 class Window(object):
 
-  def __init__(self):
+	def __init__(self):
 		self.root = Tkinter.Tk()
 
 		#Main window and widgets parameters
@@ -30,7 +31,7 @@ class Window(object):
 		self.send_button.grid(row = 6, column = 0, sticky = "s" + "e")
 		self.quit_button.grid(row = 6, column = 0, sticky = "s" + "w")
 
-	def sayHelloEliza():
+	def sayHelloEliza(self):
 		self.display.config(state = Tkinter.NORMAL)
 		self.display.insert("0.0", "Bonjour, je suis Eliza. Que puis-je faire pour vous?")
 		self.display.config(state = Tkinter.DISABLED)
@@ -38,11 +39,11 @@ class Window(object):
 
 	#Gets user input, Adds input to stack
 	#Displays user's entry in main window while deleting it from user_entry window
-	def speakToMe(event): 
+	def speakToMe(self, event): 
 		if event.keysym == "Return" or event.num == 1:
-			display.config(state = Tkinter.NORMAL)
-			entry = user_entry.get()
-			#self.stackWrite(self, str+(entry.strip())) adds user's entry to stack
+			self.display.config(state = Tkinter.NORMAL)
+			self.entry = user_entry.get()
+			#stackWrite(str(entry.strip())) adds user's entry to stack
 			display.insert(Tkinter.END, "\n"+user_entry.get())
 			user_entry.delete(0, len(user_entry.get()))
 			send_button.config(state = Tkinter.DISABLED)
@@ -51,35 +52,41 @@ class Window(object):
 
 
 	#NOT FULLY FUNCTIONNAL YET (only clic works and message not displayed)
-	def byeThen(event):
+	def byeThen(self, event):
 		if event.keysym == "Return" or event.num == 1:
 			end = "Passez une bonne journée!"
-			display.config(state = Tkinter.NORMAL)
-			display.insert(Tkinter.END, "\n"+ "Bye")
-			display.config(state = Tkinter.DISABLED)
+			self.display.config(state = Tkinter.NORMAL)
+			self.display.insert(Tkinter.END, "\n"+ "Bye")
+			self.display.config(state = Tkinter.DISABLED)
 			time.sleep(2) 
 
-		
+	#Takes the final calculated answer from Eliza and displays it in Eliza window
+	def andHeresYourAnswer(self, answer):
+		self.display.config(state = Tkinter.NORMAL)
+		self.display.insert(Tkinter.END, "\n"+ str(answer))
+		self.display.config(state = Tkinter.DISABLED)
+		self.send_button.config(state = Tkinter.NORMAL)
+		self.user_entry.config (state = Tkinter.NORMAL)
+
 #Binds keyboard/mouse actions to widgets
-user_entry.bind("<Key>", speakToMe)
-user_entry.focus_set()
+self.user_entry.bind("<Key>", speakToMe)
+self.user_entry.focus_set()
 
-send_button.bind("<Button-1>", speakToMe)
-send_button.bind("<Key>", speakToMe)
-send_button.focus_set()
+self.send_button.bind("<Button-1>", speakToMe)
+self.send_button.bind("<Key>", speakToMe)
+self.send_button.focus_set()
 
-quit_button.bind("<Button-1>", byeThen)
-quit_button.bind("<Key>", byeThen)
-quit_button.focus_set()
+self.quit_button.bind("<Button-1>", byeThen)
+self.quit_button.bind("<Key>", byeThen)
+self.quit_button.focus_set()
 
-root.mainloop()
+self.root.mainloop()
 
 
-#TO BE MOVED LATER
-#to add in the function that will display Eliza's answer
-send_button.config(state = Tkinter.NORMAL)
-display.config(state = Tkinter.NORMAL)
-display.config(state = Tkinter.DISABLED)
+
+
+
+
 
 
 
