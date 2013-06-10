@@ -1,5 +1,17 @@
 # -*- coding: utf-8 -*-
 
+import random
+
+
+"""
+
+@author: JTanon
+@Created on the 10/06/2013
+
+"""
+
+
+
 psyVerbsNegFear = ["affoler", "alarmer", "angoisser", "apeurer", "effaroucher", "effrayer", "épeurer",
 "épouvanter", "glacer", "horrifier", "inquiéter", "intimider", "paniquer", "terrifier",
 "terroriser"]
@@ -15,3 +27,52 @@ psyVerbsPosSurprise = ["éblouir", "émerveiller", "épater", "époustoufler", "
 psyVerbsNeutralSurprise = ["abasourdir", "ahurir", "asseoir", "confondre", "ébahir", "ébaubir", "ébouriffer",
 "épater", "époustoufler", "estomaquer", "étonner", "frapper", "interdire", "interloquer",
 "méduser", "renverser", "saisir", "scier", "sidérer", "souffler", "stupéfier", "surprendre"]
+
+psyVerbsElse = ["aimer", "détester", "haïr", "adorer"]
+
+
+# def iSeeScaryStuff():
+#   if COD not in self.entry:
+# 		return ("Qu'est-ce qui vous "+str(verb, form)+" ?") #add conjuguated verb
+# 	elif COD not in humans: #list of human entities
+# 		return ("Pourquoi êtes-vous "+str(verb, pp) +" par ceci ?") #add preterit of verb
+# 	elif COD in humans:
+# 		return ("Pourquoi cette personne vous "+str(verb, form)+"-t-elle ?") #add conjuguated verb
+# 	else:
+# 		randomAnswer() #random sentence if no situation is matched - Kira's function
+
+def imStressedOut():
+	if COD in self.entry:	
+
+		if COD in humans:
+			iAmHuman = [("Pourquoi cette personne vous "+str(verb, form)+"-t-elle ?"), ("Qu'est-ce qui vous "+str(verb, form)+" chez cette personne?")
+			i = random.randint(0, len(iAmHuman) - 1) 
+			return iAmHuman[i]
+		
+		elif COD not in humans:
+			iAmNotHuman = [("Pourquoi ceci vous "+str(verb, form)+"-t-il autant ?"), ("Pourquoi êtes-vous si "+str(verb, pp)+" par ceci ?"), 
+			("Pourriez-vous me dire pourquoi ceci vous "+str(verb, form)+ " tant ?"), ("Dites-moi pourquoi ceci vous "+str(verb, form)+" tant.")]
+			i = random.randint(0, len(iAmNotHuman) - 1) 
+			return iAmNotHuman[i]
+		
+		else:
+			return randomAnswer()
+	
+	elif COD not in self.entry:
+		dunnoWhatImStressedAbout = [("Qu'est-ce qui vous "+str(verb, form) +" tant?"), ("Qu'est-ce qui vous "+str(verb, form)+" ?"), 
+		("Voulez-vous bien me dire ce qui vous "+str(verb, form)+" ?"), ("Dites-moi ce qui vous "+str(verb, form)+".")]
+		i = random.randint(0, len(dunnoWhatImStressedAbout) - 1) 
+		return dunnoWhatImStressedAbout[i]
+
+	else:
+		return randomAnswer()
+ 
+
+#def howDoIReact():
+
+#def iWasLike_Wow():
+
+#def iLoveHateYou():
+
+
+	
