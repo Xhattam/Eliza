@@ -1,0 +1,17 @@
+# -*- coding: utf-8 -*-
+
+psyVerbsNegFear = ["affoler", "alarmer", "angoisser", "apeurer", "effaroucher", "effrayer", "épeurer",
+"épouvanter", "glacer", "horrifier", "inquiéter", "intimider", "paniquer", "terrifier",
+"terroriser"]
+
+psyVerbsNegSad = ["affecter", "affliger", "assombrir", "atteindre", "attrister", "chagriner",
+"chiffonner", "contrarier", "contrister", "désoler", "navrer", "peiner", "rembrunir"]
+
+psyVerbsPosSensible = ["Affecter", "bouleverser", "chambouler", "chavirer", "émotionner", "émouvoir",
+"remuer", "renverser", "renverser", "toucher", "tournebouler", "troubler"]
+
+psyVerbsPosSurprise = ["éblouir", "émerveiller", "épater", "époustoufler", "étourdir", "souffler"]
+
+psyVerbsNeutralSurprise = ["abasourdir", "ahurir", "asseoir", "confondre", "ébahir", "ébaubir", "ébouriffer",
+"épater", "époustoufler", "estomaquer", "étonner", "frapper", "interdire", "interloquer",
+"méduser", "renverser", "saisir", "scier", "sidérer", "souffler", "stupéfier", "surprendre"]
