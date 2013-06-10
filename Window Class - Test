@@ -37,21 +37,25 @@ class Window(object):
 		self.display.config(state = Tkinter.DISABLED)
 
 
-	#Gets user input, Adds input to stack
+
+	#speakToMe: Gets user input, Adds input to stack
 	#Displays user's entry in main window while deleting it from user_entry window
+	
 	def speakToMe(self, event): 
 		if event.keysym == "Return" or event.num == 1:
 			self.display.config(state = Tkinter.NORMAL)
-			self.entry = user_entry.get()
+			entry = user_entry.get() #self???? TO TEST
 			#stackWrite(str(entry.strip())) adds user's entry to stack
-			display.insert(Tkinter.END, "\n"+user_entry.get())
-			user_entry.delete(0, len(user_entry.get()))
-			send_button.config(state = Tkinter.DISABLED)
-			user_entry.config(state = Tkinter.DISABLED)
-			display.config(state = Tkinter.DISABLED)
+			self.display.insert(Tkinter.END, "\n"+user_entry.get()) #self??? TO TEST
+			self.user_entry.delete(0, len(user_entry.get()))
+			self.send_button.config(state = Tkinter.DISABLED)
+			self.user_entry.config(state = Tkinter.DISABLED)
+			self.display.config(state = Tkinter.DISABLED)
 
 
-	#NOT FULLY FUNCTIONNAL YET (only clic works and message not displayed)
+	
+	# byThen: NOT FULLY FUNCTIONNAL YET (only clic works and message not displayed)
+	
 	def byeThen(self, event):
 		if event.keysym == "Return" or event.num == 1:
 			end = "Passez une bonne journée!"
@@ -60,13 +64,18 @@ class Window(object):
 			self.display.config(state = Tkinter.DISABLED)
 			time.sleep(2) 
 
-	#Takes the final calculated answer from Eliza and displays it in Eliza window
-	def andHeresYourAnswer(self, answer):
+	
+	# heresYourAnswer: Takes the final calculated answer from Eliza and displays it in Eliza's window
+	
+	def heresYourAnswer(self, answer):
 		self.display.config(state = Tkinter.NORMAL)
 		self.display.insert(Tkinter.END, "\n"+ str(answer))
 		self.display.config(state = Tkinter.DISABLED)
 		self.send_button.config(state = Tkinter.NORMAL)
 		self.user_entry.config (state = Tkinter.NORMAL)
+
+
+
 
 #Binds keyboard/mouse actions to widgets
 self.user_entry.bind("<Key>", speakToMe)
