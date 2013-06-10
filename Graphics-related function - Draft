@@ -43,6 +43,7 @@ quit_button.grid(row = 6, column = 0, sticky = "s" + "w")
 def enter(event): 
 	if event.keysym == "Return" or event.num == 1:
 		display.config(state = Tkinter.NORMAL)
+		entry = user_entry.get()
 		#self.stackWrite(self, str+(entry.strip())) adds user's entry to stack
 		display.insert(Tkinter.END, "\n"+user_entry.get())
 		user_entry.delete(0, len(user_entry.get()))
