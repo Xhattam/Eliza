@@ -72,3 +72,8 @@ def test(string):
 # # print whatsTheWordHummingbird[0]
 # # print meetTheOthers[1]
 
+
+Tester si tous les mots clés en dictionnaires est valable ou non.
+Des listes triées avec un algo de recherche dichotomique suffiraient-elles?
+
+
