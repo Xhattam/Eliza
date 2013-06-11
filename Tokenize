@@ -1,0 +1,56 @@
+#!/bin/env python
+#!-*- coding : utf-8 -*-
+
+"""
+Divides a string into words and returns a list of these words (tokens).
+"""
+
+def tokenize ():
+    s = self.input;
+    token_list = []
+    f = 1 # end of the token
+    d = 0 # first symbol of the token
+    elision = ['c', 'd', 'j', 'l', 'm', 'n', 's', 't'] # short words elided before an apostrophe, like me - m', ce - c'
+    ponct = ['.', ',', '!', '?', ';', ':', '"', '(', ')', '[', ']']
+    while f < len(s):
+        word = ""
+        sponct = ""
+        if(s[f] == " "):
+            word = s[d:f]
+            f += 1
+            d = f
+        elif(s[f] in ponct):
+            sponct = s[f]
+            word = s[d:f]
+            if(f+1 < len(s)and s[f+1] == " "):
+                f += 2
+            else:
+                f += 1
+            d = f
+        elif(s[f] == "'"): # if there's an apostrophe, it can be one word or two
+            if(s[f-1].lower() in elision): 
+                if(f-1 == 0): # first symbol of the phrase : it is an elided word
+                    word = s[d:f+1]
+                    f += 1
+                    d = f
+                elif(s[f-2] ==" "): # first symbol of the word : it is an elided word
+                    word = s[d:f+1]
+                    f += 1
+                    d = f
+                else: # it is a word with an apostrophe in the middle (like "aujourd'hui")
+                    f += 1
+            else: # not a lettre from the elision list : it can't be two words
+                f += 1
+        else:
+            f += 1
+        
+        if(word != ""):
+                token_list.append(word)
+        if(sponct != ""):
+                token_list.append(sponct)
+        
+    if(d != len(s)): # if the last word is not in the token list, add it
+        word = s[d:]
+        token_list.append(word)
+    
+    return token_list
