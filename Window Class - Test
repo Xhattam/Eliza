@@ -14,10 +14,8 @@ class Window(object):
 
 	def __init__(self):
 		self.root = Tkinter.Tk()
-		
-	def imAlive_ALIVE(): #TO TEST
 
-		#Main window and widgets parameters
+	def imAliiive():
 		self.eliza = Tkinter.Label(text = "Eliza", borderwidth = 10, font = "Arial 14")
 		self.display = Tkinter.Text(font = "Times 10", state = Tkinter.DISABLED)
 		self.user_entry = Tkinter.Entry()
@@ -49,7 +47,7 @@ class Window(object):
 		if event.keysym == "Return" or event.num == 1:
 			self.display.config(state = Tkinter.NORMAL)
 			entry = user_entry.get() #self???? TO TEST
-			#stackWrite.push(str(entry.strip())) adds user's entry to stack
+			#stackWrite(str(entry.strip())) adds user's entry to stack
 			self.display.insert(Tkinter.END, "\n"+user_entry.get()) #self??? TO TEST
 			self.user_entry.delete(0, len(user_entry.get()))
 			self.send_button.config(state = Tkinter.DISABLED)
@@ -60,7 +58,7 @@ class Window(object):
 	# heresYourAnswer: Takes the final calculated answer from Eliza and displays it in Eliza's window
 	
 	def hereComesYourAnswer(self, answer):
-		time.sleep(1.5) #reflexion illusion
+		time.sleep(1.5) #illusion de la reflexion
 		self.display.config(state = Tkinter.NORMAL)
 		self.display.insert(Tkinter.END, "\n"+ str(answer))
 		self.display.config(state = Tkinter.DISABLED)
