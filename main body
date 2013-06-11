@@ -16,7 +16,7 @@ Created on Tue Apr 23 10:36:29 2013
 class Eliza:                #ENFIN nom de la classe
  
 	def __init__(self):
-      self.input = input #ste
+      	self.input = input #ste
         self.tokenInput = tokenInput #e-List 
         self.subjectInput = sujetInput #String 
         self.subjectResponse = sujetReponse #String 
@@ -65,7 +65,12 @@ class Eliza:                #ENFIN nom de la classe
     
     
     
-    
+#hackneyedStuff: phrases bateau
+#talkToMeMore: continuer à faire parler l'utilisateur en le relancant
+#soThisIsFamily: membres de la famille
+#soThisIsNotFamily: autres relations
+#whatsTheWordHummingbird: phrases à trou (il manque un "mot", whats the "word"... hahaha... haha...ha...*ahem*)
+#moneyMakingActivities: jobs
 
 hackneyedStuff = ["Dites m'en plus.", "Dites m'en d'avantage.", "Je vois, continuez.", "Je comprends, continuez.", "Continuez."]
 
