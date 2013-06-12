@@ -1,0 +1,62 @@
+# -*- coding: utf-8 -*-
+
+import random
+
+"""
+Created on Wed June 13 2013
+@author: JTanon
+
+"""
+
+class KeywordIdentifier():
+
+	def __init__(self, verb, obj):
+		self.obj = obj #potential keyword
+		self.verb = #verb of the sentence, the conjuguate function should be applied to it before returning the sentence
+		self.allMyKeywords = allMyKeywords #dictionnary of keywords
+
+
+	#I'm sure there are plenty of other categories to add, if you have ideas, let me know!
+	#Or add them to the dictionnary at the bottom directly, please just also add a condition in this function
+	#to take into account the new value.
+	
+	#Actions to take are still to be defined
+	
+    def iFoundAKeyword(self): 
+            lst = self.allMyKeywords.keys()
+            if self.obj in lst:
+                if self.allMyKeywords[self.word] == ['soThisIsFamily']:
+                    return family()
+                if self.allMyKeywords[self.word] == ['soThisIsNotFamily']:
+                    print 'not family'
+                if self.allMyKeywords[self.word] == ['moneyMakingActivities']:
+                    print 'job'
+                else:
+                    return oopsImStuck() #just being cautious, we shouldn't technically enter this 'else'
+            else:
+                return oopsImStuck()
+
+
+    def oopsImStuck(self):
+            hackneyedStuff = ["Dites m'en plus.", "Dites m'en d'avantage.", "Je vois, continuez.", "Je comprends, continuez.", "Continuez."]
+            i = random.randint(0, len(lst)-1)
+            print hackneyedStuff[i]
+
+
+
+iFoundAKeyword('médecin')
+
+
+allMyKeywords = {'fils': ['soThisIsFamily'], 'propriétaire': ['soThisIsNotFamily'], 'électricien': ['moneyMakingActivities'], 'épouse': ['soThisIsNotFamily'], 
+'plombier': ['moneyMakingActivities'], 'époux': ['soThisIsNotFamily'], 'voisin': ['soThisIsNotFamily'], 'frère': ['soThisIsFamily'], 'soeur': ['soThisIsFamily'], 
+'voisine': ['soThisIsNotFamily'], 'comptable': ['moneyMakingActivities'], 'copain': ['soThisIsNotFamily'], 'femme': ['soThisIsNotFamily'], 
+'fromager': ['moneyMakingActivities'], 'belle-fille': ['soThisIsFamily'], 'patron': ['soThisIsNotFamily'], 'patronne': ['soThisIsNotFamily'], 'mari': ['soThisIsNotFamily'], 
+'diététicienne': ['moneyMakingActivities'], 'grand-mère': ['soThisIsFamily'], 'beau-frère': ['soThisIsFamily'], 'oncle': ['soThisIsFamily'], 'beau-fils': ['soThisIsFamily'], 
+'pote': ['soThisIsNotFamily'], 'médecin': ['moneyMakingActivities'], 'cousine': ['soThisIsFamily'], 'ami': ['soThisIsNotFamily'], 'élève': ['soThisIsNotFamily'], 
+'petit fils': ['soThisIsFamily'], 'pédiatre': ['moneyMakingActivities'], 'femme de ménage': ['moneyMakingActivities'], 'psychologue': ['moneyMakingActivities'], 
+'belle-mère': ['soThisIsFamily'], 'petite amie': ['soThisIsNotFamily'], 'petite fille': ['soThisIsFamily'], 'belle-soeur': ['soThisIsFamily'], 'père': ['soThisIsFamily'], 
+'docteur': ['moneyMakingActivities'], 'architecte': ['moneyMakingActivities'], 'cousin': ['soThisIsFamily'], 'tante': ['soThisIsFamily'], 
+'diététicien': ['moneyMakingActivities'], 'boucher': ['moneyMakingActivities'], 'psychiatre': ['moneyMakingActivities'], 'amie': ['soThisIsNotFamily'], 
+'petit-ami': ['soThisIsNotFamily'], 'copine': ['soThisIsNotFamily'], 'électricienne': ['moneyMakingActivities'], 'beau-père': ['soThisIsFamily'], 
+'grand-père': ['soThisIsFamily'], 'fille': ['soThisIsFamily'], 'boulanger': ['moneyMakingActivities'], 'collègue': ['soThisIsNotFamily'], 'mère': ['soThisIsFamily'], 
+'professeur': ['soThisIsNotFamily']}
