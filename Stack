@@ -1,4 +1,4 @@
-class Stack : 
+ class Stack(object):
 
   """
     Create a object Stack whose 'tab' has a size initialized in the arguments of the constructor. 
@@ -7,24 +7,33 @@ class Stack :
   
   """
 
+  def __init__(self, size):
+		self.tab = [self.size]
+		self.cursor = 0
 
+	def push(self, w):
+		self.tab[self.cursor] = w
+		self.cursor+=1
 
-  def__init__(self, size):
-    self.tab = [size] #is this the way you initialize a tab in Python???
-    self.cursor = 0
+	def pop(self):
+		w = self.tab[self.cursor]
+		self.cursor -= 1
+		return w
+
+	def peek(self):
+		return self.tab[self.cursor-1]
+
+	def size(self):
+		return self.cursor
     
-    def push(w):        #add a word in the Stack
-      self.tab[self.cursor] = w
-      self.cursor +=1
-      
-    def peek():         # return the last element pushed in the stack
-      return self.tab[self.cursor]
-      
-    def pop():          # return the last element pushed in the stack and suppresses it
-      w = self.tab[self.cursor]
-      self.cursor --
-      return w
+  def resize(self):
+    #how to? Or do we decide that the stack has an established size? 
+
+#test OK
+s = Stack(10)
+s.push("lalala")
+print s.peek()
+print s.size()
       
       
-    def resize():
-      #how to? Or do we decide that the stack has an established size? 
+
