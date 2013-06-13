@@ -97,6 +97,7 @@ class Eliza:
 
 
         #I need to test this - Jessica
+        #Si on unifiait cette fonction avec defaultOutput et la liste hackneyedStuff avec talkToMeMore? - Kira
         def oopsImStuck(self):
             hackneyedStuff = ["Dites m'en plus.", "Dites m'en d'avantage.", "Je vois, continuez.", "Je comprends, continuez.", "Continuez."]
             i = random.randint(0, len(lst)-1)
