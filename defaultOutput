@@ -1,0 +1,15 @@
+#!/bin/env python
+#!-*- coding : utf-8 -*-
+
+import random
+"""
+Returns a random reply if a reply can't be created directly from the input phrase or from the stack. Should be used as follows:
+
+if(eliza.subjectResponse == "" and eliza.stack.empty()):
+    eliza.defaultOutput()
+    
+"""
+
+def defaultOutput():
+    
+    return random.choice(self.talkToMeMore)
