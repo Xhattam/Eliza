@@ -1,159 +1,28 @@
+#!/bin/env python
+# -*- coding: utf-8 -*-
+import eliza
 import time
 import random
 import Tkinter
+import re
+import window
 
-# -*- coding: utf-8 -*-
 """
 Created on Tue Apr 23 10:36:29 2013
 
 @author: BAbemonty, MChassang, KKiranova, JTanon
 """
-class Eliza: 
 
-    def __init__(self):
-        self.input = input #ste
-        self.tokenInput = tokenInput #e-List 
-        self.subjectInput = sujetInput #String 
-        self.subjectResponse = sujetReponse #String 
-        self.verb = verb #String 
-        self.output = output #String 
-        self.stack = stack #e-List 
-        self.userName = userName #String (static)/Null 
-        self.personInput = personInput #Int 
-        self.personResponse = personResponse #Int 
-        self.elapsedTime = elapsedTime 
-        self.taggedSentence = taggedSentence #T-List 
-        self.objectInput = objectInput #String 
-        self.objectResponse = objectResponse #String 
-        self.radical = radical #String 
-        
-        
-        def tokenize():#decoupage en mots # KIRA
-        def tagging(): #etiquetage # MARINE
-        def timeout(): #relance conversation apres 120 secondes # JESSICA
-       
-        
-        def stackRead(): #lecture de la pile # MARINE
-        def stackWrite(): #ecriture de la pile # MARINE
-    
-        def defaultOutput(): #phrases bateau si aucune reponse # KIRA
-        def getUserName(): #prenom de l'utilisateur # KIRA
-        def oneInOneOut(): #une entree, une sortie # JESSICA
-        def endConversation(): #bouton terminer # JESSICA
-        def wait(): #si temps d'execution est ultra rapide #JESSICA
-        def setPhrase(): #phrases a trous - KIRA - Liste correspondante: whatsTheWordHummingbird 
-    
-        def subjectCorrespondance(): #pronoms sujet # BENJAMIN
-        def pronounCorrespondance(): # #COD, COI, possessifs reflexifs # BENJAMIN
-        def verbIdentification(): # reconnaissance du verbe # BENJAMIN
-        def negation(): # KIRA
-    
-        def lefff(): #fichier + champs verb # BENJAMIN
-    
-        def resetFields(): #sauf prenom et pile # MARINE
-    
-        def politeness(): #protocole de politesse # JESSICA
-        def psychologicalVerbs(): ##verbes psychhologiques # JESSICA 
+root = Tkinter.Tk()
+f = window.window(root)
+root.mainloop() 
 
-        def window():
-            ImAlive = Window.Window() #JESSICA
-        #def easter(): #JESSICA
-    
-    
-        #I need to test this - Jessica
-        def gotMyselfAKeyword(self, word):
-            for keys in allMyKeywords:
-                if word in keys:
-                    if keys.values() == 'soThisIsFamily':
-                        ...
-                    elif keys.values() == 'soThisIsNotFamily':
-                        ...
-                    elif keys.values() == 'moneyMakingActivities':
-                        ...
-                    else:
-                        oopsImStuck()
-                else:
-                    oopsImStuck()
+#This is the bloody loop I had problems with. It seems to work fine now, it needs to be put 
+#in the main body though, and I think only this will be needed here, since until the quit button is pressed,
+#the mainloop function will keep on receiving and calculating events coming from the window.
+#But I really want to test this asap just in case more problems arise after the response calculation.
+#If you want to have a look at Tkinter, feel free since I was having a really hard time fixing this
+#and I might need help if more problems arise afterwards.
 
 
-        #I need to test this - Jessica
-        def gotMyselfAPsychoVerb(self, verb):
-            for keys in psychoVerbs:
-                if verb in keys:
-                    if keys.values() == 'NeutralSurprise':
-                    	...
-                    elif keys.values() == 'NegFear'
-                    	...
-                    elif keys.values() == 'PosSurprise'
-                    	...
-                    elif keys.values() == 'NegSad'
-                    	...
-                    elif keys.values() == 'PosSensitive'
-                    	...
-                    elif keys.values() == 'LoveHate'
-                    	...
-               	else:
-                    oopsImStuck()
-
-
-        #I need to test this - Jessica
-        #Si on unifiait cette fonction avec defaultOutput et la liste hackneyedStuff avec talkToMeMore? - Kira
-        def oopsImStuck(self):
-            hackneyedStuff = ["Dites m'en plus.", "Dites m'en d'avantage.", "Je vois, continuez.", "Je comprends, continuez.", "Continuez."]
-            i = random.randint(0, len(lst)-1)
-            print hackneyedStuff[i]
-
-
-
-
-#These are dictionnaries for keywords and psychological verbs so far.
-#I know they take some space, but using them could make a difference in execution time, and if we categorize them right, according to what type of words we're going to extract
-#from the user input, they could turn out to be very useful! Tell me what you think on saturday?? :)
-
-allMyKeywords = {'fils': ['soThisIsFamily'], 'propriétaire': ['soThisIsNotFamily'], 'électricien': ['moneyMakingActivities'], 'épouse': ['soThisIsNotFamily'], 
-'plombier': ['moneyMakingActivities'], 'époux': ['soThisIsNotFamily'], 'voisin': ['soThisIsNotFamily'], 'frère': ['soThisIsFamily'], 'soeur': ['soThisIsFamily'], 
-'voisine': ['soThisIsNotFamily'], 'comptable': ['moneyMakingActivities'], 'copain': ['soThisIsNotFamily'], 'femme': ['soThisIsNotFamily'], 
-'fromager': ['moneyMakingActivities'], 'belle-fille': ['soThisIsFamily'], 'patron': ['soThisIsNotFamily'], 'patronne': ['soThisIsNotFamily'], 'mari': ['soThisIsNotFamily'], 
-'diététicienne': ['moneyMakingActivities'], 'grand-mère': ['soThisIsFamily'], 'beau-frère': ['soThisIsFamily'], 'oncle': ['soThisIsFamily'], 'beau-fils': ['soThisIsFamily'], 
-'pote': ['soThisIsNotFamily'], 'médecin': ['moneyMakingActivities'], 'cousine': ['soThisIsFamily'], 'ami': ['soThisIsNotFamily'], 'élève': ['soThisIsNotFamily'], 
-'petit fils': ['soThisIsFamily'], 'pédiatre': ['moneyMakingActivities'], 'femme de ménage': ['moneyMakingActivities'], 'psychologue': ['moneyMakingActivities'], 
-'belle-mère': ['soThisIsFamily'], 'petite amie': ['soThisIsNotFamily'], 'petite fille': ['soThisIsFamily'], , 'belle-soeur': ['soThisIsFamily'], 'père': ['soThisIsFamily'], 
-'docteur': ['moneyMakingActivities'], 'architecte': ['moneyMakingActivities'], 'cousin': ['soThisIsFamily'], 'tante': ['soThisIsFamily'], 
-'diététicien': ['moneyMakingActivities'], 'boucher': ['moneyMakingActivities'], 'psychiatre': ['moneyMakingActivities'], 'amie': ['soThisIsNotFamily'], 
-'petit-ami': ['soThisIsNotFamily'], 'copine': ['soThisIsNotFamily'], 'électricienne': ['moneyMakingActivities'], 'beau-père': ['soThisIsFamily'], 
-'grand-père': ['soThisIsFamily'], 'fille': ['soThisIsFamily'], 'boulanger': ['moneyMakingActivities'], 'collègue': ['soThisIsNotFamily'], 'mère': ['soThisIsFamily'], 
-'professeur': ['soThisIsNotFamily']}
-
-psychoVerbs = {'ébahir': ['NeutralSurprise'], 'surprendre': ['NeutralSurprise'], 'souffler': ['NeutralSurprise'], 'terroriser': ['NegFear'], 'éblouir': ['PosSurprise'], 
-'renverser': ['NeutralSurprise'], 'asseoir': ['NeutralSurprise'], 'effrayer': ['NegFear'], 'attrister': ['NegSad'], 'haïr': ['LoveHate'], 'aimer': ['LoveHate'], 
-'interdire': ['NeutralSurprise'], 'étonner': ['NeutralSurprise'], 'interloquer': ['NeutralSurprise'], 'épeurer': ['NegFear'], 'émotionner': ['PosSensitive'], 
-'stupéfier': ['NeutralSurprise'], 'chiffonner': ['NegSad'], 'méduser': ['NeutralSurprise'], 'désoler': ['NegSad'], 'épater': ['NeutralSurprise'], 'détester': ['LoveHate'], 
-'troubler': ['PosSensitive'], 'remuer': ['PosSensitive'], 'abasourdir': ['NeutralSurprise'], 'Affecter': ['PosSensitive'], 'effaroucher': ['NegFear'], 'intimider': ['NegFear'],
-'peiner': ['NegSad'], 'ébaubir': ['NeutralSurprise'], 'saisir': ['NeutralSurprise'], 'estomaquer': ['NeutralSurprise'], 'ahurir': ['NeutralSurprise'], 'adorer': ['LoveHate'],
-'terrifier': ['NegFear'], 'contrister': ['NegSad'], 'affoler': ['NegFear'], 'apeurer': ['NegFear'], 'alarmer': ['NegFear'], 'rembrunir': ['NegSad'], 
-'chavirer': ['PosSensitive'], 'paniquer': ['NegFear'], 'affecter': ['NegSad'], 'toucher': ['PosSensitive'], 'chagriner': ['NegSad'], 'confondre': ['NeutralSurprise'], 
-'tournebouler': ['PosSensitive'], 'atteindre': ['NegSad'], 'contrarier': ['NegSad'], 'affliger': ['NegSad'], 'époustoufler': ['NeutralSurprise'], 'glacer': ['NegFear'], 
-'horrifier': ['NegFear'], 'frapper': ['NeutralSurprise'], 'scier': ['NeutralSurprise'], 'étourdir': ['PosSurprise'], 'bouleverser': ['PosSensitive'], 
-'émouvoir': ['PosSensitive'], 'chambouler': ['PosSensitive'], 'inquiéter': ['NegFear'], 'émerveiller': ['PosSurprise'], 'épouvanter': ['NegFear'], 'angoisser': ['NegFear'], 
-'assombrir': ['NegSad'], 'navrer': ['NegSad'], 'ébouriffer': ['NeutralSurprise'], 'sidérer': ['NeutralSurprise']}
-
-
-#lists
-
-talktToMeMore = ["Pourriez-vous m'en dire plus?", "Que voulez-vous dire?", "Pourriez-vous élaborer?", "Pourriez-vous développer sur ce sujet?", 
-"Que voulez-vous dire par là?", "Pourriez-vous m'en dire d'avantage?", "Qu'est-ce que cela veut dire pour vous?", "Ceci a-t-il un sens particulier pour vous?",
-"Et que ceci vous inspire-t-il?"]  
-
-
-#Kira: Voilà quelques phrases à trous, je sais pas si tu voulais autre chose, à toi de voir!
-whatsTheWordHummingbird = [["Je vois, et que représente ", " ", " pour vous?"], ["Pourquoi dites-vous que ", " ", " ? "], ["Et que pense ", " ", " de ceci ?"],
-["Pourquoi pensez-vous que ", " ", " ?"], ["Qu'est-ce qui vous faire dire que ", " ", " ?"]]
-
-
-
-
-
-
-
-
-
+#eliza = eliza.eliza()
