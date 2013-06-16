@@ -44,9 +44,9 @@ class eliza():
 
     def createOutput(self, s):
         s = self.input
-        self.input.toLowerCase()
-        self.input.tokenize()
-        self.input.tagging()
+        self.input.lower()
+        self.tokenize(s)
+        #self.input.tagging()
 
 
     def tokenize (self, entry):
@@ -170,11 +170,36 @@ class eliza():
         print self.subjectInput
         print self.objectInput
         print self.verb
-        sentence = "Eliza : testest"
+
+        sentence = self.politeness()
+        if sentence != None:
+            sentence = "Eliza : testest"
         #if self.output == "":
             #self.defaultOutput()
         #return self.output 
-        return sentence
+            return sentence
+        else:
+            return "test"
+
+    #def returnFinal(self, sentence):
+
+    def politeness(self): #politeness protocol 
+        # will return a reminder in case a rude word is used
+        rudeWords = ["chier","chie","chié","chiez","chiant","merde","sous-merde","emmerde","emmerdeur",
+        "emmerdeuse","emmerdez","emmerder","conasse","connasse","conne","pétasse","poufiasse","grogniasse",
+        "grognasse","abrutie","fiotte","connard","abruti","salopard","tasspe","sale porc","batard",
+        "pute","putain", "salope","salop","salaud","pestifféré","con","couille", "bite", "cul", 
+        "pédé","pd","tafiole","tapette","pédale","bordel","raclure","foutre","nique","niquer"]
+        
+        answers = ["Ne soyez pas grossier, s'il vous plait!", "Recentrez-vous sur votre objectif !",
+        "Veillez à soigner votre langage !", "Vous semblez ne pas avoir compris le but de cette thérapie !",
+        "Insulter ceux qui veulent vous aider ne vous mènera à rien !"]
+        for words in sentence:
+            if words in rudeWords:
+                return random.choice(answers)
+            else:
+                break
+        return None
 
     #Retourne element correspondant de p dans le dictionnaire dic
     def switchMe(self, p, dic): 
@@ -250,6 +275,7 @@ class eliza():
             return "YPp2\n"
         return f[1]
 
+
     def conjugaison (self, t_inf_flex, lefff):
 
         """ Fonction qui renvoie le verbe conjugue pour l'output
@@ -308,6 +334,8 @@ class eliza():
             self.verb
         return verb
 
+    def keyWords(self):
+        pass
 
     def res_fields(self):
         self.input = ""
