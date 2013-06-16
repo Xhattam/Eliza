@@ -68,7 +68,8 @@ class window(object):
             self.user_entry.config(state = Tkinter.DISABLED)
             self.display.config(state = Tkinter.DISABLED)
             self.eliza.tokenize(self.entry) #premiere etape de calcul de reponse
-            #print self.entry
+            #APPELER LES AUTRES FONCTIONS DE CALCUL DE REPONSE D'ELIZA
+            self.hereComesYourAnswer()
 
     
     # heresYourAnswer: Takes the final calculated answer from Eliza and displays it in Eliza's window
