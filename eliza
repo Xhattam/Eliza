@@ -98,8 +98,9 @@ class eliza():
         posVerb = len(lst)-1
         pronouns = ['c\'', 'j\'', 'l\'', 'm\'', 'n\'', 's\'', 't\'', 'me', 'te', 'se', 'ne']
         for elem in range(len(lst)):
-            if lst[elem] in self.allMyKeywords:
-                self.StackWrite(lst[elem]) #stakWrite prend un argu?? !! Voir !!
+             for i in self.allMyKeyWords:
+                if re.match(i, lst[elem]): #recherche avec regex - NEW
+                    self.StackWrite(lst[elem]) #stakWrite prend un argu?? !! Voir !!
         for i in range(len(lst)-1):
             if lst[i] in pronouns and lst[i+1][-2:] not in ["er", "ir", "ire", "dre", "tre"]:
                 self.verb = lst[i+1]
@@ -294,19 +295,21 @@ talkToMeMore = ["Pourriez-vous m'en dire plus?", "Que voulez-vous dire?", "Pourr
         "Que voulez-vous dire par là?", "Pourriez-vous m'en dire d'avantage?", "Qu'est-ce que cela veut dire pour vous?", "Ceci a-t-il un sens particulier pour vous?",
         "Et que ceci vous inspire-t-il?"]
 
-allMyKeywords = {'fils': ['soThisIsFamily'], 'propriétaire': ['soThisIsNotFamily'], 'électricien': ['moneyMakingActivities'], 'épouse': ['soThisIsNotFamily'], 
-'plombier': ['moneyMakingActivities'], 'époux': ['soThisIsNotFamily'], 'voisin': ['soThisIsNotFamily'], 'frère': ['soThisIsFamily'], 'soeur': ['soThisIsFamily'], 
-'voisine': ['soThisIsNotFamily'], 'comptable': ['moneyMakingActivities'], 'copain': ['soThisIsNotFamily'], 'femme': ['soThisIsNotFamily'], 
-'fromager': ['moneyMakingActivities'], 'belle-fille': ['soThisIsFamily'], 'patron': ['soThisIsNotFamily'], 'patronne': ['soThisIsNotFamily'], 'mari': ['soThisIsNotFamily'], 
-'diététicienne': ['moneyMakingActivities'], 'grand-mère': ['soThisIsFamily'], 'beau-frère': ['soThisIsFamily'], 'oncle': ['soThisIsFamily'], 'beau-fils': ['soThisIsFamily'], 
-'pote': ['soThisIsNotFamily'], 'médecin': ['moneyMakingActivities'], 'cousine': ['soThisIsFamily'], 'ami': ['soThisIsNotFamily'], 'élève': ['soThisIsNotFamily'], 
-'petit fils': ['soThisIsFamily'], 'pédiatre': ['moneyMakingActivities'], 'femme de ménage': ['moneyMakingActivities'], 'psychologue': ['moneyMakingActivities'], 
-'belle-mère': ['soThisIsFamily'], 'petite amie': ['soThisIsNotFamily'], 'petite fille': ['soThisIsFamily'], 'belle-soeur': ['soThisIsFamily'], 'père': ['soThisIsFamily'], 
-'docteur': ['moneyMakingActivities'], 'architecte': ['moneyMakingActivities'], 'cousin': ['soThisIsFamily'], 'tante': ['soThisIsFamily'], 
-'diététicien': ['moneyMakingActivities'], 'boucher': ['moneyMakingActivities'], 'psychiatre': ['moneyMakingActivities'], 'amie': ['soThisIsNotFamily'], 
-'petit-ami': ['soThisIsNotFamily'], 'copine': ['soThisIsNotFamily'], 'électricienne': ['moneyMakingActivities'], 'beau-père': ['soThisIsFamily'], 
-'grand-père': ['soThisIsFamily'], 'fille': ['soThisIsFamily'], 'boulanger': ['moneyMakingActivities'], 'collègue': ['soThisIsNotFamily'], 'mère': ['soThisIsFamily'], 
-'professeur': ['soThisIsNotFamily']}
+allMyKeywords={'propriétaires?': 'human', 'fils': 'human', 'électricien.{0,3}': 'human', 'épou.{1,2}': 'human', 
+'patron.{0,3}': 'human', 'voisin.{0,2}': 'human', 'frères?': 'human', 'soeurs?': 'human', 
+'comptables?': 'human','copains?': 'human', 'femmes?': 'human', 'fromagers?': 'human', 
+'belles?-filles?': 'human', 'maris?': 'human', 'diéticien.{0,3}': 'human', 'grands?-mères?': 'human', 
+'beaux?-frères?': 'human', 'oncles?': 'human', 'belles?-mères?': 'human', 'potes?': 'human', 
+'cousin.{0,2}': 'human', 'ami.{0,2}': 'human', 'élèves?': 'human', 'petits?-fils': 'human', 
+'pédiatres?': 'human', 'femme de ménage': 'human', 'psychologues?': 'human', 'médecins?': 'human', 
+'beaux?-fils': 'human', 'petites?-fille': 'human', 'plombiers?': 'human', 'collègues?': 'human', 
+'architectes?': 'human', 'tantes?': 'human', 'boucher': 'human', 'père': 'human', 'psychiatres?': 'human', 
+'belles?-soeurs?': 'human', 'petite?-amie?': 'human', 'copines?': 'human', 'beaux?-pères?': 'human', 
+'grands?-pères?': 'human', 'filles?': 'human', 'boulanger': 'human', 'docteur': 'human', 'mère': 'human', 
+'professeurs?': 'human', 'chats?': 'animal', 'chien?': 'animal', 'poisson?': 'animal', 'poissons? rouges?': 'animal',
+'voiture': 'obj', 'maison': 'obj', 'travail': 'obj', 'enfants?': 'human', 'ordinateurs?':'obj',
+'bureaux?': 'obj'}
+
 
 
 myPronouns = {
