@@ -24,19 +24,21 @@ class eliza():
         self.subjectInput = [] #String 
         self.objectInput = [] #String 
         self.verb = "" #String 
+        self.verbtuple = [] #tuple infinitif + flexion
         self.stack = stack.stack() #e-List 
         #self.userName = "" #String (static)/Null 
         #self.personInput = 0 #Int  
 
         #self.taggedSentence = [] #T-List
 
-        self.subjectResponse = "" #String 
+        #self.subjectResponse = "" #String pas besoin de champ, on le cree dans la fonction
         
         self.output = "" #String 
-        self.personResponse = "" #String 
+        self.personResponse = "" #String
         #self.elapsedTime = elapsedTime 
         
-        self.objectResponse = "" #String 
+        
+        #self.objectResponse = "" #String pas besoin non plus
         #self.radical = "" #String
         self.talkToMeMore = talkToMeMore
         self.psychoVerbs = psychoVerbs
@@ -48,6 +50,9 @@ class eliza():
         self.tokenize(s)
         #self.input.tagging()
 
+    
+    def setInput(self, text):
+        self.input = text
 
     def tokenize (self, entry):
         s = entry
@@ -98,43 +103,48 @@ class eliza():
             token_list.append(word)
         
         self.tokenInput = token_list
-        print self.tokenInput
           
 
     def tagging(self):
          #etiquetage # MARINE
         lst = self.tokenInput
-        print lst
         posVerb = len(lst)-1
-        pronouns = ['c\'', 'j\'', 'l\'', 'm\'', 'n\'', 's\'', 't\'', 'me', 'te', 'se', 'ne']
+        pronouns = ['c\'', 'j\'', 'm\'', 'n\'', 's\'', 't\'', 'me', 'te', 'se', 'ne'] #precedent toujours un verbe
         for elem in range(len(lst)):
-            for i in self.allMyKeyWords:
+            for i in self.allMyKeywords:
                 if re.match(i, lst[elem], re.I): #recherche avec regex
-                    self.StackWrite(lst[elem]) #stakWrite prend un argu?? !! Voir !!
+                    self.StackWrite(lst[elem]) #stakWrite prend un argu?? oui c'est push! 
+                    # ECRIRE LES DETERMINANTS DANS LA PILE
         for i in range(len(lst)-1):
-            if lst[i] in pronouns and lst[i+1][-2:] or lst[i+1][-3:] not in ["er", "ir", "ire", "dre", "tre"]:
+            if lst[i] in pronouns and lst[i+1][-2:] not in ["er", "ir"] and lst[i+1][-3:] not in ["ire", "dre", "tre"]: 
                 self.verb = lst[i+1]
                 posVerb = i+1
                 break
         if self.verb == "":
+            lefff = self.split_lefff()
             for e in range(len(lst)):
-                if lst[e] in lefff:
+                in_lefff = self.recup_inf(lefff, lst[e])
+                if in_lefff != 0: # si verbe trouve dans Lefff
                     self.verb = lst[e]
                     posVerb = e
                     break
+                    
+        #recherche de sujet
         subjectScope = lst[:posVerb]
         self.searchSubject(subjectScope)
-        if posVerb+1 == len(lst):
-            self.objectInput = []
-        else:    
-            idx = posVerb+1
-            self.objectInput = lst[idx:] 
-        return self.searchSubject(subjectScope)
+        
+        
+        #recherche d'objet
+        idx = posVerb + 1
+        if idx != len(lst):
+            self.objectInput = lst[idx:]
+
+        return self.searchSubject(subjectScope) # il sert a quoi ce return?
 
 
 
     def searchSubject(self, subjectScope):
-        lstPro = ['je', 'tu' 'il?', 'j\'', 'elle?', 'on']
+        lstPro = ['je$', 'tu$' 'il?$', 'j\'$', 'elle?$', 'on$'] # les $ apres chaque mot servent a marquer que c'est la fin du mot. Sinon on trouve "lesssss" pour les?, "lac" pour la, "savoir" pour sa etc.
         for e in subjectScope:
             for pro in lstPro:
                 if re.match(pro, e):
@@ -147,18 +157,18 @@ class eliza():
         length = len(subjectScope)-1
         elem = subjectScope[length]
         pronouns = ['c\'', 'l\'', 'm\'', 'n\'', 's\'', 't\'', 'me', 'te', 'se', 'ne', 'la', 'le', 'les']
-        lstDet = ['les?', 'la', 'une?', 'des', 'l\'', 'mon', 'ton', 
-        'son', 'ma', 'ta', 'sa', 'mes', 'tes', 'ses', 'nos', 'vos', 'leur?', 
-        'notre', 'votre', 'ce.{0,3}', 'deux', 'trois', 'quatre', 'cinq', 'aucun*'
-        'tel*', 'quelque?', 'certain*', 'divers*', 'tou.{1,3}']
+        lstDet = ['les?$', 'la$', 'une?$', 'des$', 'l\'$', 'mon$', 'ton$',
+        'son$', 'ma$', 'ta$', 'sa$', 'mes$', 'tes$', 'ses$', 'nos$', 'vos$', 'leurs?$',
+        'notre$', 'votre$', 'ce.{0,3}$', 'deux$', 'trois$', 'quatre$', 'cinq$', 'aucun.*',
+        'tel.*', 'quelques?$', 'certain.*', 'divers.*', 'tou.{1,3}$']
 
         for e in range(len(subjectScope)):
             for det in lstDet:
                 if re.match(det, subjectScope[e]):
                     if elem in pronouns:
-                        self.subjectInput = subjectScope[e:length-1]
-                    else:
                         self.subjectInput = subjectScope[e:length]
+                    else:
+                        self.subjectInput = subjectScope[e:length+1]
                     return self.subjectInput
         return self.subjectInput
 
@@ -167,6 +177,7 @@ class eliza():
         return random.choice(self.talkToMeMore)
 
     def getFinalAnswer(self): #reponse finale d'eliza
+        """
         print self.subjectInput
         print self.objectInput
         print self.verb
@@ -180,8 +191,18 @@ class eliza():
             return sentence
         else:
             return "test"
+        """
+        # ma version - Kira
+        self.tokenize(self.input)
+        self.tagging()
+        self.setPhrase()
+        
+        return self.output
+            
+        
 
     #def returnFinal(self, sentence):
+
 
     def politeness(self): #politeness protocol 
         # will return a reminder in case a rude word is used
@@ -224,20 +245,34 @@ class eliza():
         return lefff    
         #print lefff
     
-    def recup_inf (self, x, verbe):
+    def recup_inf (self, lefff, verbe):
 
         """Fonction qui recupere l'infinitif et la flexion du verbe en input
-        @param x le leff 'splited' (e-List)
+        @param lefff le lefff 'splitted' (e-List)
         @param verbe le verbe de l'input (e)
         @return tuple infinitif+flexion (e-Tuple)"""
         
-        pos = 0
-        while pos < len(x):
-            if x[pos][0] == verbe:
-                return (x[pos][2], x[pos][3])
-            pos += 1
-    
+        return self.recup_inf_rec(lefff, verbe, 0, len(lefff))
+        
+     def recup_inf_rec(self, lefff, verbe, debut, fin): #fonction recursive
+        # recherche dichotomique
+        
+        while debut < fin:
 
+            m = (debut+fin)/2;
+            val = lefff[m]
+            
+            if(val[0] == verbe):
+                return (val[2], val[3])
+            elif(val[0] > verbe):
+                return self.recup_inf_rec(lefff, verbe, debut, m)
+            else:
+                return self.recup_inf_rec(lefff, verbe, m+1, fin)
+            
+            return 0
+        
+    
+    
     def flexion (self, f):
 
         """ Fonction qui determine la flexion de l'output
@@ -276,12 +311,14 @@ class eliza():
         return f[1]
 
 
-    def conjugaison (self, t_inf_flex, lefff):
+    def conjugaison (self, verbtuple):
 
         """ Fonction qui renvoie le verbe conjugue pour l'output
         @param t_inf_flex tuple infinitif+flexion output (e-Tuple)
         @param lefff le lefff "splited" (e-List)
         @return le verbe conjugue (e)"""
+        
+        """
         s = self.verb
         f = split_lefff()
         v = recup_inf (f, s)
@@ -292,13 +329,153 @@ class eliza():
                 return lefff[pos][0]
             pos = pos + 1
         return talkToMeMore()
+        """
+        
+        #version modifiee - Kira
+        
+        flexion = self.flexion(verbtuple)
+        if flexion != verbtuple[1]: #evite de parcourir le Leff si la forme du verbe ne change pas        
+            lefff = self.split_lefff()
+            pos = 0
+            while pos < len(lefff): #ici, on ne peut pas utiliser la recherche dichotomique a cause des verbes irreguliers (suis - etre : loin dans l'alphabet)
+                verbform = lefff[pos]
+                if verbform[2] == verbtuple[0] and verbform[3] == flexion:
+                    self.verb = verbform[0]
+                    return self.verb
+                pos += 1
+        
+        return self.verb
 
     
     def stackRead(self): #lecture de la pile # MARINE
         return self.stack.pop()
     
     def stackWrite(self, s): #ecriture de la pile # MARINE
-        self.stack.push(s) 
+        self.stack.push(s)
+        
+    
+    def setPhrase(self): # fonction qui genere l'output
+        determinants = ['un', 'une', 'la', 'le', 'les', 'l\'', 'des', 'ma', 'ta', 'sa', 'mon', 'ton', 'son', 'mes', 'tes', 'ses', 'nos', 'vos', 'leur', 'leurs', 'notre', 'votre']
+        objectOutput = ""
+        for e in range(len(self.objectInput)): #on change je-vous dans l'objet et on le transforme en chaine de caracteres
+            self.objectInput[e] = self.switchMe(e, myPronouns)
+            objectOutput += self.objectInput[e]
+            objectOutput += " "
+        objectOutput.strip()
+        
+        if self.verb == "" and len(self.subjectInput) == 0: # si on a rien, on cherche des mots-cles dans l'objet
+            for i in range(len(self.objectInput)):
+                word = self.objectInput[i]   
+                for key in allMyKeywords.keys():
+                    if re.match(key, word):
+                        if allMyKeywords[word] == 'human': 
+                            wordOutput = "cette personne"
+                            if i > 0 and self.objectInput[i-1] in determinants:
+                                det = self.switchMe(self.objectInput[i-1])
+                                wordOutput = det
+                                wordOutput += " "
+                                wordOutput += word
+                            
+                            phrase1 = "Je vois, et que représente " + wordOutput + " pour vous?"
+                            phrase2 = "Passez-vous beaucoup de temps avec " + wordOutput + "?"
+                            phrase3 = "Et que pense " + wordOutput + "de ceci?"
+                            phrase4 = "Vous en avez parle avec " + wordOutput + "?"
+                            phrase5 = "Parlez-moi encore de " + wordOutput + "."
+                            phrase6 = "Parlez-moi de vos relations avec " + wordOutput + "."
+                            self.output = random.choice([phrase1, phrase2, phrase3, phrase4, phrase5, phrase6])
+                            return self.output
+                        else:
+                            wordOutput = "cela"
+                            if i > 0 and self.objectInput[i-1] in determinants:
+                                det = self.switchMe(self.objectInput[i-1])
+                                wordOutput = det
+                                wordOutput += " "
+                                wordOutput += word
+                                
+                            phrase1 = "Je vois, et que représente " + wordOutput + " pour vous?"
+                            phrase2 = "Parlez-moi plus de " + wordOutput + "."
+                            phrase3 = "Est-ce que " + wordOutput + ", c'est important pour vous?"
+                            phrase4 = "Quel role joue " + wordOutput + "dans votre vie?"
+                            self.output = random.choice([phrase1, phrase2, phrase3, phrase4])
+                            return self.output
+                        
+            if stack.size() > 0: # sinon on prend de la pile
+                memory = self.stackRead()
+                phrase1 = "Revenons a " + memory + ". Pourriez-vous m'en parlez plus?"
+                phrase2 = "Parlez-moi plus de " + memory + ", s'il vous plait."
+                phrase3 = "Parlez-moi encore de " + memory + ", c'est important pour vous?"
+                self.output = random.choice([phrase1, phrase2, phrase3])
+                return self.output
+            else:   
+                self.output = self.defaultOutput()
+                return self.output
+        
+        if self.verb == "": #si on a le sujet mais pas le verbe
+            subjectOutput = ""
+            if len(self.subjectInput > 1): #determinant + nom + eventuellement des adjectifs
+                for i in range(len(self.subjectInput)):
+                    self.subjectInput[i] = self.switchMe(self.subjectInput[i], myPronouns)
+                    subjectOutput += self.subjectInput[i]
+                    subjectOutput += " "
+                subjectOutput.strip()
+            else:
+                if self.subjectInput[0] in ["tu", "t'", "vous"]:
+                    self.output = random.choice(["Vous etes la pour parler de vous, pas de moi", "On ne parle pas de moi ici", "On est ici pour parler de vous"]) 
+                    return self.output
+                elif self.subjectInput[0] in ["je", "j'", "nous"]:
+                    self.output = random.choice(["Parlez-moi plus de vous, s'il vous plait.", "C'est important, continuez.", "Parlez-moi davantage sur votre vie.", "Parlez-moi de vos relations avec les autres."]) 
+                    return self.output
+                else:
+                    subjectOutput = self.subjectInput[0]
+            
+            if subjectOutput == "":
+                self.output = self.defaultOutput()
+                return self.output
+            
+            phrase1 = "Je vois, et que représente " + subjectOutput + " pour vous?"
+            phrase2 = "Parlez-moi plus de " + wordOutput + "."
+            phrase3 = "Est-ce que " + wordOutput + ", c'est important pour vous?"
+            phrase4 = "Quel role joue " + wordOutput + "dans votre vie?"
+            phrase5 = "Parlez-moi encore de " + wordOutput + "."
+        
+        else: # on a le sujet ET le verbe
+            verbOutput = self.verb
+            if len(self.verbtuple) > 0:
+                verbOutput = self.conjugaison(self.verbtuple)
+            
+            
+            subjectOutput = ""
+            if len(self.subjectInput > 1): #determinant + nom + eventuellement des adjectifs
+                for i in range(len(self.subjectInput)):
+                    self.subjectInput[i] = self.switchMe(self.subjectInput[i], myPronouns)
+                    subjectOutput += self.subjectInput[i]
+                    subjectOutput += " "
+                subjectOutput.strip()
+            else:
+                if self.subjectInput[0] in ["tu", "t'", "vous"]:
+                    self.output = random.choice(["Vous etes la pour parler de vous, pas de moi", "On ne parle pas de moi ici", "On est ici pour parler de vous"]) 
+                    return self.output
+                else:
+                    subjectOutput = self.subjectInput[0]
+            
+            if subjectOutput == "":
+                self.output = self.defaultOutput()
+                return self.output
+            
+            phrase1 = "Pourquoi dites-vous que " + subjectOutput + " " + verbOutput + " " + objectOutput + "?"
+            phrase2 = "Pourquoi pensez-vous que " + subjectOutput + " " + verbOutput + " " + objectOutput + "?"
+            phrase3 = "Qu'est ce que vous fait dire que " + subjectOutput + " " + verbOutput + " " + objectOutput + "?"
+            phrase4 = "Pourquoi " + verbOutput + "-" + subjectOutput + " " + objectOutput + "?"
+            phrase5 = "Je vois, " + subjectOutput + " " + verbOutput + " " + objectOutput + ". Continuez, s'l vous plait."
+            
+            self.output = random.choice([phrase1, phrase2, phrase3, phrase4, phrase5])
+            
+        if self.output == "":
+            self.output = self.defaultOutput()
+        
+        return self.output
+                
+              
     
     def psycho(self):
         verb = self.recup_inf(self.verb)
