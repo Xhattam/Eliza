@@ -39,9 +39,10 @@ class eliza():
         self.objectResponse = "" #String 
         #self.radical = "" #String
         self.talkToMeMore = talkToMeMore
+        self.psychoVerbs = psychoVerbs
 
     def tokenize (self, entry):
-        s = entry #i added an argument here, which is the sentence from the window (called in Window)
+        s = entry 
         token_list = []
         f = 1 # end of the token
         d = 0 # first symbol of the token
@@ -89,7 +90,7 @@ class eliza():
             token_list.append(word)
         
         self.tokenInput = token_list
-        #print self.tokenInput #tested with input from window, works ok
+        print self.tokenInput
           
 
     def tagging(self):
@@ -98,8 +99,8 @@ class eliza():
         posVerb = len(lst)-1
         pronouns = ['c\'', 'j\'', 'l\'', 'm\'', 'n\'', 's\'', 't\'', 'me', 'te', 'se', 'ne']
         for elem in range(len(lst)):
-             for i in self.allMyKeyWords:
-                if re.match(i, lst[elem]): #recherche avec regex - NEW
+            for i in self.allMyKeyWords:
+                if re.match(i, lst[elem]): #recherche avec regex
                     self.StackWrite(lst[elem]) #stakWrite prend un argu?? !! Voir !!
         for i in range(len(lst)-1):
             if lst[i] in pronouns and lst[i+1][-2:] not in ["er", "ir", "ire", "dre", "tre"]:
@@ -119,6 +120,7 @@ class eliza():
         else:    
             idx = posVerb+1
             self.objectInput = lst[idx:] 
+
 
 
     def searchSubject(self, subjectScope):
@@ -154,12 +156,12 @@ class eliza():
     def defaultOutput(self):
         return random.choice(self.talkToMeMore)
 
-    def getFinalAnswer(self): #final answer?
-    #this is the function I'm hoping to use, where all steps of answer calculation need to happen from the token_list
-    #this will be the function I'll be calling in window to display eliza's answer
-        if self.output == "":
-            self.defaultOutput()
-        return self.output 
+    def getFinalAnswer(self): #reponse finale d'eliza
+        sentence = "Eliza : testest"
+        #if self.output == "":
+            #self.defaultOutput()
+        #return self.output 
+        return sentence
 
     #Retourne element correspondant de p dans le dictionnaire dic
     def switchMe(self, p, dic): 
@@ -238,8 +240,8 @@ class eliza():
     def conjugaison (self, t_inf_flex, lefff):
 
         """ Fonction qui renvoie le verbe conjugue pour l'output
-        @param x tuple infinitif+flexion output (e-Tuple)
-        @param z le lefff "splited" (e-List)
+        @param t_inf_flex tuple infinitif+flexion output (e-Tuple)
+        @param lefff le lefff "splited" (e-List)
         @return le verbe conjugue (e)"""
         f = split_lefff()
         v = recup_inf (f, "flûtais")
@@ -257,7 +259,28 @@ class eliza():
     def stackWrite(self): #ecriture de la pile # MARINE
         self.stack.push(self.input) 
     
-           
+     def psycho(self): #in progress - NEW
+        verb = recup_inf(self.verb)
+        if verb in psychoVerbs:
+            if psychoVerbs[verb] == 'NeutralSurprise':
+                blah
+            elif psychoVerbs[verb] == 'NegFear':
+                blah 'Pourquoi vous sentez-vous ...'
+            elif psychoVerbs[verb] == 'LoveHate':
+                if self.obj in humans:
+                    print 'Pourquoi self.verb-vous cette personne?'
+                    print 'Qu\'est-ce que vous self.verb chez cette personne?'
+            elif psychoVerbs[verb] == 'PosSurprise':
+                blah
+            elif psychoVerbs[verb] == 'PosSensitive':
+                blah
+            elif psychoVerbs[verb] == 'NegSad':
+                blah
+            else:
+                return self.verb
+        return self.verb
+                 
+
             
     
     
@@ -310,6 +333,18 @@ allMyKeywords={'propriétaires?': 'human', 'fils': 'human', 'électricien.{0,3}'
 'voiture': 'obj', 'maison': 'obj', 'travail': 'obj', 'enfants?': 'human', 'ordinateurs?':'obj',
 'bureaux?': 'obj'}
 
+self.psychoVerbs = {'ébahir': 'NeutralSurprise', 'surprendre': 'NeutralSurprise', 'souffler': 'NeutralSurprise', 'terroriser': 'NegFear', 'éblouir': 'PosSurprise', 
+'renverser': 'NeutralSurprise', 'asseoir': 'NeutralSurprise', 'effrayer': 'NegFear', 'attrister': 'NegSad', 'haïr': 'LoveHate', 'aimer': 'LoveHate', 
+'interdire': 'NeutralSurprise', 'étonner': 'NeutralSurprise', 'interloquer': 'NeutralSurprise', 'épeurer': 'NegFear', 'émotionner': 'PosSensitive', 
+'stupéfier': 'NeutralSurprise', 'chiffonner': 'NegSad', 'méduser': 'NeutralSurprise', 'désoler': 'NegSad', 'épater': 'NeutralSurprise', 'détester': 'LoveHate', 
+'troubler': 'PosSensitive', 'remuer': 'PosSensitive', 'abasourdir': 'NeutralSurprise', 'Affecter': 'PosSensitive', 'effaroucher': 'NegFear', 'intimider': 'NegFear',
+'peiner': 'NegSad', 'ébaubir': 'NeutralSurprise', 'saisir': 'NeutralSurprise', 'estomaquer': 'NeutralSurprise', 'ahurir': 'NeutralSurprise', 'adorer': 'LoveHate',
+'terrifier': 'NegFear', 'contrister': 'NegSad', 'affoler': 'NegFear', 'apeurer': 'NegFear', 'alarmer': 'NegFear', 'rembrunir': 'NegSad', 
+'chavirer': 'PosSensitive', 'paniquer': 'NegFear', 'affecter': 'NegSad', 'toucher': 'PosSensitive', 'chagriner': 'NegSad', 'confondre': 'NeutralSurprise', 
+'tournebouler': 'PosSensitive', 'atteindre': 'NegSad', 'contrarier': 'NegSad', 'affliger': 'NegSad', 'époustoufler': 'NeutralSurprise', 'glacer': 'NegFear', 
+'horrifier': 'NegFear', 'frapper': 'NeutralSurprise', 'scier': 'NeutralSurprise', 'étourdir': 'PosSurprise', 'bouleverser': 'PosSensitive', 
+'émouvoir': 'PosSensitive', 'chambouler': 'PosSensitive', 'inquiéter': 'NegFear', 'émerveiller': 'PosSurprise', 'épouvanter': 'NegFear', 'angoisser': 'NegFear', 
+'assombrir': 'NegSad', 'navrer': 'NegSad', 'ébouriffer': 'NeutralSurprise', 'sidérer': 'NeutralSurprise'}   
 
 
 myPronouns = {
