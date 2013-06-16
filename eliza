@@ -415,11 +415,10 @@ psychoVerbs = {'plaire': 'PosSurprise', 'déplaire': 'NegSad', 'ébahir': 'Neutr
 
 
 myPronouns = {'je':'vous', 'me':'vous', 'm\'':'vous', 'moi':'vous', 'tu':'je', 'te':'me', 't\'':'me', 
-'toi':'moi', 'nous':'vous', 'le mien':'le vôtre','le tien':'le mien', 'le sien':'le sien','la mienne':'la vôtre', 
-'la tienne':'la mienne', 'la sienne':'la sienne', 'les miens':'les vôtres', 'les tiens':'les miens',
-'les siens':'les siens','les miennes':'les vôtres', 'les tiennes':'les miennes', 'les siennes':'les siennes',
-'le nôtre':'le vôtre','le vôtre':'le mien', 'le leur':'le leur','la nôtre':'la vôtre', 'la vôtre':'la mienne',
-'la leur':'la leur','les nôtres':'les vôtres','les vôtres':'les miennes', 'les leurs':'leurs'}
+'toi':'moi', 'nous':'vous', 'mien':'vôtre','tien':'mien', 'sien':'sien','mienne':'vôtre', 'tienne':'mienne', 
+'sienne':'sienne', 'miens':'vôtres', 'tiens':'miens','siens':'siens','miennes':'vôtres', 'tiennes':'miennes', 
+'siennes':'siennes','nôtre':'vôtre','vôtre':'mien', 'leur':'leur','nôtre':'vôtre', 'vôtre':'mienne','leur':'leur',
+'nôtres':'vôtres','vôtres':'miennes', 'leurs':'leurs'}
 
 
 
