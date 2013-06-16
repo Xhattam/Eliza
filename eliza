@@ -40,9 +40,17 @@ class eliza():
         #self.radical = "" #String
         self.talkToMeMore = talkToMeMore
         self.psychoVerbs = psychoVerbs
+        #self.lefff = ('r', "lefff.txt")
+
+    def createOutput(self, s):
+        s = self.input
+        self.input.toLowerCase()
+        self.input.tokenize()
+        self.input.tagging()
+
 
     def tokenize (self, entry):
-        s = entry 
+        s = entry
         token_list = []
         f = 1 # end of the token
         d = 0 # first symbol of the token
@@ -96,14 +104,15 @@ class eliza():
     def tagging(self):
          #etiquetage # MARINE
         lst = self.tokenInput
+        print lst
         posVerb = len(lst)-1
         pronouns = ['c\'', 'j\'', 'l\'', 'm\'', 'n\'', 's\'', 't\'', 'me', 'te', 'se', 'ne']
         for elem in range(len(lst)):
             for i in self.allMyKeyWords:
-                if re.match(i, lst[elem]): #recherche avec regex
+                if re.match(i, lst[elem], re.I): #recherche avec regex
                     self.StackWrite(lst[elem]) #stakWrite prend un argu?? !! Voir !!
         for i in range(len(lst)-1):
-            if lst[i] in pronouns and lst[i+1][-2:] not in ["er", "ir", "ire", "dre", "tre"]:
+            if lst[i] in pronouns and lst[i+1][-2:] or lst[i+1][-3:] not in ["er", "ir", "ire", "dre", "tre"]:
                 self.verb = lst[i+1]
                 posVerb = i+1
                 break
@@ -120,6 +129,7 @@ class eliza():
         else:    
             idx = posVerb+1
             self.objectInput = lst[idx:] 
+        return self.searchSubject(subjectScope)
 
 
 
@@ -157,6 +167,9 @@ class eliza():
         return random.choice(self.talkToMeMore)
 
     def getFinalAnswer(self): #reponse finale d'eliza
+        print self.subjectInput
+        print self.objectInput
+        print self.verb
         sentence = "Eliza : testest"
         #if self.output == "":
             #self.defaultOutput()
@@ -219,10 +232,10 @@ class eliza():
             return "Sp1\n"
         if f[1] == "Ts1\n":
             return "Tp1\n"
-        if f[1] == "PSp3\n":
-            return "Pp3\n" "PSp3\n"
+        if f[1] == "PSp3\n": 
+            return "PSp3\n"
         if f[1] == "PSp1\n":
-            return "Pp2\n" or "PSp2\n"
+            return "PSp2\n"
         if f[1] == "Cs12\n":
             return "Cp2\n"
         if f[1] == "Is12\n":
@@ -243,21 +256,23 @@ class eliza():
         @param t_inf_flex tuple infinitif+flexion output (e-Tuple)
         @param lefff le lefff "splited" (e-List)
         @return le verbe conjugue (e)"""
+        s = self.verb
         f = split_lefff()
-        v = recup_inf (f, "flûtais")
+        v = recup_inf (f, s)
         t_inf_flex = (v[0], flexion(v))
         pos = 0
         while pos < len(lefff):
             if lefff[pos][2] == t_inf_flex[0] and lefff[pos][3] == t_inf_flex[1]:
                 return lefff[pos][0]
             pos = pos + 1
+        return talkToMeMore()
 
     
     def stackRead(self): #lecture de la pile # MARINE
         return self.stack.pop()
     
-    def stackWrite(self): #ecriture de la pile # MARINE
-        self.stack.push(self.input) 
+    def stackWrite(self, s): #ecriture de la pile # MARINE
+        self.stack.push(s) 
     
     def psycho(self):
         verb = self.recup_inf(self.verb)
@@ -270,11 +285,11 @@ class eliza():
                 print 'Qu\'est-ce qui vous fait vous sentir'
             elif self.psychoVerbs[verb] == 'LoveHate':
                 if self.obj in humans:
-                    print 'Pourquoi self.verb-vous 'blabla' ?'
-                    print 'Qu\'est-ce que vous self.verb chez 'blabla' ?'
+                    print 'Pourquoi self.verb-vous \'blabla\' ?'
+                    print 'Qu\'est-ce que vous self.verb chez \'blabla\' ?'
                 if self.obj in animal:
-                    print 'Dites-moi pouquoi vous verb 'blabla' ?'
-                    print 'Pourquoi verb-vous cet 'blabla' ?'
+                    print 'Dites-moi pouquoi vous verb \'blabla\' ?'
+                    print 'Pourquoi verb-vous cet \'blabla\' ?'
                 elif self.obj in obj:
                     print 'Et que pensez-vous de ceci ?'
                     print 'Et que ceci vous inspire-t-il ?'
@@ -285,8 +300,8 @@ class eliza():
                 print 'Pourquoi ceci vous verb-t-il?'
                 print 'Dites-moi en quoi ceci vous verb'
             elif self.psychoVerbs[verb] == 'NegSad':
-                print 'Pourquoi pensez-vous que 'blabla' a un rapport avec vos problèmes?'
-                print 'Pourquoi 'machin' vous verb-t-il?'
+                print 'Pourquoi pensez-vous que \'blabla\' a un rapport avec vos problèmes?'
+                print 'Pourquoi \'machin\' vous verb-t-il?'
             else:
                 return verb
         else:
@@ -294,7 +309,7 @@ class eliza():
         return verb
 
 
-    def res_fields:
+    def res_fields(self):
         self.input = ""
         self.tokenInput = []
         self.subjectInput = []
@@ -310,7 +325,6 @@ class eliza():
         self.objectResponse = ""      
     
     
-    ###def getUserName(): #prenom de l'utilisateur # KIRA
     #def setPhrase(): #phrases a trous - KIRA - Liste correspondante: whatsTheWordHummingbird 
         #On va te donner les phrases
 
@@ -325,13 +339,12 @@ class eliza():
         #ne, pas, jamais, ni, "n\'"
     
     ###def lefff(): #fichier + champs verb # BENJAMIN
-    
-    #def resetFields(): #sauf prenom et pile # MARINE
+
     
     #def politeness(): #protocole de politesse # JESSICA
         #liste de mots vulgaires
 
-    #def psychologicalVerbs(): ##verbes psychhologiques # JESSICA
+   
 
  
  
@@ -379,5 +392,6 @@ myPronouns = {'je':'vous', 'me':'vous', 'm\'':'vous', 'moi':'vous', 'tu':'je', '
 'les siens':'les siens','les miennes':'les vôtres', 'les tiennes':'les miennes', 'les siennes':'les siennes',
 'le nôtre':'le vôtre','le vôtre':'le mien', 'le leur':'le leur','la nôtre':'la vôtre', 'la vôtre':'la mienne',
 'la leur':'la leur','les nôtres':'les vôtres','les vôtres':'les miennes', 'les leurs':'leurs'}
+
 
 
