@@ -1,0 +1,347 @@
+#!/bin/env python
+# -*- coding: utf-8 -*-
+
+import time
+import random
+import Tkinter
+import re
+import stack
+
+
+"""
+Created on Tue Apr 23 10:36:29 2013
+
+@author: BAbemonty, MChassang, KKiranova, JTanon
+"""
+class eliza(): 
+
+    def __init__(self):
+
+        self.allMyKeywords = allMyKeywords
+
+        self.input = "" #ste
+        self.tokenInput = [] #e-List 
+        self.subjectInput = [] #String 
+        self.objectInput = [] #String 
+        self.verb = "" #String 
+        self.stack = stack.stack() #e-List 
+        #self.userName = "" #String (static)/Null 
+        #self.personInput = 0 #Int  
+
+        #self.taggedSentence = [] #T-List
+
+        self.subjectResponse = "" #String 
+        
+        self.output = "" #String 
+        self.personResponse = "" #String 
+        #self.elapsedTime = elapsedTime 
+        
+        self.objectResponse = "" #String 
+        #self.radical = "" #String
+        self.talkToMeMore = talkToMeMore
+
+    def tokenize (self, entry):
+        s = entry #i added an argument here, which is the sentence from the window (called in Window)
+        token_list = []
+        f = 1 # end of the token
+        d = 0 # first symbol of the token
+        elision = ['c', 'd', 'j', 'l', 'm', 'n', 's', 't'] # short words elided before an apostrophe, like me - m', ce - c'
+        ponct = ['.', ',', '!', '?', ';', ':', '"', '(', ')', '[', ']']
+        while f < len(s):
+            word = ""
+            sponct = ""
+            if(s[f] == " "):
+                word = s[d:f]
+                f += 1
+                d = f
+            elif(s[f] in ponct):
+                sponct = s[f]
+                word = s[d:f]
+                if(f+1 < len(s)and s[f+1] == " "):
+                    f += 2
+                else:
+                    f += 1
+                d = f
+            elif(s[f] == "'"): # if there's an apostrophe, it can be one word or two
+                if(s[f-1].lower() in elision):
+                    if(f-1 == 0): # first symbol of the phrase : it is an elided word
+                        word = s[d:f+1]
+                        f += 1
+                        d = f
+                    elif(s[f-2] ==" "): # first symbol of the word : it is an elided word
+                        word = s[d:f+1]
+                        f += 1
+                        d = f
+                    else: # it is a word with an apostrophe in the middle (like "aujourd'hui")
+                        f += 1
+                else: # not a lettre from the elision list : it can't be two words
+                    f += 1
+            else:
+                f += 1
+            
+            if(word != ""):
+                token_list.append(word)
+            if(sponct != ""):
+                token_list.append(sponct)
+                
+        if(d != len(s)): # if the last word is not in the token list, add it
+            word = s[d:]
+            token_list.append(word)
+        
+        self.tokenInput = token_list
+        #print self.tokenInput #tested with input from window, works ok
+          
+
+    def tagging(self):
+         #etiquetage # MARINE
+        lst = self.tokenInput
+        posVerb = len(lst)-1
+        pronouns = ['c\'', 'j\'', 'l\'', 'm\'', 'n\'', 's\'', 't\'', 'me', 'te', 'se', 'ne']
+        for elem in range(len(lst)):
+            if lst[elem] in self.allMyKeywords:
+                self.StackWrite(lst[elem]) #stakWrite prend un argu?? !! Voir !!
+        for i in range(len(lst)-1):
+            if lst[i] in pronouns and lst[i+1][-2:] not in ["er", "ir", "ire", "dre", "tre"]:
+                self.verb = lst[i+1]
+                posVerb = i+1
+                break
+        if self.verb == "":
+            for e in range(len(lst)):
+                if lst[e] in lefff:
+                    self.verb = lst[e]
+                    posVerb = e
+                    break
+        subjectScope = lst[:posVerb]
+        self.searchSubject(subjectScope)
+        if posVerb+1 == len(lst):
+            self.objectInput = []
+        else:    
+            idx = posVerb+1
+            self.objectInput = lst[idx:] 
+
+
+    def searchSubject(self, subjectScope):
+        lstPro = ['je', 'tu' 'il?', 'j\'', 'elle?', 'on']
+        for e in subjectScope:
+            for pro in lstPro:
+                if re.match(pro, e):
+                    self.subjectInput.append(e)
+                    return self.subjectInput
+        return searchDet(subjectScope)
+
+    
+    def searchDet(self, subjectScope):
+        length = len(subjectScope)-1
+        elem = subjectScope[length]
+        pronouns = ['c\'', 'l\'', 'm\'', 'n\'', 's\'', 't\'', 'me', 'te', 'se', 'ne', 'la', 'le', 'les']
+        lstDet = ['les?', 'la', 'une?', 'des', 'l\'', 'mon', 'ton', 
+        'son', 'ma', 'ta', 'sa', 'mes', 'tes', 'ses', 'nos', 'vos', 'leur?', 
+        'notre', 'votre', 'ce.{0,3}', 'deux', 'trois', 'quatre', 'cinq', 'aucun*'
+        'tel*', 'quelque?', 'certain*', 'divers*', 'tou.{1,3}']
+
+        for e in range(len(subjectScope)):
+            for det in lstDet:
+                if re.match(det, subjectScope[e]):
+                    if elem in pronouns:
+                        self.subjectInput = subjectScope[e:length-1]
+                    else:
+                        self.subjectInput = subjectScope[e:length]
+                    return self.subjectInput
+        return self.subjectInput
+
+
+    def defaultOutput(self):
+        return random.choice(self.talkToMeMore)
+
+    def getFinalAnswer(self): #final answer?
+    #this is the function I'm hoping to use, where all steps of answer calculation need to happen from the token_list
+    #this will be the function I'll be calling in window to display eliza's answer
+        if self.output == "":
+            self.defaultOutput()
+        return self.output 
+
+    #Retourne element correspondant de p dans le dictionnaire dic
+    def switchMe(self, p, dic): 
+        if p in dic:
+            return dic[p]
+        else:
+            return p
+
+    #LEFFF
+    def split_lefff (self):
+    
+        f = open("Lefff.txt", 'r') #Ouverture du fichier (lecture)
+        texte = f.readline()
+        lefff = []
+    
+        while texte != "":
+            texte.strip
+            sl = texte.split("\t")
+            i = (sl[0], sl[1], sl[2], sl[3]) #Tuple :  0-Forme conjuguée, 1-v, 2-Infinitif, 3-Code flexion
+            lefff.append(i)
+            texte = f.readline()
+        return lefff    
+        #print lefff
+    
+    def recup_inf (self, x, verbe):
+
+        """Fonction qui recupere l'infinitif et la flexion du verbe en input
+        @param x le leff 'splited' (e-List)
+        @param verbe le verbe de l'input (e)
+        @return tuple infinitif+flexion (e-Tuple)"""
+        
+        pos = 0
+        while pos < len(x):
+            if x[pos][0] == verbe:
+                return (x[pos][2], x[pos][3])
+            pos += 1
+    
+
+    def flexion (self, f):
+
+        """ Fonction qui determine la flexion de l'output
+        @param f tuple infinitif+flexion (e-Tuple)
+        @return f[1] la flexion de l'output (e)
+        @return la flexion de l'output (e)"""
+
+        if f[1] == "Ps1\n":
+            return "P2p\n"
+        if f[1] == "Fs1\n":
+            return "Fp2\n"
+        if f[1] == "Is2\n":
+            return "Ip2\n"
+        if f[1] == "Js2\n":
+            return "Jp2\n"
+        if f[1] == "Ss1\n":
+            return "Sp1\n"
+        if f[1] == "Ts1\n":
+            return "Tp1\n"
+        if f[1] == "PSp3\n":
+            return "Pp3\n" "PSp3\n"
+        if f[1] == "PSp1\n":
+            return "Pp2\n" or "PSp2\n"
+        if f[1] == "Cs12\n":
+            return "Cp2\n"
+        if f[1] == "Is12\n":
+            return "Ip2\n"
+        if f[1] == "PSs13\n":
+            return "PSs13\n"
+        if f[1] == "Ps13\n":
+            return "Ps13\n"
+        if f[1] == "YPs1\n":
+            return "Pp2\n"
+        if f[1] == "YPp1\n":
+            return "YPp2\n"
+        return f[1]
+
+    def conjugaison (self, t_inf_flex, lefff):
+
+        """ Fonction qui renvoie le verbe conjugue pour l'output
+        @param x tuple infinitif+flexion output (e-Tuple)
+        @param z le lefff "splited" (e-List)
+        @return le verbe conjugue (e)"""
+        f = split_lefff()
+        v = recup_inf (f, "flûtais")
+        t_inf_flex = (v[0], flexion(v))
+        pos = 0
+        while pos < len(lefff):
+            if lefff[pos][2] == t_inf_flex[0] and lefff[pos][3] == t_inf_flex[1]:
+                return lefff[pos][0]
+            pos = pos + 1
+
+    
+    def stackRead(self): #lecture de la pile # MARINE
+        return self.stack.pop()
+    
+    def stackWrite(self): #ecriture de la pile # MARINE
+        self.stack.push(self.input) 
+    
+           
+            
+    
+    
+    ###def getUserName(): #prenom de l'utilisateur # KIRA
+    #def setPhrase(): #phrases a trous - KIRA - Liste correspondante: whatsTheWordHummingbird 
+        #On va te donner les phrases
+
+    #def subjectCorrespondance(): #pronoms sujet # BENJAMIN
+        #Doit definir self.personInput
+        #A troisieme personne par defaultm sauf si pronom perso
+
+    #COD, COI, possessifs reflexifs # BENJAMIN
+
+    ###def verbIdentification(): # reconnaissance du verbe # BENJAMIN
+    #def negation(): #Benjamin
+        #ne, pas, jamais, ni, "n\'"
+    
+    ###def lefff(): #fichier + champs verb # BENJAMIN
+    
+    #def resetFields(): #sauf prenom et pile # MARINE
+    
+    #def politeness(): #protocole de politesse # JESSICA
+        #liste de mots vulgaires
+
+    #def psychologicalVerbs(): ##verbes psychhologiques # JESSICA
+
+ 
+ 
+    #def easter()
+ 
+whatsTheWordHummingbird = [["Je vois, et que représente ", " ", " pour vous?"], ["Pourquoi dites-vous que ", " ", " ? "], ["Et que pense ", " ", " de ceci ?"],
+["Pourquoi pensez-vous que ", " ", " ?"], ["Qu'est-ce qui vous faire dire que ", " ", " ?"]]
+
+talkToMeMore = ["Pourriez-vous m'en dire plus?", "Que voulez-vous dire?", "Pourriez-vous élaborer?", "Pourriez-vous développer sur ce sujet?", 
+        "Que voulez-vous dire par là?", "Pourriez-vous m'en dire d'avantage?", "Qu'est-ce que cela veut dire pour vous?", "Ceci a-t-il un sens particulier pour vous?",
+        "Et que ceci vous inspire-t-il?"]
+
+allMyKeywords = {'fils': ['soThisIsFamily'], 'propriétaire': ['soThisIsNotFamily'], 'électricien': ['moneyMakingActivities'], 'épouse': ['soThisIsNotFamily'], 
+'plombier': ['moneyMakingActivities'], 'époux': ['soThisIsNotFamily'], 'voisin': ['soThisIsNotFamily'], 'frère': ['soThisIsFamily'], 'soeur': ['soThisIsFamily'], 
+'voisine': ['soThisIsNotFamily'], 'comptable': ['moneyMakingActivities'], 'copain': ['soThisIsNotFamily'], 'femme': ['soThisIsNotFamily'], 
+'fromager': ['moneyMakingActivities'], 'belle-fille': ['soThisIsFamily'], 'patron': ['soThisIsNotFamily'], 'patronne': ['soThisIsNotFamily'], 'mari': ['soThisIsNotFamily'], 
+'diététicienne': ['moneyMakingActivities'], 'grand-mère': ['soThisIsFamily'], 'beau-frère': ['soThisIsFamily'], 'oncle': ['soThisIsFamily'], 'beau-fils': ['soThisIsFamily'], 
+'pote': ['soThisIsNotFamily'], 'médecin': ['moneyMakingActivities'], 'cousine': ['soThisIsFamily'], 'ami': ['soThisIsNotFamily'], 'élève': ['soThisIsNotFamily'], 
+'petit fils': ['soThisIsFamily'], 'pédiatre': ['moneyMakingActivities'], 'femme de ménage': ['moneyMakingActivities'], 'psychologue': ['moneyMakingActivities'], 
+'belle-mère': ['soThisIsFamily'], 'petite amie': ['soThisIsNotFamily'], 'petite fille': ['soThisIsFamily'], 'belle-soeur': ['soThisIsFamily'], 'père': ['soThisIsFamily'], 
+'docteur': ['moneyMakingActivities'], 'architecte': ['moneyMakingActivities'], 'cousin': ['soThisIsFamily'], 'tante': ['soThisIsFamily'], 
+'diététicien': ['moneyMakingActivities'], 'boucher': ['moneyMakingActivities'], 'psychiatre': ['moneyMakingActivities'], 'amie': ['soThisIsNotFamily'], 
+'petit-ami': ['soThisIsNotFamily'], 'copine': ['soThisIsNotFamily'], 'électricienne': ['moneyMakingActivities'], 'beau-père': ['soThisIsFamily'], 
+'grand-père': ['soThisIsFamily'], 'fille': ['soThisIsFamily'], 'boulanger': ['moneyMakingActivities'], 'collègue': ['soThisIsNotFamily'], 'mère': ['soThisIsFamily'], 
+'professeur': ['soThisIsNotFamily']}
+
+
+myPronouns = {
+    'je':['vous'], 
+    'me':['vous'], 
+    'm\'':['vous'], 
+    'moi':['vous'], 
+    'tu':['je'], 
+    'te':['me'], 
+    't\'':['me'], 
+    'toi':['moi'], 
+    'nous':['vous'], 
+    
+    'le mien':['le vôtre'],
+    'le tien':['le mien'], 
+    'le sien':['le sien'],
+    'la mienne':['la vôtre'], 
+    'la tienne':['la mienne'],
+    'la sienne':['la sienne'],
+    'les miens':['les vôtres'], 
+    'les tiens':['les miens'],
+    'les siens':['les siens'],
+    'les miennes':['les vôtres'], 
+    'les tiennes':['les miennes'], 
+    'les siennes':['les siennes'],
+    'le nôtre':['le vôtre'],
+    'le vôtre':['le mien'],
+    'le leur':['le leur'],
+    'la nôtre':['la vôtre'], 
+    'la vôtre':['la mienne'],
+    'la leur':['la leur'],
+    'les nôtres':['les vôtres'],
+    'les vôtres':['les miennes'],
+    #'les vôtres':['les miens']
+    'les leurs':['leurs']}
+
+
+
