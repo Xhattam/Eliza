@@ -113,7 +113,7 @@ class eliza():
         for elem in range(len(lst)):
             for i in self.allMyKeywords:
                 if re.match(i, lst[elem], re.I): #recherche avec regex
-                    self.StackWrite(lst[elem]) #stakWrite prend un argu?? oui c'est push! 
+                    self.stackWrite(lst[elem]) #stakWrite prend un argu?? oui c'est push! 
                     # ECRIRE LES DETERMINANTS DANS LA PILE
         for i in range(len(lst)-1):
             if lst[i] in pronouns and lst[i+1][-2:] not in ["er", "ir"] and lst[i+1][-3:] not in ["ire", "dre", "tre"]: 
@@ -405,7 +405,7 @@ class eliza():
                             self.output = random.choice([phrase1, phrase2, phrase3, phrase4])
                             return self.output
                         
-            if stack.size() > 0: # sinon on prend de la pile
+            if self.stack.size() > 0: # sinon on prend de la pile
                 memory = self.stackRead() #NEW - ajouter un det ici, non? Comme "votre chat"? oui mais pour cail faut que le nom dans la pile soit avec son det
                 phrase1 = "Revenons a " + memory + ". Pourriez-vous m'en parlez plus?"
                 phrase2 = "Parlez-moi plus de " + memory + ", s'il vous plait."
