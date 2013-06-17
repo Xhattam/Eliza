@@ -128,11 +128,13 @@ class eliza():
                     self.verb = lst[e] 
                     posVerb = e #TJR A ZERO
                     break
-                else:
-                    return self.defaultOutput() - NEW MON 17
+            if self.verb = "":
+                return self.defaultOutput() - NEW MON 17 - update Kira
+                
         #recherche de sujet
         subjectScope = lst[:posVerb]
-        self.searchSubject(subjectScope)
+        if len(subjectScope) > 0: # sinon donne index out of range - Kira
+            self.searchSubject(subjectScope)
         
         
         #recherche d'objet
@@ -242,8 +244,9 @@ class eliza():
         while texte != "":
             texte.strip
             sl = texte.split("\t")
-            i = (sl[0], sl[1], sl[2], sl[3]) #Tuple :  0-Forme conjuguée, 1-v, 2-Infinitif, 3-Code flexion
-            lefff.append(i)
+            if len(sl) == 4: #sinon donne index out of range - Kira
+                i = (sl[0], sl[1], sl[2], sl[3]) #Tuple :  0-Forme conjuguée, 1-v, 2-Infinitif, 3-Code flexion
+                lefff.append(i)
             texte = f.readline()
         return lefff    
         #print lefff
