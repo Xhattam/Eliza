@@ -126,7 +126,7 @@ class eliza():
                 in_lefff = self.recup_inf(lefff, lst[e]) #!! Renvoie toujours 'abaisser' !!
                 if in_lefff != 0: # si verbe trouve dans Lefff # !! RECUPERE PREMIER ELEM DE TOKEN_LIST DS TOUS LES CAS !!
                     self.verb = lst[e] 
-                    posVerb = e
+                    posVerb = e #TJR A ZERO
                     break
                     
         #recherche de sujet
