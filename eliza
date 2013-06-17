@@ -25,7 +25,7 @@ class eliza():
         self.objectInput = [] #String 
         self.verb = "" #String 
         self.verbtuple = [] #tuple infinitif + flexion
-        self.stack = stack.stack() #e-List 
+        self.stack = stack() #e-List 
         self.output = "" #String 
         self.personResponse = "" #Strin
         self.myPronouns = myPronouns
@@ -53,13 +53,13 @@ class eliza():
         ponct = ['.', ',', '!', '?', ';', ':', '"', '(', ')', '[', ']']
         while f < len(s):
             word = ""
-            sponct = ""
+            #sponct = "" #on a pas besoin de ponctuation
             if(s[f] == " "):
                 word = s[d:f]
                 f += 1
                 d = f
             elif(s[f] in ponct):
-                sponct = s[f]
+                #sponct = s[f]
                 word = s[d:f]
                 if(f+1 < len(s)and s[f+1] == " "):
                     f += 2
@@ -85,8 +85,8 @@ class eliza():
             
             if(word != ""):
                 token_list.append(word)
-            if(sponct != ""):
-                token_list.append(sponct)
+           # if(sponct != ""):
+               # token_list.append(sponct)
                 
         if(d != len(s)): # if the last word is not in the token list, add it
             word = s[d:]
@@ -146,29 +146,31 @@ class eliza():
         # recherche de verbe
         posVerb = len(lst)-1
         
-        pronouns = ['c\'', 'j\'', 'm\'', 'n\'', 's\'', 't\'', 'me', 'te', 'se', 'ne'] #precedent toujours un verbe
+        #pronouns = ['c\'', 'j\'', 'm\'', 'n\'', 's\'', 't\'', 'me', 'te', 'se', 'ne'] #precedent toujours un verbe
         for elem in range(len(lst)):
             for i in self.allMyKeywords:
                 if re.match(i, lst[elem]): #recherche avec regex
                     self.stackWrite(lst[elem]) #stakWrite prend un argu?? oui c'est push! 
                     # ECRIRE LES DETERMINANTS DANS LA PILE
-        for i in range(len(lst)-1):
-            if lst[i] in pronouns and lst[i+1][-2:] not in ["er", "ir", "ire", "dre", "tre"]:
-                self.verb = lst[i+1]
-                posVerb = i+1
+       # for i in range(len(lst)-1): #sert a rien parce qu'on est obligé de chercher dans le Lefff pour pouvoir conjuguer
+            #if lst[i] in pronouns and lst[i+1][-2:] not in ["er", "ir"] and lst[i+1][-3:] not in ["ire", "dre", "tre"]:
+               # self.verb = lst[i+1]
+               # posVerb = i+1
+               # break
+        #if self.verb == "":
+        lefff = self.split_lefff()
+        for e in range(len(lst)):
+            in_lefff = self.recup_inf(lefff, lst[e])
+            if in_lefff != 0: # si verbe trouve dans Lefff
+                self.verb = lst[e]
+                print "test"
+                print len(self.verb)
+                self.verbtuple = in_lefff #infinitif+flexion
+                print self.verb
+                print self.verbtuple
+                posVerb = e
                 break
-        if self.verb == "":
-            lefff = self.split_lefff()
-            for e in range(len(lst)):
-                in_lefff = self.recup_inf(lefff, lst[e])
-                if in_lefff != 0: # si verbe trouve dans Lefff
-                    self.verb = lst[e]
-                    print "test"
-                    print len(self.verb)
-                    self.verbtuple = in_lefff #infinitif+flexion
-                    posVerb = e
-                    break
-        print self.verb
+       
         #recherche de sujet
         subjectScope = lst[:posVerb]
         print subjectScope
@@ -196,7 +198,7 @@ class eliza():
     
     def searchDet(self, subjectScope):
         length = len(subjectScope)-1
-        elem = subjectScope[length] #-  !! ALWAYS OUT OF RANGE !!
+        elem = subjectScope[length] #-  !! ALWAYS OUT OF RANGE !! reglé - on n'appelle pas la fonction si subjectScope est vide - Kira
         pronouns = ['c\'', 'l\'', 'm\'', 'n\'', 's\'', 't\'', 'me', 'te', 'se', 'ne', 'la', 'le', 'les']
         lstDet = ['les?$', 'la$', 'une?$', 'des$', 'l\'$', 'mon$', 'ton$',
         'son$', 'ma$', 'ta$', 'sa$', 'mes$', 'tes$', 'ses$', 'nos$', 'vos$', 'leurs?$',
@@ -316,7 +318,7 @@ class eliza():
     
     
     def flexion (self, f):
-
+        
         """ Fonction qui determine la flexion de l'output
         @param f tuple infinitif+flexion (e-Tuple)
         @return f[1] la flexion de l'output (e)
@@ -401,7 +403,7 @@ class eliza():
         objectOutput = ""
         for e in range(len(self.objectInput)): #on change je-vous dans l'objet et on le transforme en chaine de caracteres
             self.objectInput[e] = self.switchMe(self.objectInput[e], self.myPronouns)
-            objectOutput += self.objectInput[e] #ORIGINAL MET UN ZERO AU DEBUT DE LA LISTE??? regle - Kira
+            objectOutput += self.objectInput[e] 
             objectOutput += " " 
         objectOutput.strip()
         
@@ -448,7 +450,7 @@ class eliza():
                             return self.output
                         
             if self.stack.size() > 0: # sinon on prend de la pile
-                memory = self.stackRead() #NEW - ajouter un det ici, non? Comme "votre chat"? oui mais pour cail faut que le nom dans la pile soit avec son det
+                memory = self.stackRead() #NEW - ajouter un det ici, non? Comme "votre chat"? oui mais pour ca il faut que le nom dans la pile soit avec son det
                 phrase1 = "Revenons a " + memory + ". Pourriez-vous m'en parlez plus?"
                 phrase2 = "Parlez-moi plus de " + memory + ", s'il vous plait."
                 phrase3 = "Parlez-moi encore de " + memory + ", c'est important pour vous?"
@@ -483,7 +485,7 @@ class eliza():
                     #return res #old 
                     return self.output
                 else:
-                    subjectOutput = self.subjectInput[0]
+                    subjectOutput = self.switchMe(self.subjectInput[0], self.myPronouns)
             
             if subjectOutput == "":
                 self.output = self.defaultOutput()
@@ -520,7 +522,7 @@ class eliza():
                     #return res #old 
                     return self.output
                 else:
-                    subjectOutput = self.subjectInput[0]
+                    subjectOutput = self.switchMe(self.subjectInput[0], self.myPronouns)
             
             if subjectOutput == "":
                 self.output = self.defaultOutput()
