@@ -128,7 +128,8 @@ class eliza():
                     self.verb = lst[e] 
                     posVerb = e #TJR A ZERO
                     break
-                    
+                else:
+                    return self.defaultOutput() - NEW MON 17
         #recherche de sujet
         subjectScope = lst[:posVerb]
         self.searchSubject(subjectScope)
