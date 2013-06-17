@@ -157,7 +157,7 @@ class eliza():
     
     def searchDet(self, subjectScope):
         length = len(subjectScope)-1
-        elem = subjectScope[length]
+        elem = subjectScope[length] -  !! ALWAYS OUT OF RANGE !!
         pronouns = ['c\'', 'l\'', 'm\'', 'n\'', 's\'', 't\'', 'me', 'te', 'se', 'ne', 'la', 'le', 'les']
         lstDet = ['les?$', 'la$', 'une?$', 'des$', 'l\'$', 'mon$', 'ton$',
         'son$', 'ma$', 'ta$', 'sa$', 'mes$', 'tes$', 'ses$', 'nos$', 'vos$', 'leurs?$',
