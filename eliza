@@ -26,23 +26,12 @@ class eliza():
         self.verb = "" #String 
         self.verbtuple = [] #tuple infinitif + flexion
         self.stack = stack.stack() #e-List 
-        #self.userName = "" #String (static)/Null 
-        #self.personInput = 0 #Int  
-
-        #self.taggedSentence = [] #T-List
-
-        #self.subjectResponse = "" #String pas besoin de champ, on le cree dans la fonction
-        
         self.output = "" #String 
-        self.personResponse = "" #String
-        #self.elapsedTime = elapsedTime 
-        
-        
-        #self.objectResponse = "" #String pas besoin non plus
-        #self.radical = "" #String
+        self.personResponse = "" #Strin
+        self.myPronouns = myPronouns
         self.talkToMeMore = talkToMeMore
         self.psychoVerbs = psychoVerbs
-        #self.lefff = ('r', "lefff.txt")
+        
 
     def createOutput(self, s):
         s = self.input
@@ -150,8 +139,9 @@ class eliza():
     
     
     def tagging(self): #ma version de tagging - Kira
-        
+        #print "testtagg"
         lst = self.tokenInput
+        print lst
         # recherche de verbe
         posVerb = len(lst)-1
         
@@ -172,6 +162,8 @@ class eliza():
                 in_lefff = self.recup_inf(lefff, lst[e])
                 if in_lefff != 0: # si verbe trouve dans Lefff
                     self.verb = lst[e]
+                    print "test"
+                    print len(self.verb)
                     self.verbtuple = in_lefff #infinitif+flexion
                     posVerb = e
                     break
@@ -201,7 +193,7 @@ class eliza():
     
     def searchDet(self, subjectScope):
         length = len(subjectScope)-1
-        elem = subjectScope[length] -  !! ALWAYS OUT OF RANGE !!
+        elem = subjectScope[length] #-  !! ALWAYS OUT OF RANGE !!
         pronouns = ['c\'', 'l\'', 'm\'', 'n\'', 's\'', 't\'', 'me', 'te', 'se', 'ne', 'la', 'le', 'les']
         lstDet = ['les?$', 'la$', 'une?$', 'des$', 'l\'$', 'mon$', 'ton$',
         'son$', 'ma$', 'ta$', 'sa$', 'mes$', 'tes$', 'ses$', 'nos$', 'vos$', 'leurs?$',
@@ -301,7 +293,7 @@ class eliza():
         
         return self.recup_inf_rec(lefff, verbe, 0, len(lefff))
         
-     def recup_inf_rec(self, lefff, verbe, debut, fin): #fonction recursive
+    def recup_inf_rec(self, lefff, verbe, debut, fin): #fonction recursive
         # recherche dichotomique
         
         while debut < fin:
@@ -405,7 +397,7 @@ class eliza():
         determinants = ['un', 'une', 'la', 'le', 'les', 'l\'', 'des', 'ma', 'ta', 'sa', 'mon', 'ton', 'son', 'mes', 'tes', 'ses', 'nos', 'vos', 'leur', 'leurs', 'notre', 'votre']
         objectOutput = ""
         for e in range(len(self.objectInput)): #on change je-vous dans l'objet et on le transforme en chaine de caracteres
-            self.objectInput[e] = self.switchMe(self.objectInput[e], myPronouns)
+            self.objectInput[e] = self.switchMe(self.objectInput[e], self.myPronouns)
             objectOutput += self.objectInput[e] #ORIGINAL MET UN ZERO AU DEBUT DE LA LISTE??? regle - Kira
             objectOutput += " " 
         objectOutput.strip()
@@ -459,9 +451,9 @@ class eliza():
         
         if self.verb == "": #si on a le sujet mais pas le verbe
             subjectOutput = ""
-            if len(self.subjectInput) > 1: #determinant + nom + eventuellement des adjectifs #old: if len(self.subjectInput > 1) - err
+            if len(self.subjectInput) > 1: #determinant + nom + eventuellement des adjectifs
                 for i in range(len(self.subjectInput)):
-                    self.subjectInput[i] = self.switchMe(self.subjectInput[i], myPronouns)
+                    self.subjectInput[i] = self.switchMe(self.subjectInput[i], self.myPronouns)
                     subjectOutput += self.subjectInput[i]
                     subjectOutput += " "
                 subjectOutput.strip()
@@ -492,9 +484,9 @@ class eliza():
             
             
             subjectOutput = ""
-            if len(self.subjectInput > 1): #determinant + nom + eventuellement des adjectifs
+            if len(self.subjectInput) > 1: #determinant + nom + eventuellement des adjectifs
                 for i in range(len(self.subjectInput)):
-                    self.subjectInput[i] = self.switchMe(self.subjectInput[i], myPronouns)
+                    self.subjectInput[i] = self.switchMe(self.subjectInput[i], self.myPronouns)
                     subjectOutput += self.subjectInput[i]
                     subjectOutput += " "
                 subjectOutput.strip()
