@@ -104,7 +104,7 @@ class eliza():
         
         self.tokenInput = token_list
           
-
+    """
     def tagging(self):
          #etiquetage # MARINE
         lst = self.tokenInput
@@ -145,6 +145,47 @@ class eliza():
         #return self.searchSubject(subjectScope) # il sert a quoi ce return? _ Il me semble qu'on l'a mis ici hier juste pour
         #faciliter l'appel de fonction consécutif pour faire passer l'input de départ, mais puisque ta fonction de calcul
         #de réponse fonctionne, y'en a plus besoin ;)
+
+    """
+    
+    
+    def tagging(self): #ma version de tagging - Kira
+        
+        lst = self.tokenInput
+        # recherche de verbe
+        posVerb = len(lst)-1
+        
+        pronouns = ['c\'', 'j\'', 'm\'', 'n\'', 's\'', 't\'', 'me', 'te', 'se', 'ne'] #precedent toujours un verbe
+        for elem in range(len(lst)):
+            for i in self.allMyKeywords:
+                if re.match(i, lst[elem]): #recherche avec regex
+                    self.stackWrite(lst[elem]) #stakWrite prend un argu?? oui c'est push! 
+                    # ECRIRE LES DETERMINANTS DANS LA PILE
+        for i in range(len(lst)-1):
+            if lst[i] in pronouns and lst[i+1][-2:] not in ["er", "ir", "ire", "dre", "tre"]:
+                self.verb = lst[i+1]
+                posVerb = i+1
+                break
+        if self.verb == "":
+            lefff = self.split_lefff()
+            for e in range(len(lst)):
+                in_lefff = self.recup_inf(lefff, lst[e])
+                if in_lefff != 0: # si verbe trouve dans Lefff
+                    self.verb = lst[e]
+                    self.verbtuple = in_lefff #infinitif+flexion
+                    posVerb = e
+                    break
+        print self.verb
+        #recherche de sujet
+        subjectScope = lst[:posVerb]
+        if len(subjectScope) > 0:
+            self.searchSubject(subjectScope)
+        
+        
+        #recherche d'objet
+        idx = posVerb + 1
+        if idx != len(lst):
+            self.objectInput = lst[idx:]
 
 
 
