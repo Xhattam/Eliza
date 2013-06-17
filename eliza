@@ -139,7 +139,9 @@ class eliza():
         if idx != len(lst):
             self.objectInput = lst[idx:]
 
-        return self.searchSubject(subjectScope) # il sert a quoi ce return?
+        #return self.searchSubject(subjectScope) # il sert a quoi ce return? _ Il me semble qu'on l'a mis ici hier juste pour
+        #faciliter l'appel de fonction consécutif pour faire passer l'input de départ, mais puisque ta fonction de calcul
+        #de réponse fonctionne, y'en a plus besoin ;)
 
 
 
@@ -192,7 +194,7 @@ class eliza():
         else:
             return "test"
         """
-        # ma version - Kira
+        # ma version - Kira - Super - reste plus qu'à gérer les cas ou y'a un mot vulgaire ou un verbe psycho, mais ça sera sûrement ailleurs, on voit ça mercredi!
         self.tokenize(self.input)
         self.tagging()
         self.setPhrase()
@@ -205,7 +207,7 @@ class eliza():
 
 
     def politeness(self): #politeness protocol 
-        # will return a reminder in case a rude word is used
+        # will return a reminder in case a rude word is used - THIS IS TO BE CHECKED IN THE INPUT FIRST (so we don't use the lefff in case a rude word is used)
         rudeWords = ["chier","chie","chié","chiez","chiant","merde","sous-merde","emmerde","emmerdeur",
         "emmerdeuse","emmerdez","emmerder","conasse","connasse","conne","pétasse","poufiasse","grogniasse",
         "grognasse","abrutie","fiotte","connard","abruti","salopard","tasspe","sale porc","batard",
@@ -220,7 +222,7 @@ class eliza():
                 return random.choice(answers)
             else:
                 break
-        return None
+        return self.input #if rude, we answer directly, otherwise we keep on calculating the answer.
 
     #Retourne element correspondant de p dans le dictionnaire dic
     def switchMe(self, p, dic): 
@@ -379,7 +381,7 @@ class eliza():
                             phrase1 = "Je vois, et que représente " + wordOutput + " pour vous?"
                             phrase2 = "Passez-vous beaucoup de temps avec " + wordOutput + "?"
                             phrase3 = "Et que pense " + wordOutput + "de ceci?"
-                            phrase4 = "Vous en avez parle avec " + wordOutput + "?"
+                            phrase4 = "Vous en avez parlé avec " + wordOutput + "?"
                             phrase5 = "Parlez-moi encore de " + wordOutput + "."
                             phrase6 = "Parlez-moi de vos relations avec " + wordOutput + "."
                             self.output = random.choice([phrase1, phrase2, phrase3, phrase4, phrase5, phrase6])
@@ -400,7 +402,7 @@ class eliza():
                             return self.output
                         
             if stack.size() > 0: # sinon on prend de la pile
-                memory = self.stackRead()
+                memory = self.stackRead() #NEW - ajouter un det ici, non? Comme "votre chat"?
                 phrase1 = "Revenons a " + memory + ". Pourriez-vous m'en parlez plus?"
                 phrase2 = "Parlez-moi plus de " + memory + ", s'il vous plait."
                 phrase3 = "Parlez-moi encore de " + memory + ", c'est important pour vous?"
