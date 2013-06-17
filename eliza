@@ -362,8 +362,8 @@ class eliza():
         objectOutput = ""
         for e in range(len(self.objectInput)): #on change je-vous dans l'objet et on le transforme en chaine de caracteres
             self.objectInput[e] = self.switchMe(e, myPronouns)
-            objectOutput += self.objectInput[e]
-            objectOutput += " "
+            objectOutput += self.objectInput[e] #ORIGINAL MET UN ZERO AU DEBUT DE LA LISTE??? du coup renvoie une erreur concat str+int 
+            objectOutput += " " 
         objectOutput.strip()
         
         if self.verb == "" and len(self.subjectInput) == 0: # si on a rien, on cherche des mots-cles dans l'objet
