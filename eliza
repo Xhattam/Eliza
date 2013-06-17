@@ -123,7 +123,7 @@ class eliza():
         if self.verb == "":
             lefff = self.split_lefff()
             for e in range(len(lst)):
-                in_lefff = self.recup_inf(lefff, lst[e]) #!! Renvoie toujours 'abaisser' !!
+                in_lefff = self.recup_inf_rec(lefff, lst[e], 0, len(lefff)) #!! Renvoie toujours 'abaisser' !!
                 if in_lefff != 0: # si verbe trouve dans Lefff # !! RECUPERE PREMIER ELEM DE TOKEN_LIST DS TOUS LES CAS !!
                     self.verb = lst[e] 
                     posVerb = e #TJR A ZERO
