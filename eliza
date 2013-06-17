@@ -459,7 +459,7 @@ class eliza():
         
         if self.verb == "": #si on a le sujet mais pas le verbe
             subjectOutput = ""
-            if len(self.subjectInput > 1): #determinant + nom + eventuellement des adjectifs
+            if len(self.subjectInput) > 1: #determinant + nom + eventuellement des adjectifs #old: if len(self.subjectInput > 1) - err
                 for i in range(len(self.subjectInput)):
                     self.subjectInput[i] = self.switchMe(self.subjectInput[i], myPronouns)
                     subjectOutput += self.subjectInput[i]
