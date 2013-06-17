@@ -275,7 +275,7 @@ class eliza():
             else:
                 return self.recup_inf_rec(lefff, verbe, m+1, fin)
             
-            return 0
+        return 0
         
     
     
@@ -364,8 +364,8 @@ class eliza():
         determinants = ['un', 'une', 'la', 'le', 'les', 'l\'', 'des', 'ma', 'ta', 'sa', 'mon', 'ton', 'son', 'mes', 'tes', 'ses', 'nos', 'vos', 'leur', 'leurs', 'notre', 'votre']
         objectOutput = ""
         for e in range(len(self.objectInput)): #on change je-vous dans l'objet et on le transforme en chaine de caracteres
-            self.objectInput[e] = self.switchMe(e, myPronouns)
-            objectOutput += self.objectInput[e] #ORIGINAL MET UN ZERO AU DEBUT DE LA LISTE??? du coup renvoie une erreur concat str+int 
+            self.objectInput[e] = self.switchMe(self.objectInput[e], myPronouns)
+            objectOutput += self.objectInput[e] #ORIGINAL MET UN ZERO AU DEBUT DE LA LISTE??? regle - Kira
             objectOutput += " " 
         objectOutput.strip()
         
@@ -406,7 +406,7 @@ class eliza():
                             return self.output
                         
             if stack.size() > 0: # sinon on prend de la pile
-                memory = self.stackRead() #NEW - ajouter un det ici, non? Comme "votre chat"?
+                memory = self.stackRead() #NEW - ajouter un det ici, non? Comme "votre chat"? oui mais pour cail faut que le nom dans la pile soit avec son det
                 phrase1 = "Revenons a " + memory + ". Pourriez-vous m'en parlez plus?"
                 phrase2 = "Parlez-moi plus de " + memory + ", s'il vous plait."
                 phrase3 = "Parlez-moi encore de " + memory + ", c'est important pour vous?"
