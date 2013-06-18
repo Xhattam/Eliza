@@ -1,0 +1,46 @@
+Dand searchSubject():
+
+ lstPro = ['je$', 'tu$' 'il?$', 'j\'$', 'elle?$', 'on$']
+  →  lstPro = ['je$', 'tu$' 'ils?$', 'j\'$', 'elles?$', 'on$'] # le ? est pour si le cara precedent le symbole apparait
+  zero ou une fois, donc il faut mettre le 's' pour il ou elle une fois.
+  
+
+Ligne 490:
+	wordOutput referenced before assignment
+
+  -> J'ai remplace wordOutput par subjectOutput, car c'etait ca qu'il y avait dans la phrase 1, je ne suis pas sure 
+  que ce soit la solution cependant, je n'ai pas trop voulu manipuler ta fonction Kira.
+  J'ai laisse les phrases originales en commentaires.
+  
+  
+Eliza ne semble reconnaitre que le verbe etre sous la forme “suis”
+C'est tres bizarre. Elle detecte 'suis' avec n'importe quel sujet, mais aucun autre verbe, ni meme autre temps de etre.
+
+
+Et un autre probleme:
+j'ai essaye d'entrer "j'etais belle" avec un accent sur le e et voila le traceback:
+
+[u"j'", u'\xe9tais', u'belle']
+/home/peter/Desktop/Eliza/eliza.py:300: UnicodeWarning: Unicode equal comparison failed to convert both arguments to Unicode - interpreting them as being unequal
+  if(val[0] == verbe):
+Exception in Tkinter callback
+Traceback (most recent call last):
+  File "/usr/lib/python2.7/lib-tk/Tkinter.py", line 1413, in __call__
+    return self.func(*args)
+  File "/home/peter/Desktop/Eliza/window.py", line 79, in speakToMe
+    self.hereComesYourAnswer()#premiere etape de calcul de reponse
+  File "/home/peter/Desktop/Eliza/window.py", line 87, in hereComesYourAnswer
+    answer = self.eliza.getFinalAnswer() #recupere la reponse finale d'eliza
+  File "/home/peter/Desktop/Eliza/eliza.py", line 231, in getFinalAnswer
+    self.tagging()
+  File "/home/peter/Desktop/Eliza/eliza.py", line 154, in tagging
+    in_lefff = self.recup_inf(lefff, lst[e])
+  File "/home/peter/Desktop/Eliza/eliza.py", line 290, in recup_inf
+    return self.recup_inf_rec(lefff, verbe, 0, len(lefff))
+  File "/home/peter/Desktop/Eliza/eliza.py", line 302, in recup_inf_rec
+    elif(val[0] > verbe):
+UnicodeDecodeError: 'ascii' codec can't decode byte 0xc3 in position 8: ordinal not in range(128)
+[Finished in 9.5s]
+
+Peut-etre qu'il faudrait convertir les accent avec leur code ascii ??? :s
+
