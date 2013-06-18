@@ -146,24 +146,34 @@ class eliza():
                 if re.match(i, lst[elem]): #recherche avec regex
                     self.stackWrite(lst[elem]) #stakWrite prend un argu?? oui c'est push! 
                     # ECRIRE LES DETERMINANTS DANS LA PILE
-       # for i in range(len(lst)-1): #sert a rien parce qu'on est obligé de chercher dans le Lefff pour pouvoir conjuguer
+        # for i in range(len(lst)-1): #sert a rien parce qu'on est obligé de chercher dans le Lefff pour pouvoir conjuguer
             #if lst[i] in pronouns and lst[i+1][-2:] not in ["er", "ir"] and lst[i+1][-3:] not in ["ire", "dre", "tre"]:
-               # self.verb = lst[i+1]
-               # posVerb = i+1
-               # break
-        #if self.verb == "":
-        lefff = self.split_lefff()
-        for e in range(len(lst)):
-            in_lefff = self.recup_inf(lefff, lst[e])
-            if in_lefff != 0: # si verbe trouve dans Lefff
-                self.verb = lst[e]
-                print "test"
-                print len(self.verb)
-                self.verbtuple = in_lefff #infinitif+flexion
-                print self.verb
-                print self.verbtuple
-                posVerb = e
+                # self.verb = lst[i+1]
+                # posVerb = i+1
+                # break
+        # on gere la forme suis, elle doit etre analysee comme etre et pas suivre
+        
+        for j in range(len(lst)):
+            if lst[j] == 'suis':
+                self.verb = 'suis'
+                self.verbtuple[0] = 'etre'
+                self.verbtuple[1] = 'Ps1\n'
                 break
+                
+                
+        if self.verb == "":
+            lefff = self.split_lefff()
+            for e in range(len(lst)):
+                in_lefff = self.recup_inf(lefff, lst[e])
+                if in_lefff != 0: # si verbe trouve dans Lefff
+                    self.verb = lst[e]
+                    print "test"
+                    print len(self.verb)
+                    self.verbtuple = in_lefff #infinitif+flexion
+                    print self.verb
+                    print self.verbtuple
+                    posVerb = e
+                    break
        
         #recherche de sujet
         subjectScope = lst[:posVerb]
