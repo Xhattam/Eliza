@@ -16,6 +16,22 @@ Created on Tue Apr 23 10:36:29 2013
 class eliza(): 
 
     def __init__(self):
+    
+         """
+        @param String self.input    -   user entry from GUI
+        @param str-List self.tokenInput     -   token list from user input   
+        @param str-List self.subjectInput   -   token list for subject scope
+        @param str-List self.objectInput    -   token list for object scope
+        @param String self.verb     -   identified verb
+        @param str-Tuple self.verbtuple    -   tuple infinitif + flexion
+        @param tuple-List self.stack    -   stack of keywords and objects (Eliza's memory)
+        @param String self.output   -   calculated answer (to be sent back to GUI)  
+        @param String-dict self.myPronouns    -     pronouns dictionary
+        @param String-dict self.talkToMeMore    -   random sentence (if self.output is empty)
+        @param String-dict self.psychoVerbs     -   psychological verbs dictionary
+        @param String-dict self.allMyKeywords   -   keywords dictionary
+
+        """
 
         self.allMyKeywords = allMyKeywords
 
@@ -27,7 +43,7 @@ class eliza():
         self.verbtuple = [] #tuple infinitif + flexion
         self.stack = stack() #e-List 
         self.output = "" #String 
-        self.personResponse = "" #Strin
+        self.personResponse = "" #String # NEVER USED - DELETE
         self.myPronouns = myPronouns
         self.talkToMeMore = talkToMeMore
         self.psychoVerbs = psychoVerbs
@@ -601,7 +617,7 @@ class eliza():
             #val = self.stack.pop()
             #self.stack.restet()
             #self.stack.push(val)
-        self.subjectResponse = ""
+        self.subjectResponse = "" - NEVER USED DELETE
         self.output = ""
         self.personResponse = ""
         self.objectResponse = ""      
