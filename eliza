@@ -31,18 +31,12 @@ class eliza():
         self.myPronouns = myPronouns
         self.talkToMeMore = talkToMeMore
         self.psychoVerbs = psychoVerbs
-        
-        
-    """
-    def createOutput(self, s):
-        s = self.input
-        self.input.lower()
-        self.tokenize(s)
-        #self.input.tagging()
-    """
+    
     
     def setInput(self, text):
-        self.input = text
+        self.input = text.encode('utf-8') - NEW tuesday 18
+        
+        #self.input = text
 
     def tokenize (self, entry):
         s = entry
