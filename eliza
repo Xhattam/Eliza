@@ -33,8 +33,7 @@ class eliza():
 
         """
 
-        self.allMyKeywords = allMyKeywords
-
+       
         self.input = "" 
         self.tokenInput = [] 
         self.subjectInput = []  
@@ -48,14 +47,23 @@ class eliza():
         self.talkToMeMore = talkToMeMore
         self.psychoVerbs = psychoVerbs
         self.reflexive = reflexive
+        self.allMyKeywords = allMyKeywords
     
     
     def setInput(self, text):
+        """
+        @param String text  -   user entry
+        """
+        
         self.input = text.encode('utf-8') - NEW tuesday 18
         
-        #self.input = text
+
 
     def tokenize (self, entry):
+        """
+        @param String entry     -   user entry
+        """
+        
         s = entry
         token_list = []
         f = 1 # end of the token
