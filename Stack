@@ -1,47 +1,49 @@
- class Stack(object):
+class stack(object):
 
-  """
-    Create a object Stack whose 'tab' has a size initialized in the arguments of the constructor. 
-    
-    Eliza's memory
-  
-  """
 
-  def __init__(self):
+	def __init__(self):
 		self.tab = []
-		self.cursor = 0
+		#self.cursor = 0
+		self.relative_lst = ['qui', 'que', 'quoi', 'dont', 'ou', 'qu\'', 'lequel', 'laquelle', 'lesquels', 'lesquelles', 'auquel']
+
+	def isEmpty(self):
+		return self.tab.length == 0
 
 	def push(self, t):
 		if len(t) > 1:
 			if t[0] not in self.relative_lst:
 				self.tab.append(t)
-				self.cursor+=1
+				#self.cursor+=1
 			else:
 				t = (self.switchMe(t[0]), t[1])
 				self.tab.append(t)
-				self.cursor+=1
+				#self.cursor+=1
 		else:
 			pass
-			
+
+	def size(self):
+		return self.tab.length
+
+	def reset(self):
+		self.tab.length == 0
+
+#mettre accent
 	def pop(self):
-		w = self.tab[self.cursor]
-		self.cursor -= 1
+		w = self.tab.length-1
+		#self.cursor -= 1
 		return w
 
 	def peek(self):
-		return self.tab[self.cursor-1]
+		return self.tab.length-1
 
-	def size(self):
-		return self.cursor
-    
-  def resize(self):
-    #how to? Or do we decide that the stack has an established size? 
 
-#test OK
-s = Stack(10)
-s.push("lalala")
-print s.peek()
-print s.size()
-      
-      
+	# def switchMe(self, s1): 
+	# 	if s1 in dic:
+	# 		return dic[p]
+	# 	else:
+	# 		return p
 
+	# def isFull(self):
+	# 	if self.cursor == self.size:
+	# 		return True
+	# 	return False
