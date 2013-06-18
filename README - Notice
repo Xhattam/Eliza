@@ -1,0 +1,16 @@
+
+README - Eliza
+
+Exécution: lancer le fichier main.pyc, se trouvant dans le dossier Eliza
+
+Utilisation:
+	Pour dialoguer avec Eliza, entrez votre texte dans la zone de texte au bas de la fenêtre, puis appuyez sur la 
+	touche “Entrée” du clavier ou cliquez sur le bouton “Envoyer”.
+	Lorsque vous êtes satisfait(e) de la conversation, cliquez sur le bouton “Quitter”
+
+Conseils:
+	Eliza accepte tous types de phrases, accentuées ou non, ponctuées ou non, et elle est insensible à la casse ; 
+	mais si la phrase n'est pas grammaticalement ou syntaxiquement correcte, ou si il y a des fautes d'orthographe, 
+	la réponse renvoyée risque de ne pas être celle que vous espérez, merci donc de bien former vos phrases lorsque 
+	vous lui parlez, vous aurez ainsi la chance de voir son vrai potentiel !
+
