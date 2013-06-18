@@ -17,7 +17,7 @@ Eliza ne semble reconnaitre que le verbe etre sous la forme “suis”
 C'est tres bizarre. Elle detecte 'suis' avec n'importe quel sujet, mais aucun autre verbe, ni meme autre temps de etre.
 
 
-Et un autre probleme:
+Et un autre probleme: - RESOLU - A TESTER AVEC LISTES DE MOTS CLES ET LEFFF, ILS AURONT PEUT ETRE BESOIN D'ENCODAGE AUSSI
 j'ai essaye d'entrer "j'etais belle" avec un accent sur le e et voila le traceback:
 
 [u"j'", u'\xe9tais', u'belle']
