@@ -11,10 +11,18 @@
 		self.tab = [self.size]
 		self.cursor = 0
 
-	def push(self, w):
-		self.tab[self.cursor] = w
-		self.cursor+=1
-
+	def push(self, t):
+		if len(t) > 1:
+			if t[0] not in self.relative_lst:
+				self.tab[self.cursor] = t
+				self.cursor+=1
+			else:
+				t = (self.switchMe(t[0]), t[1])
+				self.tab[self.cursor] = t
+				self.cursor+=1
+		else:
+			pass
+			
 	def pop(self):
 		w = self.tab[self.cursor]
 		self.cursor -= 1
