@@ -31,6 +31,7 @@ class eliza():
         self.myPronouns = myPronouns
         self.talkToMeMore = talkToMeMore
         self.psychoVerbs = psychoVerbs
+        self.reflexive = reflexive
     
     
     def setInput(self, text):
@@ -672,6 +673,8 @@ myPronouns = {'je':'vous', 'me':'vous', 'm\'':'vous', 'moi':'vous', 'tu':'je', '
 'sienne':'sienne', 'miens':'vôtres', 'tiens':'miens','siens':'siens','miennes':'vôtres', 'tiennes':'miennes', 
 'siennes':'siennes','nôtre':'vôtre','vôtre':'mien', 'leur':'leur','nôtre':'vôtre', 'vôtre':'mienne','leur':'leur',
 'nôtres':'vôtres','vôtres':'miennes', 'leurs':'leurs'}
+
+reflexive = {'je me' : 'vous vous', 'je m\'' : 'vous vous', 'il se' : 'il se', 'il s\'' : 'il s\'', 'nous nous' : 'vous vous', 'ils se' : 'ils se', 'ils s\'' : 'ils s\''}
 
 
 
