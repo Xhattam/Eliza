@@ -26,7 +26,7 @@ class eliza():
         @param str-Tuple self.verbtuple         -   tuple infinitif + flexion
         @param tuple-List self.stack            -   stack of keywords and objects (Eliza's memory)
         @param String self.output               -   calculated answer (to be sent back to GUI)  
-        @param String-dict self.myPronouns      -     pronouns dictionary
+        @param String-dict self.myPronouns      -   pronouns dictionary
         @param String-dict self.talkToMeMore    -   random sentence (if self.output is empty)
         @param String-dict self.psychoVerbs     -   psychological verbs dictionary
         @param String-dict self.allMyKeywords   -   keywords dictionary
@@ -35,14 +35,14 @@ class eliza():
 
         self.allMyKeywords = allMyKeywords
 
-        self.input = "" #ste
-        self.tokenInput = [] #e-List 
-        self.subjectInput = [] #String 
-        self.objectInput = [] #String 
-        self.verb = "" #String 
-        self.verbtuple = [] #tuple infinitif + flexion
-        self.stack = stack() #e-List 
-        self.output = "" #String 
+        self.input = "" 
+        self.tokenInput = [] 
+        self.subjectInput = []  
+        self.objectInput = []  
+        self.verb = ""  
+        self.verbtuple = [] 
+        self.stack = stack.stack()
+        self.output = "" 
         self.personResponse = "" #String # NEVER USED - DELETE
         self.myPronouns = myPronouns
         self.talkToMeMore = talkToMeMore
