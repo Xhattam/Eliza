@@ -7,18 +7,18 @@
   
   """
 
-  def __init__(self, size):
-		self.tab = [self.size]
+  def __init__(self):
+		self.tab = []
 		self.cursor = 0
 
 	def push(self, t):
 		if len(t) > 1:
 			if t[0] not in self.relative_lst:
-				self.tab[self.cursor] = t
+				self.tab.append(t)
 				self.cursor+=1
 			else:
 				t = (self.switchMe(t[0]), t[1])
-				self.tab[self.cursor] = t
+				self.tab.append(t)
 				self.cursor+=1
 		else:
 			pass
