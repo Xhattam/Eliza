@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 class stack(object):
 
 
@@ -22,19 +24,19 @@ class stack(object):
 			pass
 
 	def size(self):
-		return self.tab.length
+		return len(self.tab)
 
 	def reset(self):
-		self.tab.length == 0
+		self.tab = []
 
 #mettre accent
 	def pop(self):
-		w = self.tab.length-1
+		w = self.tab[len(self.tab)-1]
 		#self.cursor -= 1
 		return w
 
 	def peek(self):
-		return self.tab.length-1
+		return self.tab[len(self.tab)-1]
 
 
 	# def switchMe(self, s1): 
@@ -47,3 +49,4 @@ class stack(object):
 	# 	if self.cursor == self.size:
 	# 		return True
 	# 	return False
+
