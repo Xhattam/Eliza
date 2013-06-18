@@ -674,7 +674,7 @@ myPronouns = {'je':'vous', 'me':'vous', 'm\'':'vous', 'moi':'vous', 'tu':'je', '
 'siennes':'siennes','nôtre':'vôtre','vôtre':'mien', 'leur':'leur','nôtre':'vôtre', 'vôtre':'mienne','leur':'leur',
 'nôtres':'vôtres','vôtres':'miennes', 'leurs':'leurs'}
 
-reflexive = {'je me' : 'vous vous', 'je m\'' : 'vous vous', 'il se' : 'il se', 'il s\'' : 'il s\'', 'nous nous' : 'vous vous', 'ils se' : 'ils se', 'ils s\'' : 'ils s\''}
+reflexive = {'je me' : 'vous vous', 'je m\'' : 'vous vous', 'il se' : 'il se', 'il s\'' : 'il s\'', 'elle se' : 'elle se', 'elle s\'' : 'elle s\s'', 'nous nous' : 'vous vous', 'ils se' : 'ils se', 'ils s\'' : 'ils s\'', 'elles se' : 'elles se', 'elles s\'' : 'elles s\''}
 
 
 
