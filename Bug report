@@ -13,7 +13,9 @@ Ligne 490:
   J'ai laisse les phrases originales en commentaires.
   
   
-Eliza ne semble reconnaitre que le verbe etre sous la forme “suis”
+Eliza ne semble reconnaitre que le verbe SUIVRE sous la forme “suis” (jamais le verbe etre) je pense qu'on devrait
+ingnorer 'suivre' ici, c'est ingerable a notre niveau !
+
 C'est tres bizarre. Elle detecte 'suis' avec n'importe quel sujet, mais aucun autre verbe, ni meme autre temps de etre.
 
 
