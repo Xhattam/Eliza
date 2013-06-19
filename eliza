@@ -160,6 +160,21 @@ class eliza():
 
     """
     
+    #NEW - ADDED WED 19
+    def negation (self, t):
+    lst1 = ["jamais", "rien", "ne", "n\'", "ni"]
+	
+	lst3 = ["pas", "plus", "point"]
+	
+	for e in t:
+		if e in lst1 :
+			return True
+		elif e in lst3:
+			for elem  in lst1:
+				if elem in t:
+					return True
+	
+    return False
     
     def tagging(self): #ma version de tagging - Kira
         #print "testtagg"
