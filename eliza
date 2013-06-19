@@ -767,5 +767,6 @@ myPronouns = {'je':'vous', 'j\'':'vous', 'me':'vous', 'm\'':'vous', 'moi':'vous'
 
 reflexive = {'me' : 'vous', 'm\'' : 'vous', 'se' : 'se', 's\'' : 's\'', 'nous' : 'vous', 'te' : 'me', 't\'' : 'm\'', 'vous' : 'me'}
 
+detPoss = det = {'ma':['votre'], 'mon':['votre'], 'un':['cet'], 'une':['cette'], 'des':['ces'], 'nos':['vos'], 'notre':['votre']}
 
 
