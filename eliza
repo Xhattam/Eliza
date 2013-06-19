@@ -259,7 +259,7 @@ class eliza():
                 if re.match(pro, e):
                     self.subjectInput.append(e)
                     return self.subjectInput
-        return searchDet(subjectScope)
+        return self.searchDet(subjectScope)
 
     
     def searchDet(self, subjectScope):
