@@ -235,8 +235,9 @@ class eliza():
         
         #recherche d'objet
         idx = posVerb + 1
-        if idx != len(lst):
-            self.objectInput = lst[idx:]
+        while idx < len(lst) and lst[idx] not in ['.', '!', '?', ';', ':']:
+            self.objectInput.append(lst[idx])
+            idx += 1
            
 
     def searchSubject(self, subjectScope):
