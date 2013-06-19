@@ -517,7 +517,7 @@ class eliza():
                 #return res #old 
                 return self.output
         
-        elif self.verb == "": #si on a le sujet mais pas le verbe
+        elif self.verb == "" and len(self.subjectInput) > 0: #si on a le sujet mais pas le verbe
             subjectOutput = ""
             if len(self.subjectInput) > 1: #determinant + nom + eventuellement des adjectifs
                 for i in range(len(self.subjectInput)):
@@ -744,7 +744,8 @@ myPronouns = {'je':'vous', 'j\'':'vous', 'me':'vous', 'm\'':'vous', 'moi':'vous'
 'toi':'moi', 'nous':'vous', 'mien':'vôtre','tien':'mien', 'sien':'sien','mienne':'vôtre', 'tienne':'mienne', 
 'sienne':'sienne', 'miens':'vôtres', 'tiens':'miens','siens':'siens','miennes':'vôtres', 'tiennes':'miennes', 
 'siennes':'siennes','nôtre':'vôtre','vôtre':'mien', 'leur':'leur','nôtre':'vôtre', 'vôtre':'mienne','leur':'leur',
-'nôtres':'vôtres','vôtres':'miennes', 'leurs':'leurs'}
+'nôtres':'vôtres','vôtres':'miennes', 'leurs':'leurs', 'ma':'votre', 'ta':'ma', 'mon':'votre', 'ton':'mon', 'mes':'vos', 
+'notre':'votre', 'tes':'mes', 'votre':'mon', 'nos':'vos', 'vos':'mes'}
 
 #reflexive = {'je me' : 'vous vous', 'je m\'' : 'vous vous', 'il se' : 'il se', 'il s\'' : 'il s\'', 'elle se' : 'elle se', 'elle s\'' : 'elle s\s'', 'nous nous' : 'vous vous', 'ils se' : 'ils se', 'ils s\'' : 'ils s\'', 'elles se' : 'elles se', 'elles s\'' : 'elles s\''}
 
