@@ -54,8 +54,8 @@ class eliza():
         """
         @param String text  -   user entry
         """
-        
-        self.input = text.encode('utf-8') # NEW tuesday 18
+
+        self.input = text.encode('utf-8').lower() #lower, sauf si on decide de mettre un truc genre "ne criez pas!"
         
 
 
