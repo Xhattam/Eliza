@@ -475,7 +475,7 @@ class eliza():
     def stackWrite(self, s): #ecriture de la pile # MARINE
         self.stack.push(s)
         
-def setPhrase(self): # fonction qui genere l'output
+    def setPhrase(self): # fonction qui genere l'output
         #print self.subjectInput
         determinants = ['un', 'une', 'la', 'le', 'les', 'l\'', 'des', 'ma', 'ta', 'sa', 'mon', 'ton', 'son', 'mes', 'tes', 'ses', 'nos', 'vos', 'leur', 'leurs', 'notre', 'votre']
         objectOutput = ""
@@ -725,7 +725,34 @@ def setPhrase(self): # fonction qui genere l'output
                         new_flexion += flexion[i+1:]
                         return new_flexion
         return flexion
+        
+        
+        
+     def prepare_flexion(self, flexion, subjectScope):
+        if flexion[0] == 'Y': #si ca peut etre un imperatif
+            flexion = flexion[1:]
+        for i in range(len(flexion)):
+            if flexion[i] == '1': 
+                if i+1 < len(flexion):
+                    if flexion[i+1] in ['2','3']: # si on a 12 ou 13 dans la flexion
+                        for e in subjectScope:
+                            if e in ['je', 'j\'']: #c'est la premiere personne
+                                new_flexion = flexion[:i+1]
+                                if i+2 < len(flexion):
+                                    new_flexion += flexion[i+2:]
+                                return new_flexion
                     
+                        #sinon ce n'est pas la premiere personne
+                        if i>0:
+                            new_flexion = flexion[:i]
+                        else:
+                            new_flexion = []
+                        
+                        new_flexion += flexion[i+1:]
+                        return new_flexion
+        return flexion
+                    
+                        
                     
     
     #def setPhrase(): #phrases a trous - KIRA - Liste correspondante: whatsTheWordHummingbird 
