@@ -42,7 +42,7 @@ class eliza():
         self.verbtuple = [] 
         self.stack = stack.stack()
         self.output = "" 
-        self.personResponse = "" #String # NEVER USED - DELETE
+        self.refl_pro = "" #pronom reflechi eventuellement #AJOUTE 19/06 Kira
         self.myPronouns = myPronouns
         self.talkToMeMore = talkToMeMore
         self.psychoVerbs = psychoVerbs
@@ -105,7 +105,7 @@ class eliza():
             if(word != ""):
                 token_list.append(word)
             if(sponct != ""):
-               # token_list.append(sponct)
+                token_list.append(sponct)
                 
         if(d != len(s)): # if the last word is not in the token list, add it
             word = s[d:]
@@ -179,7 +179,7 @@ class eliza():
     def tagging(self): #ma version de tagging - Kira
         #print "testtagg"
         lst = self.tokenInput
-        print lst
+        #print lst
         # recherche de verbe
         posVerb = len(lst)-1
         
@@ -208,6 +208,20 @@ class eliza():
                         print self.verb
                         print self.verbtuple
                         posVerb = e
+                        
+                        #AJOUTE 19/06 - Kira
+                        if e > 1: #s'il y a au moins 2 mots avant le verbe alors il peut y avoir un pronom reflechi
+                            if lst[e-1] in self.reflexive.keys():
+                                if lst[e-1] == 'nous':
+                                    for i in range(0,e-1):
+                                        if lst[i] == 'nous':
+                                            self.refl_pro = 'vous'
+                                elif lst[e-1] == 'vous':
+                                    for i in range(0,e-1):
+                                        if lst[i] == 'vous':
+                                            self.refl_pro = 'nous'
+                                else:
+                                    self.refl_pro = self.reflexive[lst[e-1]]
                         break
            
        
@@ -236,9 +250,7 @@ class eliza():
         idx = posVerb + 1
         if idx != len(lst):
             self.objectInput = lst[idx:]
-            print self.objectInput
-
-
+           
 
     def searchSubject(self, subjectScope):
         lstPro = ['je$', 'tu$' 'ils?$', 'j\'$', 'elles?$', 'on$'] # les $ apres chaque mot servent a marquer que c'est la fin du mot. Sinon on trouve "lesssss" pour les?, "lac" pour la, "savoir" pour sa etc.
@@ -340,8 +352,8 @@ class eliza():
                 i = (sl[0], sl[1], sl[2], sl[3]) #Tuple :  0-Forme conjuguée, 1-v, 2-Infinitif, 3-Code flexion
                 lefff.append(i)
             texte = f.readline()
-        return lefff    
-        #print lefff
+        return lefff  
+        
     
     def recup_inf (self, lefff, verbe, subjectScope):
 
@@ -360,10 +372,10 @@ class eliza():
                 pos += 1
         return 0
         
-        #return self.recup_inf_rec(lefff, verbe, 0, len(lefff))
+        #return self.recup_inf_rec(lefff, verbe, 0, len(lefff), subjectScope)
         
         
-    def recup_inf_rec(self, lefff, verbe, debut, fin): #fonction recursive
+    def recup_inf_rec(self, lefff, verbe, debut, fin, subjectScope): #fonction recursive
         # recherche dichotomique
         
         while debut < fin:
@@ -374,9 +386,9 @@ class eliza():
             if(val[0] == verbe):
                 return (val[2], val[3])
             elif(val[0] > verbe):
-                return self.recup_inf_rec(lefff, verbe, debut, m)
+                return self.recup_inf_rec(lefff, verbe, debut, m, subjectScope)
             else:
-                return self.recup_inf_rec(lefff, verbe, m+1, fin)
+                return self.recup_inf_rec(lefff, verbe, m+1, fin, subjectScope)
             
         return 0
         
@@ -389,7 +401,7 @@ class eliza():
         @return f[1] la flexion de l'output (e)
         @return la flexion de l'output (e)"""
 
-        if f[1] == "Ps1\n":
+        if f[1] in ["Ps1\n", "PSs1\n"]:
             return "Pp2\n" #Pp2 et pas P2p - Kira
         if f[1] == "Fs1\n":
             return "Fp2\n"
@@ -570,7 +582,7 @@ class eliza():
         elif len(self.subjectInput) > 0 and self.verb != "": # on a le sujet ET le verbe
             verbOutput = self.verb
             if len(self.verbtuple) > 0:
-                verbOutput = self.conjugaison(self.verbtuple)
+                verbOutput = self.conjugaison(self.verbtuple, self.subjectInput)
             
             
             subjectOutput = ""
@@ -596,15 +608,38 @@ class eliza():
                 #self.res_fields() #-AJOUT MON 17
                 #return res #old 
                 return self.output
-            
-            phrase1 = "Pourquoi dites-vous que " + subjectOutput + " " + verbOutput + " " + objectOutput + "?"
-            phrase2 = "Pourquoi pensez-vous que " + subjectOutput + " " + verbOutput + " " + objectOutput + "?"
-            phrase3 = "Qu'est ce que vous fait dire que " + subjectOutput + " " + verbOutput + " " + objectOutput + "?"
-            phrase4 = "Pourquoi " + verbOutput + "-" + subjectOutput + " " + objectOutput + "?"
-            phrase5 = "Je vois, " + subjectOutput + " " + verbOutput + " " + objectOutput + ". Continuez, s'l vous plait."
-            
-            self.output = random.choice([phrase1, phrase2, phrase3, phrase4, phrase5])
-            
+                
+            # AJOUTE 19/06 - Kira
+            if subjectOutput in ['vous', 'ils', 'elles']:
+                self.output = "Pourquoi " + self.refl_pro + " " + verbOutput + "-" + subjectOutput + " " + objectOutput + "?"
+            elif subjectOutput in ['il', 'elle']:
+                if verbOutput[-1] in ['a', 'e', 'o', 'u', 'i']:
+                    self.output = "Pourquoi " + self.refl_pro + " " + verbOutput + "-t-" + subjectOutput + " " + objectOutput + "?"
+                else:
+                    self.output = "Pourquoi " + self.refl_pro + " " + verbOutput + "-" + subjectOutput + " " + objectOutput + "?"
+            elif len(self.subjectInput) > 1 and self.subjectInput[0] in ['la', 'une', 'cette']:
+                subjectOutput = "elle"
+                if verbOutput[-1] in ['a', 'e', 'o', 'u', 'i']:
+                    self.output = "Pourquoi " + self.refl_pro + " " + verbOutput + "-t-" + subjectOutput + " " + objectOutput + "?"
+                else:
+                    self.output = "Pourquoi " + self.refl_pro + " " + verbOutput + "-" + subjectOutput + " " + objectOutput + "?"
+            elif len(self.subjectInput) > 1 and self.subjectInput[0] in ['le', 'un', 'cet', 'ce']:
+                subjectOutput = "il"
+                if verbOutput[-1] in ['a', 'e', 'o', 'u', 'i']:
+                    self.output = "Pourquoi " + self.refl_pro + " " + verbOutput + "-t-" + subjectOutput + " " + objectOutput + "?"
+                else:
+                    self.output = "Pourquoi " + self.refl_pro + " " + verbOutput + "-" + subjectOutput + " " + objectOutput + "?"
+            elif len(self.subjectInput) > 1 and self.subjectInput[0] in ['les', 'ces']: #pas de "des" car ambigu: article pl ou prep+article
+                subjectOutput = "ils"
+                self.output = "Pourquoi " + self.refl_pro + " " + verbOutput + "-" + subjectOutput + " " + objectOutput + "?"
+                
+            else:        
+                phrase1 = "Pourquoi dites-vous que " + subjectOutput + self.refl_pro + " " + verbOutput + " " + objectOutput + "?"
+                phrase2 = "Pourquoi pensez-vous que " + subjectOutput + self.refl_pro + " " + verbOutput + " " + objectOutput + "?"
+                phrase3 = "Qu'est ce que vous fait dire que " + subjectOutput + self.refl_pro + " " + verbOutput + " " + objectOutput + "?"
+                phrase4 = "Je vois, " + subjectOutput + self.refl_pro + " " + verbOutput + " " + objectOutput + ". Continuez, s'l vous plait."
+                
+                self.output = random.choice([phrase1, phrase2, phrase3, phrase4])
         if self.output == "":
             self.output = self.defaultOutput()
         
