@@ -27,7 +27,7 @@ class stack(object):
 			if t[0] not in self.relative_lst:
 				self.tab.append(t)
 			else:
-				t = self.switchMe(t[0], self.detPoss)
+				t = (self.switchMe(t[0], self.detPoss), t[1])
 				self.tab.append(t)
 		else:
 			pass
