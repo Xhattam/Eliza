@@ -475,22 +475,22 @@ class eliza():
     def stackWrite(self, s): #ecriture de la pile # MARINE
         self.stack.push(s)
         
-    
-    def setPhrase(self): # fonction qui genere l'output
+def setPhrase(self): # fonction qui genere l'output
+        #print self.subjectInput
         determinants = ['un', 'une', 'la', 'le', 'les', 'l\'', 'des', 'ma', 'ta', 'sa', 'mon', 'ton', 'son', 'mes', 'tes', 'ses', 'nos', 'vos', 'leur', 'leurs', 'notre', 'votre']
         objectOutput = ""
         for e in range(len(self.objectInput)): #on change je-vous dans l'objet et on le transforme en chaine de caracteres
             self.objectInput[e] = self.switchMe(self.objectInput[e], self.myPronouns)
-            objectOutput += self.objectInput[e] 
-            objectOutput += " " 
+            objectOutput += self.objectInput[e]
+            objectOutput += " "
         objectOutput.strip()
         
         if self.verb == "" and len(self.subjectInput) == 0: # si on a rien, on cherche des mots-cles dans l'objet
             for i in range(len(self.objectInput)):
-                word = self.objectInput[i]   
+                word = self.objectInput[i]
                 for key in allMyKeywords.keys():
                     if re.match(key, word):
-                        if allMyKeywords[word] == 'human': 
+                        if allMyKeywords[word] == 'human':
                             wordOutput = "cette personne"
                             if i > 0 and self.objectInput[i-1] in determinants:
                                 det = self.switchMe(self.objectInput[i-1])
@@ -507,8 +507,8 @@ class eliza():
                             self.output = random.choice([phrase1, phrase2, phrase3, phrase4, phrase5, phrase6])
                             #res = self.output
                             #self.res_fields() #-AJOUT MON 17
-                            #return res #old - 
-                            return self.output 
+                            #return res #old -
+                            return self.output
                         else:
                             wordOutput = "cela"
                             if i > 0 and self.objectInput[i-1] in determinants:
@@ -524,7 +524,7 @@ class eliza():
                             self.output = random.choice([phrase1, phrase2, phrase3, phrase4])
                             #res = self.output #-AJOUT MON 17
                             #self.res_fields() #-AJOUT MON 17
-                            #return res #old 
+                            #return res #old
                             return self.output
                         
             if self.stack.size() > 0: # sinon on prend de la pile
@@ -535,13 +535,13 @@ class eliza():
                 self.output = random.choice([phrase1, phrase2, phrase3])
                 #res = self.output #-AJOUT MON 17
                 #self.res_fields() #-AJOUT MON 17
-                #return res #old 
+                #return res #old
                 return self.output
-            else:   
+            else:
                 self.output = self.defaultOutput()
                 #res = self.output #-AJOUT MON 17
                 #self.res_fields() #-AJOUT MON 17
-                #return res #old 
+                #return res #old
                 return self.output
         
         elif self.verb == "" and len(self.subjectInput) > 0: #si on a le sujet mais pas le verbe
@@ -554,13 +554,13 @@ class eliza():
                 subjectOutput.strip()
             else:
                 if self.subjectInput[0] in ["tu", "t'", "vous"]:
-                    self.output = random.choice(["Vous etes la pour parler de vous, pas de moi.", "On ne parle pas de moi ici.", "On est ici pour parler de vous."]) 
+                    self.output = random.choice(["Vous etes la pour parler de vous, pas de moi.", "On ne parle pas de moi ici.", "On est ici pour parler de vous."])
                     return self.output
                 elif self.subjectInput[0] in ["je", "j'", "nous"]:
-                    self.output = random.choice(["Parlez-moi plus de vous, s'il vous plait.", "C'est important, continuez.", "Parlez-moi davantage sur votre vie.", "Parlez-moi de vos relations avec les autres."]) 
+                    self.output = random.choice(["Parlez-moi plus de vous, s'il vous plait.", "C'est important, continuez.", "Parlez-moi davantage sur votre vie.", "Parlez-moi de vos relations avec les autres."])
                     #res = self.output #-AJOUT MON 17
                     #self.res_fields() #-AJOUT MON 17
-                    #return res #old 
+                    #return res #old
                     return self.output
                 else:
                     subjectOutput = self.switchMe(self.subjectInput[0], self.myPronouns)
@@ -569,7 +569,7 @@ class eliza():
                 self.output = self.defaultOutput()
                 #res = self.output #-AJOUT MON 17
                 #self.res_fields() #-AJOUT MON 17
-                #return res #old 
+                #return res #old
                 return self.output
                 
             
@@ -594,10 +594,10 @@ class eliza():
                 subjectOutput.strip()
             else:
                 if self.subjectInput[0] in ["tu", "t'", "vous"]:
-                    self.output = random.choice(["Vous etes la pour parler de vous, pas de moi.", "On ne parle pas de moi ici.", "On est ici pour parler de vous."]) 
+                    self.output = random.choice(["Vous etes la pour parler de vous, pas de moi.", "On ne parle pas de moi ici.", "On est ici pour parler de vous."])
                     #res = self.output #-AJOUT MON 17
                     #self.res_fields() #-AJOUT MON 17
-                    #return res #old 
+                    #return res #old
                     return self.output
                 else:
                     subjectOutput = self.switchMe(self.subjectInput[0], self.myPronouns)
@@ -606,10 +606,9 @@ class eliza():
                 self.output = self.defaultOutput()
                 #res = self.output #-AJOUT MON 17
                 #self.res_fields() #-AJOUT MON 17
-                #return res #old 
+                #return res #old
                 return self.output
-                
-            # AJOUTE 19/06 - Kira
+            
             if subjectOutput in ['vous', 'ils', 'elles']:
                 self.output = "Pourquoi " + self.refl_pro + " " + verbOutput + "-" + subjectOutput + " " + objectOutput + "?"
             elif subjectOutput in ['il', 'elle']:
@@ -640,6 +639,7 @@ class eliza():
                 phrase4 = "Je vois, " + subjectOutput + self.refl_pro + " " + verbOutput + " " + objectOutput + ". Continuez, s'l vous plait."
                 
                 self.output = random.choice([phrase1, phrase2, phrase3, phrase4])
+                
         if self.output == "":
             self.output = self.defaultOutput()
         
@@ -647,7 +647,6 @@ class eliza():
         #self.res_fields() #-AJOUT MON 17
         #return res #old return self.output
         return self.output
-                
               
     
     def psycho(self):
