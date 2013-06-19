@@ -1,68 +1,72 @@
 # -*- coding: utf-8 -*-
 
 class stack(object):
-
-
-	def __init__(self):
-		"""
-		@param str-List self.tab	- 	Eliza's memory
-		@param str-List self.relative_lst 	- 	list of relative pronouns
-		"""
-		self.tab = []
-		self.relative_lst = ['qui', 'que', 'quoi', 'dont', 'ou', 'qu\'', 'lequel', 'laquelle', 'lesquels', 'lesquelles', 'auquel']
-		self.detPoss = {'ma':'votre', 'mon':'votre', 'un':'cet', 'une':'cette', 'des':'ces', 'nos':'vos', 'notre':'votre', 'mes': 'votre'}
-	
-	def isEmpty(self):
-		"""
-		@return boolean 
-		"""
-		return len(self.tab) == 0
-
-	
-	def push(self, t):
-		"""
-		@param str-Tuple t 	-	tuple det+noun
-		"""
-		if len(t) > 1:
-			if t[0] not in self.relative_lst:
-				self.tab.append(t)
-			else:
-				t = (self.switchMe(t[0], self.detPoss), t[1])
-				self.tab.append(t)
-		else:
-			pass
-
-	
-	def size(self):
-		"""
-		@return Integer len(self.tab)
-		"""
-		return len(self.tab)
-
-	
-	def reset(self):
-		self.tab = []
-
-	
-	def pop(self):
-		"""
-		@return str-Tuple w
-		"""
-		w = self.tab[len(self.tab)-1]
-		del self.tab[len(self.tab)-1]
-		return w
-
-	
-	def switchMe(self, p, dic):
-		if p in dic:
-			return dic[p]
-		else:
-			return p
-
-	
-	def peek(self):
-		"""
-		@return str-Tuple self.tab[len(self.tab)-1]
-		"""
-		return self.tab[len(self.tab)-1]
-
+    
+    
+    """
+    Create a object Stack whose 'tab' has a size initialized in the arguments of the constructor.
+    
+    Eliza's memory
+    """
+    def __init__(self):
+        """
+        @param str-List self.tab - Eliza's memory
+        @param str-List self.relative_lst - list of relative pronouns
+        """
+        self.tab = []
+        #self.relative_lst = ['qui', 'que', 'quoi', 'dont', 'ou', 'qu\'', 'lequel', 'laquelle', 'lesquels', 'lesquelles', 'auquel']
+        self.detPoss = {'ma':'votre', 'mon':'votre', 'un':'cet', 'une':'cette', 'des':'ces', 'nos':'vos', 'notre':'votre', 'mes': 'vos'}
+        
+    def isEmpty(self):
+        """
+        @return boolean
+        """
+        return len(self.tab) == 0
+        
+        
+    def push(self, t):
+        """
+        @param str-Tuple t - tuple det+noun
+        """
+        if len(t) > 1:
+            #if t[0] not in self.relative_lst:
+                #self.tab.append(t)
+            #else:
+            t = (self.switchMe(t[0], self.detPoss), t[1])
+            self.tab.append(t)
+        #else:
+            #pass
+        
+        
+    def size(self):
+        """
+        @return Integer len(self.tab)
+        """
+        return len(self.tab)
+        
+        
+    def reset(self):
+        self.tab = []
+        
+        
+    def pop(self):
+        """
+        @return str-Tuple w
+        """
+        w = self.tab[-1]
+        del self.tab[-1]
+        return w
+        
+        
+    def switchMe(self, p, dic):
+        if p in dic:
+            return dic[p]
+        else:
+            return p
+        
+        
+    def peek(self):
+        """
+        @return str-Tuple self.tab[len(self.tab)-1]
+        """
+        return self.tab[-1]
