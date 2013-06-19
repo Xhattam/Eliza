@@ -750,7 +750,7 @@ myPronouns = {'je':'vous', 'j\'':'vous', 'me':'vous', 'm\'':'vous', 'moi':'vous'
 #reflexive = {'je me' : 'vous vous', 'je m\'' : 'vous vous', 'il se' : 'il se', 'il s\'' : 'il s\'', 'elle se' : 'elle se', 'elle s\'' : 'elle s\s'', 'nous nous' : 'vous vous', 'ils se' : 'ils se', 'ils s\'' : 'ils s\'', 'elles se' : 'elles se', 'elles s\'' : 'elles s\''}
 
 
-reflexive = {'me' : 'vous', 'm\'' : 'vous', 'se' : 'se', 's\'' : 's\'', 'nous' : 'vous'} #un token est un mot
+reflexive = {'me' : 'vous', 'm\'' : 'vous', 'se' : 'se', 's\'' : 's\'', 'nous' : 'vous', 'te' : 'me', 't\'' : 'm\'', 'vous' : 'me'}
 
 
 
