@@ -162,7 +162,7 @@ class eliza():
     
     #NEW - ADDED WED 19
     def negation (self, t):
-    lst1 = ["jamais", "rien", "ne", "n\'", "ni"]
+    	lst1 = ["jamais", "rien", "ne", "n\'", "ni"]
 	
 	lst3 = ["pas", "plus", "point"]
 	
@@ -174,9 +174,9 @@ class eliza():
 				if elem in t:
 					return True
 	
-    return False
+    	return False
     
-    def tagging(self): #ma version de tagging - Kira
+     def tagging(self): #ma version de tagging - Kira
         #print "testtagg"
         lst = self.tokenInput
         #print lst
@@ -187,7 +187,7 @@ class eliza():
         for elem in range(len(lst)):
             for i in self.allMyKeywords:
                 if re.match(i, lst[elem]): #recherche avec regex
-                    self.stackWrite(lst[elem]) #stakWrite prend un argu?? oui c'est push! 
+                    self.stackWrite(lst[elem]) #stakWrite prend un argu?? oui c'est push!
                     # ECRIRE LES DETERMINANTS DANS LA PILE
         # for i in range(len(lst)-1): #sert a rien parce qu'on est obligé de chercher dans le Lefff pour pouvoir conjuguer
             #if lst[i] in pronouns and lst[i+1][-2:] not in ["er", "ir"] and lst[i+1][-3:] not in ["ire", "dre", "tre"]:
@@ -195,11 +195,22 @@ class eliza():
                 # posVerb = i+1
                 # break
                 
+        # on gere la forme suis, elle doit etre analysee comme etre et pas suivre
+        """
+        for j in range(len(lst)):
+            if lst[j] == "suis":
+                self.verb = "suis"
+                self.verbtuple.append('\xeatre')
+                self.verbtuple.append('Ps1\n')
+                posVerb = j
+                break
+        """      
+                
         if self.verb == "":
             lefff = self.split_lefff()
             for e in range(len(lst)):
                 if lst[e] != 'tu': #sinon elle pense que tu est le participe passe de taire!
-                    in_lefff = self.recup_inf(lefff, lst[e], lst[:e]) #troisieme argument - subjectScope - pour gerer la flexion. Kira
+                    in_lefff = self.recup_inf(lefff, lst[e], lst[:e])
                     if in_lefff != 0: # si verbe trouve dans Lefff
                         self.verb = lst[e]
                         print "test"
@@ -208,8 +219,6 @@ class eliza():
                         print self.verb
                         print self.verbtuple
                         posVerb = e
-                        
-                        #AJOUTE 19/06 - Kira
                         if e > 1: #s'il y a au moins 2 mots avant le verbe alors il peut y avoir un pronom reflechi
                             if lst[e-1] in self.reflexive.keys():
                                 if lst[e-1] == 'nous':
@@ -224,10 +233,9 @@ class eliza():
                                     self.refl_pro = self.reflexive[lst[e-1]]
                         break
            
-       
         #recherche de sujet
         subjectScope = lst[:posVerb]
-        ponct = ['.', ',', '!', '?', ';', ':'] # elle ne doit pas penser que dans la phrase "Bonjour, je suis..." le sujet est "bonjour, je"
+        ponct = ['.', ',', '!', '?', ';', ':']
         newScope = subjectScope
         
         for i in range(len(subjectScope)):
@@ -245,7 +253,6 @@ class eliza():
             self.searchSubject(subjectScope)
         
         
-        
         #recherche d'objet
         idx = posVerb + 1
         if idx != len(lst):
@@ -253,7 +260,7 @@ class eliza():
            
 
     def searchSubject(self, subjectScope):
-        lstPro = ['je$', 'tu$' 'ils?$', 'j\'$', 'elles?$', 'on$'] # les $ apres chaque mot servent a marquer que c'est la fin du mot. Sinon on trouve "lesssss" pour les?, "lac" pour la, "savoir" pour sa etc.
+        lstPro = ['je$', 'tu$', 'ils?$', 'j\'$', 'elles?$', 'on$'] # les $ apres chaque mot servent a marquer que c'est la fin du mot. Sinon on trouve "lesssss" pour les?, "lac" pour la, "savoir" pour sa etc.
         for e in subjectScope:
             for pro in lstPro:
                 if re.match(pro, e):
@@ -264,7 +271,7 @@ class eliza():
     
     def searchDet(self, subjectScope):
         length = len(subjectScope)-1
-        elem = subjectScope[length] #-  !! ALWAYS OUT OF RANGE !! reglé - on n'appelle pas la fonction si subjectScope est vide - Kira
+        elem = subjectScope[length] #- !! ALWAYS OUT OF RANGE !! reglé - on n'appelle pas la fonction si subjectScope est vide - Kira
         pronouns = ['c\'', 'l\'', 'm\'', 'n\'', 's\'', 't\'', 'me', 'te', 'se', 'ne', 'la', 'le', 'les']
         lstDet = ['les?$', 'la$', 'une?$', 'des$', 'l\'$', 'mon$', 'ton$',
         'son$', 'ma$', 'ta$', 'sa$', 'mes$', 'tes$', 'ses$', 'nos$', 'vos$', 'leurs?$',
