@@ -584,34 +584,39 @@ class eliza():
                 
                 return self.output
             
+           variability = ['Pourquoi ', 'Mais d\'après vous, pourquoi ', 'Je vois, mais selon vous, pourquoi ', 
+            'Mais selon vous, pourquoi ', 'Et d\'après vous, pourquoi ', 'D\'accord, mais pourquoi ', 'Et pourquoi ',
+            'Et en quoi ', 'Je vois, et selon vous, pourquoi ', 'Très bien, mais pourquoi ', 'Et selon vous, pourquoi ' 
+            'Et en quoi ', 'Selon vous, en quoi ', 'D\'après vous, en quoi']
+            
             if subjectOutput in ['vous', 'ils', 'elles']:
-                self.output = "Pourquoi " + self.refl_pro + " " + verbOutput + "-" + subjectOutput + " " + objectOutput + "?"
+                self.output = random.choice(variability) + self.refl_pro + " " + verbOutput + "-" + subjectOutput + " " + objectOutput + "?"
             elif subjectOutput in ['il', 'elle']:
                 if verbOutput[-1] in ['a', 'e', 'o', 'u', 'i']:
-                    self.output = "Pourquoi " + self.refl_pro + " " + verbOutput + "-t-" + subjectOutput + " " + objectOutput + "?"
+                    self.output = random.choice(variability) + self.refl_pro + " " + verbOutput + "-t-" + subjectOutput + " " + objectOutput + "?"
                 else:
-                    self.output = "Pourquoi " + self.refl_pro + " " + verbOutput + "-" + subjectOutput + " " + objectOutput + "?"
+                    self.output = random.choice(variability) + self.refl_pro + " " + verbOutput + "-" + subjectOutput + " " + objectOutput + "?"
             elif len(self.subjectInput) > 1 and self.subjectInput[0] in ['la', 'une', 'cette']:
                 subjectOutput = "elle"
                 if verbOutput[-1] in ['a', 'e', 'o', 'u', 'i']:
-                    self.output = "Pourquoi " + self.refl_pro + " " + verbOutput + "-t-" + subjectOutput + " " + objectOutput + "?"
+                    self.output = random.choice(variability) + self.refl_pro + " " + verbOutput + "-t-" + subjectOutput + " " + objectOutput + "?"
                 else:
-                    self.output = "Pourquoi " + self.refl_pro + " " + verbOutput + "-" + subjectOutput + " " + objectOutput + "?"
+                    self.output = random.choice(variability) + self.refl_pro + " " + verbOutput + "-" + subjectOutput + " " + objectOutput + "?"
             elif len(self.subjectInput) > 1 and self.subjectInput[0] in ['le', 'un', 'cet', 'ce']:
                 subjectOutput = "il"
                 if verbOutput[-1] in ['a', 'e', 'o', 'u', 'i']:
-                    self.output = "Pourquoi " + self.refl_pro + " " + verbOutput + "-t-" + subjectOutput + " " + objectOutput + "?"
+                    self.output = random.choice(variability) + self.refl_pro + " " + verbOutput + "-t-" + subjectOutput + " " + objectOutput + "?"
                 else:
-                    self.output = "Pourquoi " + self.refl_pro + " " + verbOutput + "-" + subjectOutput + " " + objectOutput + "?"
+                    self.output = random.choice(variability) + self.refl_pro + " " + verbOutput + "-" + subjectOutput + " " + objectOutput + "?"
             elif len(self.subjectInput) > 1 and self.subjectInput[0] in ['les', 'ces']: #pas de "des" car ambigu: article pl ou prep+article
                 subjectOutput = "ils"
-                self.output = "Pourquoi " + self.refl_pro + " " + verbOutput + "-" + subjectOutput + " " + objectOutput + "?"
+                self.output = random.choice(variability) + self.refl_pro + " " + verbOutput + "-" + subjectOutput + " " + objectOutput + "?"
                 
             else:        
                 phrase1 = "Pourquoi dites-vous que " + subjectOutput + self.refl_pro + " " + verbOutput + " " + objectOutput + "?"
                 phrase2 = "Pourquoi pensez-vous que " + subjectOutput + self.refl_pro + " " + verbOutput + " " + objectOutput + "?"
                 phrase3 = "Qu'est ce que vous fait dire que " + subjectOutput + self.refl_pro + " " + verbOutput + " " + objectOutput + "?"
-                phrase4 = "Je vois, " + subjectOutput + self.refl_pro + " " + verbOutput + " " + objectOutput + ". Continuez, s'l vous plait."
+                phrase4 = "Je vois, " + subjectOutput + self.refl_pro + " " + verbOutput + " " + objectOutput + ". Continuez, s'il vous plait."
                 
                 self.output = random.choice([phrase1, phrase2, phrase3, phrase4])
                 
