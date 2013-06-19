@@ -6,24 +6,32 @@ import random
 import eliza
 
 """
-Author: JTanon
-Created on the 08/06/2013
+@author: BAbemonty, MChassang, KKiranova, JTanon
 """
 
 class window(object):
 
     def __init__(self, root):
-      
-        self.eliza = eliza.eliza() #eliza object imported - NEW
-        self.root = root #root parameter (acts as a pointer towards the window created in the main)
+    
+        #self.display.grid(side='left', expand=0, fill='both')
+        #self.textfield.insert(0.0, data)
+        
+        self.eliza = eliza.eliza()
+        self.root = root 
+        #self.scroll = Tkinter.Scrollbar()
+        self.scrollbar = Tkinter.Scrollbar(root)
+        self.display = Tkinter.Text(root,yscrollcommand=self.scrollbar.set)
+        self.scrollbar.config(command=self.display.yview)
+        
+        #)side='right', fill='y')
         self.main = Tkinter.Label(text = "Eliza", borderwidth = 10, font = "Arial 14")
-        self.display = Tkinter.Text(font = "Times 10", state = Tkinter.DISABLED)
+        #self.display = Tkinter.Text(font = "Times 10", state = Tkinter.DISABLED)
         self.user_entry = Tkinter.Entry()
         self.send_button = Tkinter.Button(text = "Envoyer", command = self.speakToMe)
-        self.quit_button = Tkinter.Button(text = "Quitter Eliza", command = self.root.quit) #self.root.destroy
+        self.quit_button = Tkinter.Button(text = "Quitter Eliza", command = self.root.quit) 
     
         self.user_entry.config(width = 85) # user's entry
-        self.display.config(width = 100, height = 15) # displays Eliza's answer
+        #self.display.config(width = 100, height = 15) # displays Eliza's answer
 
         self.entry = ""
         
@@ -31,12 +39,13 @@ class window(object):
         self.main.grid()
         self.display.grid()
         self.user_entry.grid()
+        self.scrollbar.grid()
         self.send_button.grid(row = 6, column = 0, sticky = "s" + "e")
         self.quit_button.grid(row = 6, column = 0, sticky = "s" + "w")
         
         #Binding events to buttons/keys
         self.quit_button.bind("<Button-1>", self.byeThen)
-        self.quit_button.bind("<Key>", self.byeThen)
+        #self.quit_button.bind("<Key>", self.byeThen) #SUPPR ??? 
         self.quit_button.focus_set()
         
         self.user_entry.bind("<Key>", self.speakToMe)
@@ -46,6 +55,7 @@ class window(object):
         self.send_button.bind("<Key>", self.speakToMe)
         self.send_button.focus_set()
         
+        #self.count = 0
         self.sayHelloEliza()
 
 
@@ -60,28 +70,38 @@ class window(object):
     
     def speakToMe(self, event): 
         if event.keysym == "Return" or event.num == 1:
+            #print count
             self.display.config(state = Tkinter.NORMAL)
             self.entry = self.user_entry.get()
-            self.display.insert(Tkinter.END, "\n"+self.user_entry.get()) #self??? TO TEST
+             #self???? TO TEST
+            #eliza.stackWrite(str(entry.strip())) #adds user's entry to stack
+            self.display.insert(Tkinter.END, "\nVous: "+self.user_entry.get()) #self??? TO TEST
             self.user_entry.delete(0, len(self.user_entry.get()))
             self.send_button.config(state = Tkinter.DISABLED)
             self.user_entry.config(state = Tkinter.DISABLED)
             self.display.config(state = Tkinter.DISABLED)
-            self.eliza.tokenize(self.entry) #premiere etape de calcul de reponse
-            #APPELER LES AUTRES FONCTIONS DE CALCUL DE REPONSE D'ELIZA
-            self.hereComesYourAnswer()
+
+            response = self.eliza.setInput(self.entry) 
+            #appelle toutes fonctions dans eliza
+
+            #AJOUTER ETAPES DE REPONSE
+            self.hereComesYourAnswer()#premiere etape de calcul de reponse
+            #self.itsTheFinalCountdown()
+            #print self.entry
 
     
     # heresYourAnswer: Takes the final calculated answer from Eliza and displays it in Eliza's window
     
     def hereComesYourAnswer(self):
-        answer = eliza.getFinalAnswer() #recupere la reponse finale d'eliza
+        answer = self.eliza.getFinalAnswer() #recupere la reponse finale d'eliza
+        self.eliza.res_fields()
         #time.sleep(1.5) #illusion de la reflexion
         self.display.config(state = Tkinter.NORMAL)
         self.display.insert(Tkinter.END, "\n"+ answer)
         self.display.config(state = Tkinter.DISABLED)
         self.send_button.config(state = Tkinter.NORMAL)
         self.user_entry.config (state = Tkinter.NORMAL)
+        #self.itsTheFinalCountdown()
 
     
     #counts up to 100 - then calls areYouStillHere to make Eliza talk
@@ -89,12 +109,12 @@ class window(object):
     def itsTheFinalCountdown(self):     
     #Attention, prevoir une remise à zéro dés qu'on a une saisie clavier 
         count = 0
-        while count != 100:
+        while count < 5:
             time.sleep(1)
             count += 1
-            if count == 100:
+            if count == 5:
                 self.areYouStillHere()  
-
+                
 
 
     #Makes Eliza speak after 100 secs of inactivity from the user
