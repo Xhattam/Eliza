@@ -17,12 +17,15 @@ class window(object):
         #self.textfield.insert(0.0, data)
         
         self.eliza = eliza.eliza()
-        self.root = root 
+        self.root = root
+        self.frameText = Tkinter.Frame(root)
+
         #self.scroll = Tkinter.Scrollbar()
-        self.scrollbar = Tkinter.Scrollbar(root)
-        self.display = Tkinter.Text(root,yscrollcommand=self.scrollbar.set)
+        self.scrollbar = Tkinter.Scrollbar(self.frameText)
+        self.display = Tkinter.Text(self.frameText, yscrollcommand=self.scrollbar.set)
+        self.display.pack(side='left', fill='x')
+        self.scrollbar.pack(side='right', fill='y')
         self.scrollbar.config(command=self.display.yview)
-        
         #)side='right', fill='y')
         self.main = Tkinter.Label(text = "Eliza", borderwidth = 10, font = "Arial 14")
         #self.display = Tkinter.Text(font = "Times 10", state = Tkinter.DISABLED)
@@ -36,12 +39,11 @@ class window(object):
         self.entry = ""
         
         #Placement of widgets
-        self.main.grid()
-        self.display.grid()
-        self.user_entry.grid()
-        self.scrollbar.grid()
-        self.send_button.grid(row = 6, column = 0, sticky = "s" + "e")
-        self.quit_button.grid(row = 6, column = 0, sticky = "s" + "w")
+        self.main.grid(row = 0, columnspan = 2)
+        self.frameText.grid(row = 1, columnspan  = 2)
+        self.user_entry.grid(row = 2, columnspan = 2)
+        self.send_button.grid(row = 3, column = 0)
+        self.quit_button.grid(row = 3, column = 1)
         
         #Binding events to buttons/keys
         self.quit_button.bind("<Button-1>", self.byeThen)
@@ -95,7 +97,7 @@ class window(object):
     def hereComesYourAnswer(self):
         answer = self.eliza.getFinalAnswer() #recupere la reponse finale d'eliza
         self.eliza.res_fields()
-        #time.sleep(1.5) #illusion de la reflexion
+        
         self.display.config(state = Tkinter.NORMAL)
         self.display.insert(Tkinter.END, "\n"+ answer)
         self.display.config(state = Tkinter.DISABLED)
@@ -138,7 +140,6 @@ class window(object):
 
 
    
-
 
 
 
