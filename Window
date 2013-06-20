@@ -33,7 +33,7 @@ class window(object):
         self.send_button = Tkinter.Button(text = "Envoyer", command = self.speakToMe)
         self.quit_button = Tkinter.Button(text = "Quitter Eliza", command = self.root.quit) 
     
-        self.user_entry.config(width = 85) # user's entry
+        self.user_entry.config(width = 70) # user's entry
         #self.display.config(width = 100, height = 15) # displays Eliza's answer
 
         self.entry = ""
