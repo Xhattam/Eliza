@@ -4,54 +4,51 @@ class stack(object):
     
     
     """
-    Create a object Stack whose 'tab' has a size initialized in the arguments of the constructor.
-    
-    Eliza's memory
+    Create a stack object - Eliza's memory.
     """
     def __init__(self):
         """
-        @param str-List self.tab - Eliza's memory
-        @param str-List self.relative_lst - list of relative pronouns
+        creates a stack object
+        str-List self.tab - Eliza's memory
+        str-List self.detPoss - list of possessive determinants
         """
         self.tab = []
-        #self.relative_lst = ['qui', 'que', 'quoi', 'dont', 'ou', 'qu\'', 'lequel', 'laquelle', 'lesquels', 'lesquelles', 'auquel']
         self.detPoss = {'ma':'votre', 'mon':'votre', 'un':'cet', 'une':'cette', 'des':'ces', 'nos':'vos', 'notre':'votre', 'mes': 'vos'}
+        
         
     def isEmpty(self):
         """
-        @return boolean
+        :returns: boolean (true if there are no elements in the stack)
         """
         return len(self.tab) == 0
         
         
     def push(self, t):
         """
-        @param str-Tuple t - tuple det+noun
+        :param t: - tuple of strings (det+noun)
         """
         if len(t) > 1:
-            #if t[0] not in self.relative_lst:
-                #self.tab.append(t)
-            #else:
             t = (self.switchMe(t[0], self.detPoss), t[1])
             self.tab.append(t)
-        #else:
-            #pass
-        
         
     def size(self):
         """
-        @return Integer len(self.tab)
+        :returns: number of elements in the stack (integer)
         """
         return len(self.tab)
         
         
     def reset(self):
+        """
+        deletes all the elements from the stack
+        """
         self.tab = []
         
         
     def pop(self):
         """
-        @return str-Tuple w
+        :returns: the last element added to the stack (a tuple of strings)
+        deletes the last element of the stack
         """
         w = self.tab[-1]
         del self.tab[-1]
@@ -59,6 +56,11 @@ class stack(object):
         
         
     def switchMe(self, p, dic):
+        """
+        :param p: a key (string)
+        :param dic: a dictionary 
+        :returns: if the key p is in the dictionary, returns the corresponding value, if not, returns the key p itself 
+        """
         if p in dic:
             return dic[p]
         else:
@@ -67,6 +69,7 @@ class stack(object):
         
     def peek(self):
         """
-        @return str-Tuple self.tab[len(self.tab)-1]
+        :returns: the last element of the stack (a tuple of strings) 
         """
         return self.tab[-1]
+                    
