@@ -16,8 +16,8 @@ Created on Tue Apr 23 10:36:29 2013
 class eliza(): 
 
     def __init__(self):
-    
-       """
+        
+        """
         @param String self.input                -   user entry from GUI
         @param str-List self.tokenInput         -   token list from user input   
         @param str-List self.subjectInput       -   token list for subject scope
@@ -32,16 +32,14 @@ class eliza():
         @param String-dict self.allMyKeywords   -   keywords dictionary
 
         """
-
-       
+        
         self.input = "" 
         self.tokenInput = [] 
         self.subjectInput = []  
         self.objectInput = []  
         self.verb = ""  
         self.verbtuple = [] 
-        self.stack = stack()
-        self.neg = False
+        self.stack = stack.stack()
         self.output = "" 
         self.refl_pro = "" #pronom reflechi eventuellement #AJOUTE 19/06 Kira
         self.myPronouns = myPronouns
@@ -55,8 +53,9 @@ class eliza():
         """
         @param String text  -   user entry
         """
-
+        
         self.input = text.encode('utf-8').lower() #lower, sauf si on decide de mettre un truc genre "ne criez pas!"
+        #self.input # NEW tuesday 18
         
 
 
@@ -116,80 +115,37 @@ class eliza():
             token_list = token_list[:-1] # on ne garde pas le point a la fin 
         
         self.tokenInput = token_list
-          
-    """
-    def tagging(self):
-         #etiquetage # MARINE
-        lst = self.tokenInput
-        posVerb = len(lst)-1
-        pronouns = ['c\'', 'j\'', 'm\'', 'n\'', 's\'', 't\'', 'me', 'te', 'se', 'ne'] #precedent toujours un verbe
-        for elem in range(len(lst)):
-            for i in self.allMyKeywords:
-                if re.match(i, lst[elem], re.I): #recherche avec regex
-                    self.stackWrite(lst[elem]) #stakWrite prend un argu?? oui c'est push! 
-                    # ECRIRE LES DETERMINANTS DANS LA PILE
-        for i in range(len(lst)-1):
-            if lst[i] in pronouns and lst[i+1][-2:] not in ["er", "ir"] and lst[i+1][-3:] not in ["ire", "dre", "tre"]: 
-                self.verb = lst[i+1]
-                posVerb = i+1
-                break
-        if self.verb == "":
-            lefff = self.split_lefff()
-            for e in range(len(lst)):
-                in_lefff = self.recup_inf_rec(lefff, lst[e], 0, len(lefff)) #!! Renvoie toujours 'abaisser' !!
-                if in_lefff != 0: # si verbe trouve dans Lefff # !! RECUPERE PREMIER ELEM DE TOKEN_LIST DS TOUS LES CAS !!
-                    self.verb = lst[e] 
-                    posVerb = e #TJR A ZERO
-                    break
-            if self.verb = "":
-                return self.defaultOutput() - NEW MON 17 - update Kira
-                
-        #recherche de sujet
-        subjectScope = lst[:posVerb]
-        if len(subjectScope) > 0: # sinon donne index out of range - Kira
-            self.searchSubject(subjectScope)
-        
-        
-        #recherche d'objet
-        idx = posVerb + 1
-        if idx != len(lst):
-            self.objectInput = lst[idx:]
-
-        #return self.searchSubject(subjectScope) # il sert a quoi ce return? _ Il me semble qu'on l'a mis ici hier juste pour
-        #faciliter l'appel de fonction consécutif pour faire passer l'input de départ, mais puisque ta fonction de calcul
-        #de réponse fonctionne, y'en a plus besoin ;)
-
-    """
     
     #NEW - ADDED WED 19
     def negation (self, t):
-    	lst1 = ["jamais", "rien", "ne", "n\'", "ni"]
-	
-	lst3 = ["pas", "plus", "point"]
-	
-	for e in t:
-		if e in lst1 :
-			return True
-		elif e in lst3:
-			for elem  in lst1:
-				if elem in t:
-					return True
-	
-    	return False
+        lst1 = ["jamais", "rien", "ne", "n\'", "ni"]
+        
+        lst3 = ["pas", "plus", "point"]
+        
+        for e in t:
+            if e in lst1 :
+                return True
+            elif e in lst3:
+                for elem  in lst1:
+                    if elem in t:
+                        return True
     
-     def tagging(self): #ma version de tagging - Kira
-        
+        return False
+    
+    def tagging(self): #ma version de tagging - Kira
+
+        print "testtagg"
         lst = self.tokenInput
-        
+        #print lst
         # recherche de verbe
         posVerb = len(lst)-1
-               
+        
+        #pronouns = ['c\'', 'j\'', 'm\'', 'n\'', 's\'', 't\'', 'me', 'te', 'se', 'ne'] #precedent toujours un verbe
         for elem in range(len(lst)):
-            if elem > 0:
-                for i in self.allMyKeywords.keys():
-                    if re.match(i, lst[elem]): #recherche avec regex
-                        self.stackWrite(lst[elem-1:elem+1])
-                        
+            for i in self.allMyKeywords:
+                if re.match(i, lst[elem]): #recherche avec regex
+                    self.stackWrite(lst[elem]) #stakWrite prend un argu?? oui c'est push!
+
         if self.verb == "":
             lefff = self.split_lefff()
             for e in range(len(lst)):
@@ -197,22 +153,91 @@ class eliza():
                     in_lefff = self.recup_inf(lefff, lst[e], lst[:e])
                     if in_lefff != 0: # si verbe trouve dans Lefff
                         self.verb = lst[e]
+                        print "test"
+                        print len(self.verb)
                         self.verbtuple = in_lefff #infinitif+flexion
+                        print self.verb
+                        print self.verbtuple
                         posVerb = e
-                        if e > 1: #s'il y a au moins 2 mots avant le verbe alors il peut y avoir un pronom reflechi
-                            if lst[e-1] in self.reflexive.keys():
-                                if lst[e-1] == 'nous':
-                                    for i in range(0,e-1):
-                                        if lst[i] == 'nous':
-                                            self.refl_pro = 'vous'
-                                elif lst[e-1] == 'vous':
-                                    for i in range(0,e-1):
-                                        if lst[i] == 'vous':
-                                            self.refl_pro = 'nous'
+                        subjectScope =  lst[:posVerb]
+                        if self.verbtuple[0] in self.psychoVerbs:
+                            if self.negation(self.tokenInput) == True: 
+                                if self.psychoVerbs[self.verbtuple[0]] == 'NegFear':
+                                    if self.tuple[0] in ['paniquer', 'angoisser', 'stresser']:  
+                                        lst = ["Faire preuve de self-contrôle est une bonne chose! Continuez, je voudrais en savoir plus sur ce sujet.", 
+                                        "Prendre les choses calmement, voilà une bonne approche! Dites m'en plus.", 
+                                        "Savoir prendre les choses du bon côté est une vertu. Dites m'en plus!"]
+                                    else:
+                                        lst = ["C'est plutôt une bonne chose, non?", "Etes-vous d'acord pour dire que c'est une bonne chose?"
+                                        "Pensez-vous que ce soit une mauvaise chose ?"]
+                                    self.output = random.choice(lst)
+                                    return self.output
+
+                                elif self.psychoVerbs[self.verbtuple[0]] == 'NegSad':
+                                    lst = ["C'est plutôt une bonne chose, ne pensez-vous pas ?", "C'est bien! Dites-m'en plus!"]
+                                    self.output = random.choice(lst)
+                                    return self.output
+                                
+                                elif self.psychoVerbs[self.verbtuple[0]] == 'Love':
+                                    lst = ["C'est un peu triste, pourquoi donc ?", "Pourriez-vous me dire pourquoi ?", 
+                                    "Pensez-vous que ceci est lié à une mauvaise expérience passée ?"]
+                                    self.output = random.choice(lst)
+                                    return self.output
+
                                 else:
-                                    self.refl_pro = self.reflexive[lst[e-1]]
-                        break
-           
+                                    lst = ["Je vois. Ce n'est pas non plus le grand amour cependant, pourriez-vous me dire pourquoi  ?",
+                                    "D'accord, le sentiment n'est pas complètement négatif. Pourquoi pas simplement positif ? ", 
+                                    "C'est mieux que rien! N'êtes-vous pas d'accord ?"]
+                                    self.output = random.choice(lst)
+                                    return self.output
+
+                            else:             
+                                if self.psychoVerbs[self.verbtuple[0]] == 'NegFear':
+                                    if self.tuple[0] in ['paniquer', 'angoisser', 'stresser']:  
+                                        lst = ["Decrivez-moi précisement vos sentiments à ce sujet, que ressentez-vous vraiment ?", 
+                                        "Pourquoi vous sentez-vous mal par rapport à cela ?", "Qu'est-ce que cela fait ressurgir chez vous ?"]
+                                    else:
+                                        lst = ["Pourquoi faire cela ? Qu'est-ce que ça vous apporte ?", "Pourquoi faire cela ? Est-ce que ça vous amuse ?",
+                                        "J'aimerais comprendre vos motivations, pourquoi agir ainsi ?"]
+                                    self.output = random.choice(lst)
+                                    return self.output
+
+                                elif self.psychoVerbs[self.verbtuple[0]] == 'NegSad':
+                                    lst = ["Je suis desolée d'apprendre cela, continuez, parler vous aidera.",
+                                    "Je comprends... Dans ce cas, ne gardez pas ça pour vous, racontez-moi l'histoire."
+                                    "Continuez, garder ceci pour vous ne vous aidera pas, je suis là pour vous aider."]
+                                    self.output = random.choice(lst)
+                                    return self.output
+                                
+                                elif self.psychoVerbs[self.verbtuple[0]] == 'Love':
+                                    lst = ["C'est un sentiment plutôt positif! Continuez!", "Je comprends, c'est un bon sentiment! Dites m'en plus!",
+                                    "Très bien, ne vous arrêtez pas en si bon chemin, c'est une idée positive!"]
+                                    self.output = random.choice(lst)
+                                    return self.output
+
+                                else:
+                                    lst = ["Pourquoi un sentiment aussi négatif ?", "J'aimerais comprendre l'origine de ce sentiment négatif, cotinuez s'il vous plait.",
+                                    "Comment se fait-il que vous ayez une opinion si négative ?", "Expliquez-moi ce qui ne va pas."]
+                                    self.output = random.choice(lst)
+                                    return self.output
+                        else:
+                            
+                            posVerb = e
+
+                            if e > 1: #s'il y a au moins 2 mots avant le verbe alors il peut y avoir un pronom reflechi
+                                if lst[e-1] in self.reflexive.keys():
+                                    if lst[e-1] == 'nous':
+                                        for i in range(0,e-1):
+                                            if lst[i] == 'nous':
+                                                self.refl_pro = 'vous'
+                                    elif lst[e-1] == 'vous':
+                                        for i in range(0,e-1):
+                                            if lst[i] == 'vous':
+                                                self.refl_pro = 'nous'
+                                    else:
+                                        self.refl_pro = self.reflexive[lst[e-1]]
+                            break
+
         #recherche de sujet
         subjectScope = lst[:posVerb]
         ponct = ['.', ',', '!', '?', ';', ':']
@@ -235,13 +260,14 @@ class eliza():
         
         #recherche d'objet
         idx = posVerb + 1
-        while idx < len(lst) and lst[idx] not in ['.', '!', '?', ';', ':']:
-            self.objectInput.append(lst[idx])
-            idx += 1
+        if idx != len(lst):
+            self.objectInput = lst[idx:]                   
+        
+        
            
-
+    
     def searchSubject(self, subjectScope):
-        lstPro = ['je$', 'tu$', 'ils?$', 'j\'$', 'elles?$', 'on$', 'ça$'] # les $ apres chaque mot servent a marquer que c'est la fin du mot. Sinon on trouve "lesssss" pour les?, "lac" pour la, "savoir" pour sa etc.
+        lstPro = ['je$', 'tu$', 'ils?$', 'j\'$', 'elles?$', 'on$'] # les $ apres chaque mot servent a marquer que c'est la fin du mot. Sinon on trouve "lesssss" pour les?, "lac" pour la, "savoir" pour sa etc.
         for e in subjectScope:
             for pro in lstPro:
                 if re.match(pro, e):
@@ -270,36 +296,15 @@ class eliza():
         return self.subjectInput
 
 
+
     def defaultOutput(self):
         return random.choice(self.talkToMeMore)
 
     def getFinalAnswer(self): #reponse finale d'eliza
-        """
-        print self.subjectInput
-        print self.objectInput
-        print self.verb
-
-        sentence = self.politeness()
-        if sentence != None:
-            sentence = "Eliza : testest"
-        #if self.output == "":
-            #self.defaultOutput()
-        #return self.output 
-            return sentence
-        else:
-            return "test"
-        """
+       
         # ma version - Kira - Super - reste plus qu'à gérer les cas ou y'a un mot vulgaire ou un verbe psycho, mais ça sera sûrement ailleurs, on voit ça mercredi!
-        self.tokenize(self.input)
-        self.neg = self.negation(self.tokenInput)
-        self.tagging()
-        self.setPhrase()
-    
-        return self.output
-
-
-    def politeness(self): #politeness protocol 
-        # will return a reminder in case a rude word is used - THIS IS TO BE CHECKED IN THE INPUT FIRST (so we don't use the lefff in case a rude word is used)
+        f = self.input
+        x = ["C'est votre opinion qui m'intéresse.", "C'est moi qui pose les questions.", "Parlez-moi de vous plutôt."]
         rudeWords = ["chier","chie","chié","chiez","chiant","merde","sous-merde","emmerde","emmerdeur",
         "emmerdeuse","emmerdez","emmerder","conasse","connasse","conne","pétasse","poufiasse","grogniasse",
         "grognasse","abrutie","fiotte","connard","abruti","salopard","tasspe","sale porc","batard",
@@ -309,19 +314,24 @@ class eliza():
         answers = ["Ne soyez pas grossier, s'il vous plait!", "Recentrez-vous sur votre objectif !",
         "Veillez à soigner votre langage !", "Vous semblez ne pas avoir compris le but de cette thérapie !",
         "Insulter ceux qui veulent vous aider ne vous mènera à rien !"]
-        for words in sentence:
-            if words in rudeWords:
-                return random.choice(answers)
-            else:
-                break
-        return self.input #if rude, we answer directly, otherwise we keep on calculating the answer.
+        if f[:-1] == "?": #Si jamais l'input c'est une question
+            self.output = random.choice(x)
+            return self.output
+        self.tokenize(self.input)
+        testP = self.tokenInput
+        for e in testP: #Si jamais input vulgaire - 
+            if e in rudeWords:
+                self.output = random.choice(answers)
+                return self.output
+        
+        self.tagging()
+        self.setPhrase()
+    
+        return self.output
+        
 
-    #Retourne element correspondant de p dans le dictionnaire dic
-    def switchMe(self, p, dic): 
-        if p in dic:
-            return dic[p]
-        else:
-            return p
+    #def returnFinal(self, sentence):
+
 
     #LEFFF
     def split_lefff (self):
@@ -390,6 +400,8 @@ class eliza():
             return "Pp2\n" #Pp2 et pas P2p - Kira
         if f[1] == "Fs1\n":
             return "Fp2\n"
+        if f[1] == "PSs3\n":
+            return "PSs3\n"
         if f[1] == "Is2\n":
             return "Ip2\n"
         if f[1] == "Js2\n":
@@ -425,6 +437,18 @@ class eliza():
         @param subjectScope la partie de la phrase ou se trouve le sujet du verbe
         @return le verbe conjugue (e)"""
         
+        """
+        s = self.verb
+        f = split_lefff()
+        v = recup_inf (f, s)
+        t_inf_flex = (v[0], flexion(v))
+        pos = 0
+        while pos < len(lefff):
+            if lefff[pos][2] == t_inf_flex[0] and lefff[pos][3] == t_inf_flex[1]:
+                return lefff[pos][0]
+            pos = pos + 1
+        return talkToMeMore()
+        """
         
         #version modifiee - Kira
         print verbtuple
@@ -438,9 +462,36 @@ class eliza():
                     self.verb = verbform[0]
                     return self.verb
                 pos += 1
-        
+        print self.verb
         return self.verb
+        
+    
 
+     # nouvelle fonction qui gere des ambiguites dans lefff - Kira
+    def prepare_flexion(self, flexion, subjectScope):
+        print "testest"
+        if flexion[0] == 'Y': #si ca peut etre un imperatif
+            flexion = flexion[1:]
+        for i in range(len(flexion)):
+            if flexion[i] == '1':
+                if i+1 < len(flexion):
+                    if flexion[i+1] in ['2','3']: # si on a 12 ou 13 dans la flexion
+                        for e in subjectScope:
+                            if e in ['je', 'j\'']: #c'est la premiere personne
+                                new_flexion = flexion[:i+1]
+                                if i+2 < len(flexion):
+                                    new_flexion += flexion[i+2:]
+                                return new_flexion
+                    
+                        #sinon ce n'est pas la premiere personne
+                        if i>0:
+                            new_flexion = flexion[:i]
+                        else:
+                            new_flexion = []
+                        
+                        new_flexion += flexion[i+1:]
+                        return new_flexion
+        return flexion
     
     def stackRead(self): #lecture de la pile # MARINE
         return self.stack.pop()
@@ -448,8 +499,8 @@ class eliza():
     def stackWrite(self, s): #ecriture de la pile # MARINE
         self.stack.push(s)
         
-    
     def setPhrase(self): # fonction qui genere l'output
+        #print self.subjectInput
         determinants = ['un', 'une', 'la', 'le', 'les', 'l\'', 'des', 'ma', 'ta', 'sa', 'mon', 'ton', 'son', 'mes', 'tes', 'ses', 'nos', 'vos', 'leur', 'leurs', 'notre', 'votre']
         objectOutput = ""
         for e in range(len(self.objectInput)): #on change je-vous dans l'objet et on le transforme en chaine de caracteres
@@ -501,9 +552,7 @@ class eliza():
                             return self.output
                         
             if self.stack.size() > 0: # sinon on prend de la pile
-                memory = ""
-                tuple_memory = self.stackRead()
-                memory = tuple_memory[0] + " " + tuple_memory[1]
+                memory = self.stackRead() #NEW - ajouter un det ici, non? Comme "votre chat"? oui mais pour ca il faut que le nom dans la pile soit avec son det
                 phrase1 = "Revenons a " + memory + ". Pourriez-vous m'en parlez plus?"
                 phrase2 = "Parlez-moi plus de " + memory + ", s'il vous plait."
                 phrase3 = "Parlez-moi encore de " + memory + ", c'est important pour vous?"
@@ -542,9 +591,6 @@ class eliza():
             
             if subjectOutput == "":
                 self.output = self.defaultOutput()
-                #res = self.output #-AJOUT MON 17
-                #self.res_fields() #-AJOUT MON 17
-                #return res #old
                 return self.output
                 
             
@@ -555,7 +601,7 @@ class eliza():
             phrase5 = "Parlez-moi encore de " + subjectOutput + "."
         
         elif len(self.subjectInput) > 0 and self.verb != "": # on a le sujet ET le verbe
-            verbOutput = self.verb
+            #verbOutput = self.verb
             if len(self.verbtuple) > 0:
                 verbOutput = self.conjugaison(self.verbtuple, self.subjectInput)
             
@@ -579,86 +625,90 @@ class eliza():
             
             if subjectOutput == "":
                 self.output = self.defaultOutput()
+                #res = self.output #-AJOUT MON 17
+                #self.res_fields() #-AJOUT MON 17
+                #return res #old
                 return self.output
-            
-            ne = ""
-            if self.neg: 
-                ne = "ne "
-            
-            if subjectOutput in ['vous', 'ils', 'elles']:
-                self.output = "Pourquoi " + ne + self.refl_pro + " " + verbOutput + "-" + subjectOutput + " " + objectOutput + "?"
-            elif subjectOutput in ['il', 'elle']:
-                if verbOutput[-1] in ['a', 'e', 'o', 'u', 'i']:
-                    self.output = "Pourquoi " + ne + self.refl_pro + " " + verbOutput + "-t-" + subjectOutput + " " + objectOutput + "?"
+
+            if self.negation(self.tokenInput) == True:
+                variability = ['Pourquoi ne ', 'Mais d\'après vous, pourquoi ne ', 'Je vois, mais selon vous, pourquoi ne ', 
+                'Mais selon vous, pourquoi ne ', 'Et d\'après vous, pourquoi ne ', 'D\'accord, mais pourquoi ne ', 'Et pourquoi ne ',
+                'Je vois, et selon vous, pourquoi ne ', 'Très bien, mais pourquoi ne ', 'Et selon vous, pourquoi ne ', 
+                'Et en quoi ne ', 'Selon vous, en quoi ne ', 'D\'après vous, en quoi ne ']
+                if subjectOutput in ['vous', 'ils', 'elles']:
+                    self.output = random.choice(variability) + self.refl_pro + " " + verbOutput + "-" + subjectOutput + " " + objectOutput + "?"
+                elif subjectOutput in ['il', 'elle']:
+                    if verbOutput[-1] in ['a', 'e', 'o', 'u', 'i']:
+                        self.output = random.choice(variability) + self.refl_pro + " " + verbOutput + "-t-" + subjectOutput + " " + objectOutput + "?"
+                    else:
+                        self.output = random.choice(variability) + self.refl_pro + " " + verbOutput + "-" + subjectOutput + " " + objectOutput + "?"
+                elif len(self.subjectInput) > 1 and self.subjectInput[0] in ['la', 'une', 'cette']:
+                    subjectOutput = "elle"
+                    if verbOutput[-1] in ['a', 'e', 'o', 'u', 'i']:
+                        self.output = random.choice(variability) + self.refl_pro + " " + verbOutput + "-t-" + subjectOutput + " " + objectOutput + "?"
+                    else:
+                        self.output = random.choice(variability) + self.refl_pro + " " + verbOutput + "-" + subjectOutput + " " + objectOutput + "?"
+                elif len(self.subjectInput) > 1 and self.subjectInput[0] in ['le', 'un', 'cet', 'ce']:
+                    subjectOutput = "il"
+                    if verbOutput[-1] in ['a', 'e', 'o', 'u', 'i']:
+                        self.output = random.choice(variability) + self.refl_pro + " " + verbOutput + "-t-" + subjectOutput + " " + objectOutput + "?"
+                    else:
+                        self.output = random.choice(variability) + self.refl_pro + " " + verbOutput + "-" + subjectOutput + " " + objectOutput + "?"
+                elif len(self.subjectInput) > 1 and self.subjectInput[0] in ['les', 'ces']: #pas de "des" car ambigu: article pl ou prep+article
+                    subjectOutput = "ils"
+                    self.output = random.choice(variability) + self.refl_pro + " " + verbOutput + "-" + subjectOutput + " " + objectOutput + "?"
+                    
                 else:
-                    self.output = "Pourquoi " + ne + self.refl_pro + " " + verbOutput + "-" + subjectOutput + " " + objectOutput + "?"
-            elif len(self.subjectInput) > 1 and self.subjectInput[0] in ['la', 'une', 'cette']:
-                subjectOutput = "elle"
-                if verbOutput[-1] in ['a', 'e', 'o', 'u', 'i']:
-                    self.output = "Pourquoi " + ne + self.refl_pro + " " + verbOutput + "-t-" + subjectOutput + " " + objectOutput + "?"
-                else:
-                    self.output = "Pourquoi " + ne + self.refl_pro + " " + verbOutput + "-" + subjectOutput + " " + objectOutput + "?"
-            elif len(self.subjectInput) > 1 and self.subjectInput[0] in ['le', 'un', 'cet', 'ce']:
-                subjectOutput = "il"
-                if verbOutput[-1] in ['a', 'e', 'o', 'u', 'i']:
-                    self.output = "Pourquoi " + ne + self.refl_pro + " " + verbOutput + "-t-" + subjectOutput + " " + objectOutput + "?"
-                else:
-                    self.output = "Pourquoi " + ne + self.refl_pro + " " + verbOutput + "-" + subjectOutput + " " + objectOutput + "?"
-            elif len(self.subjectInput) > 1 and self.subjectInput[0] in ['les', 'ces']: #pas de "des" car ambigu: article pl ou prep+article
-                subjectOutput = "ils"
-                self.output = "Pourquoi " + ne + self.refl_pro + " " + verbOutput + "-" + subjectOutput + " " + objectOutput + "?"
+                    phrase1 = "Pourquoi dites-vous que " + subjectOutput + self.refl_pro + " " + verbOutput + " " + objectOutput + "?"
+                    phrase2 = "Pourquoi pensez-vous que " + subjectOutput + self.refl_pro + " " + verbOutput + " " + objectOutput + "?"
+                    phrase3 = "Qu'est ce que vous fait dire que " + subjectOutput + self.refl_pro + " " + verbOutput + " " + objectOutput + "?"
+                    phrase4 = "Je vois, " + subjectOutput + self.refl_pro + " " + verbOutput + " " + objectOutput + ". Continuez, s'il vous plait."
                 
-            else:        
-                phrase1 = "Pourquoi dites-vous que " + subjectOutput + self.refl_pro + " " + verbOutput + " " + objectOutput + "?"
-                phrase2 = "Pourquoi pensez-vous que " + subjectOutput + self.refl_pro + " " + verbOutput + " " + objectOutput + "?"
-                phrase3 = "Qu'est ce que vous fait dire que " + subjectOutput + " " + self.refl_pro + " " + verbOutput + " " + objectOutput + "?"
-                phrase4 = "Je vois, " + subjectOutput + self.refl_pro + " " + verbOutput + " " + objectOutput + ". Continuez, s'l vous plait."
-                phrase5 = "Pourquoi " + subjectOutput + self.refl_pro + " " + verbOutput + " " + objectOutput + "?"
+                    self.output = random.choice([phrase1, phrase2, phrase3, phrase4])
+            else:
+                variability = ['Pourquoi ', 'Mais d\'après vous, pourquoi ', 'Je vois, mais selon vous, pourquoi ', 
+                'Mais selon vous, pourquoi ', 'Et d\'après vous, pourquoi ', 'D\'accord, mais pourquoi ', 'Et pourquoi ',
+                'Et en quoi ', 'Je vois, et selon vous, pourquoi ', 'Très bien, mais pourquoi ', 'Et selon vous, pourquoi ' 
+                'Et en quoi ', 'Selon vous, en quoi ', 'D\'après vous, en quoi']
+                if subjectOutput in ['vous', 'ils', 'elles']:
+                    self.output = random.choice(variability) + self.refl_pro + " " + verbOutput + "-" + subjectOutput + " " + objectOutput + "?"
+                elif subjectOutput in ['il', 'elle']:
+                    if verbOutput[-1] in ['a', 'e', 'o', 'u', 'i']:
+                        self.output = random.choice(variability) + self.refl_pro + " " + verbOutput + "-t-" + subjectOutput + " " + objectOutput + "?"
+                    else:
+                        self.output = random.choice(variability) + self.refl_pro + " " + verbOutput + "-" + subjectOutput + " " + objectOutput + "?"
+                elif len(self.subjectInput) > 1 and self.subjectInput[0] in ['la', 'une', 'cette']:
+                    subjectOutput = "elle"
+                    if verbOutput[-1] in ['a', 'e', 'o', 'u', 'i']:
+                        self.output = random.choice(variability) + self.refl_pro + " " + verbOutput + "-t-" + subjectOutput + " " + objectOutput + "?"
+                    else:
+                        self.output = random.choice(variability) + self.refl_pro + " " + verbOutput + "-" + subjectOutput + " " + objectOutput + "?"
+                elif len(self.subjectInput) > 1 and self.subjectInput[0] in ['le', 'un', 'cet', 'ce']:
+                    subjectOutput = "il"
+                    if verbOutput[-1] in ['a', 'e', 'o', 'u', 'i']:
+                        self.output = random.choice(variability) + self.refl_pro + " " + verbOutput + "-t-" + subjectOutput + " " + objectOutput + "?"
+                    else:
+                        self.output = random.choice(variability) + self.refl_pro + " " + verbOutput + "-" + subjectOutput + " " + objectOutput + "?"
+                elif len(self.subjectInput) > 1 and self.subjectInput[0] in ['les', 'ces']: #pas de "des" car ambigu: article pl ou prep+article
+                    subjectOutput = "ils"
+                    self.output = random.choice(variability) + self.refl_pro + " " + verbOutput + "-" + subjectOutput + " " + objectOutput + "?"
                 
-                self.output = random.choice([phrase1, phrase2, phrase3, phrase4, phrase5])
+                else:
+                    phrase1 = "Pourquoi dites-vous que " + subjectOutput + self.refl_pro + " " + verbOutput + " " + objectOutput + "?"
+                    phrase2 = "Pourquoi pensez-vous que " + subjectOutput + self.refl_pro + " " + verbOutput + " " + objectOutput + "?"
+                    phrase3 = "Qu'est ce que vous fait dire que " + subjectOutput + self.refl_pro + " " + verbOutput + " " + objectOutput + "?"
+                    phrase4 = "Je vois, " + subjectOutput + self.refl_pro + " " + verbOutput + " " + objectOutput + ". Continuez, s'il vous plait."
+                    
+                    self.output = random.choice([phrase1, phrase2, phrase3, phrase4])
                 
         if self.output == "":
             self.output = self.defaultOutput()
         
         return self.output
               
+              
     
-    def psycho(self):
-        verb = self.recup_inf(self.verb)
-        if verb in self.psychoVerbs:
-            if self.psychoVerbs[verb] == 'NeutralSurprise':
-                print 'En quoi cela vous verb-t-il ?'
-                print 'Pourquoi ceci vous verb-t-il ?'
-            elif self.psychoVerbs[verb] == 'NegFear':
-                print 'Pourquoi vous sentez-vous ...'
-                print 'Qu\'est-ce qui vous fait vous sentir'
-            elif self.psychoVerbs[verb] == 'LoveHate':
-                if self.obj in humans:
-                    print 'Pourquoi self.verb-vous \'blabla\' ?'
-                    print 'Qu\'est-ce que vous self.verb chez \'blabla\' ?'
-                if self.obj in animal:
-                    print 'Dites-moi pouquoi vous verb \'blabla\' ?'
-                    print 'Pourquoi verb-vous cet \'blabla\' ?'
-                elif self.obj in obj:
-                    print 'Et que pensez-vous de ceci ?'
-                    print 'Et que ceci vous inspire-t-il ?'
-            elif self.psychoVerbs[verb] == 'PosSurprise':
-                print 'C\'est bien! Dites m\'en plus!'
-                print 'C\'est très bien, j\'aimerais en savoir plus, dites-moi donc!'
-            elif self.psychoVerbs[verb] == 'PosSensitive':
-                print 'Pourquoi ceci vous verb-t-il?'
-                print 'Dites-moi en quoi ceci vous verb'
-            elif self.psychoVerbs[verb] == 'NegSad':
-                print 'Pourquoi pensez-vous que \'blabla\' a un rapport avec vos problèmes?'
-                print 'Pourquoi \'machin\' vous verb-t-il?'
-            else:
-                return verb
-        else:
-            self.verb
-        return verb
-
-    def keyWords(self):
-        pass
+   
 
     def res_fields(self):
         self.input = ""
@@ -666,11 +716,9 @@ class eliza():
         self.subjectInput = []
         self.objectInput = []
         self.verb = ""
-        self.neg = False
-        self.refl_pro = ""
         self.output = ""
-        #self.personResponse = ""
-        #self.objectResponse = ""      
+        self.personResponse = ""
+        self.objectResponse = ""      
     
     # nouvelle fonction qui gere des ambiguites dans lefff - Kira
     def prepare_flexion(self, flexion, subjectScope):
@@ -696,54 +744,10 @@ class eliza():
                         new_flexion += flexion[i+1:]
                         return new_flexion
         return flexion
-        
-        
-        
-     def prepare_flexion(self, flexion, subjectScope):
-        if flexion[0] == 'Y': #si ca peut etre un imperatif
-            flexion = flexion[1:]
-        for i in range(len(flexion)):
-            if flexion[i] == '1': 
-                if i+1 < len(flexion):
-                    if flexion[i+1] in ['2','3']: # si on a 12 ou 13 dans la flexion
-                        for e in subjectScope:
-                            if e in ['je', 'j\'']: #c'est la premiere personne
-                                new_flexion = flexion[:i+1]
-                                if i+2 < len(flexion):
-                                    new_flexion += flexion[i+2:]
-                                return new_flexion
                     
-                        #sinon ce n'est pas la premiere personne
-                        if i>0:
-                            new_flexion = flexion[:i]
-                        else:
-                            new_flexion = []
-                        
-                        new_flexion += flexion[i+1:]
-                        return new_flexion
-        return flexion
-                    
-                        
                     
     
-    #def setPhrase(): #phrases a trous - KIRA - Liste correspondante: whatsTheWordHummingbird 
-        #On va te donner les phrases
-
-    #def subjectCorrespondance(): #pronoms sujet # BENJAMIN
-        #Doit definir self.personInput
-        #A troisieme personne par defaultm sauf si pronom perso
-
-    #COD, COI, possessifs reflexifs # BENJAMIN
-
-    ###def verbIdentification(): # reconnaissance du verbe # BENJAMIN
-    #def negation(): #Benjamin
-        #ne, pas, jamais, ni, "n\'"
-    
-    ###def lefff(): #fichier + champs verb # BENJAMIN
-
-    
-    #def politeness(): #protocole de politesse # JESSICA
-        #liste de mots vulgaires
+  
 
    
 
@@ -758,34 +762,27 @@ talkToMeMore = ["Pourriez-vous m'en dire plus?", "Que voulez-vous dire?", "Pourr
         "Que voulez-vous dire par là?", "Pourriez-vous m'en dire d'avantage?", "Qu'est-ce que cela veut dire pour vous?", "Ceci a-t-il un sens particulier pour vous?",
         "Et que ceci vous inspire-t-il?"]
 
-allMyKeywords={'propriétaires?': 'human', 'familles?': 'human', 'fils$': 'human', 'électricien.{0,3}': 'human', 'épou.{1,2}$': 'human', 
-'patron.{0,3}$': 'human', 'voisin.{0,2}$': 'human', 'frères?': 'human', 'soeurs?': 'human', 
+allMyKeywords={'propriétaires?': 'human', 'familles?': 'human', 'fils': 'human', 'électricien.{0,3}': 'human', 'épou.{1,2}': 'human', 
+'patron.{0,3}': 'human', 'voisin.{0,2}': 'human', 'frères?': 'human', 'soeurs?': 'human', 
 'comptables?': 'human','copains?': 'human', 'femmes?': 'human', 'fromagers?': 'human', 
-'belles?-filles?': 'human', 'maris?$': 'human', 'diéticien.{0,3}': 'human', 'grands?-mères?': 'human', 
-'beaux?-frères?': 'human', 'oncles?': 'human', 'belles?-mères?': 'human', 'potes?$': 'human', 
-'cousin.{0,2}': 'human', 'ami.{0,2}$': 'human', 'élèves?$': 'human', 'petits?-fils': 'human', 
-'pédiatres?': 'human', 'psychologues?': 'human', 'médecins?$': 'human', 
+'belles?-filles?': 'human', 'maris?': 'human', 'diéticien.{0,3}': 'human', 'grands?-mères?': 'human', 
+'beaux?-frères?': 'human', 'oncles?': 'human', 'belles?-mères?': 'human', 'potes?': 'human', 
+'cousin.{0,2}': 'human', 'ami.{0,2}': 'human', 'élèves?': 'human', 'petits?-fils': 'human', 
+'pédiatres?': 'human', 'femme de ménage': 'human', 'psychologues?': 'human', 'médecins?': 'human', 
 'beaux?-fils': 'human', 'petites?-fille': 'human', 'plombiers?': 'human', 'collègues?': 'human', 
 'architectes?': 'human', 'tantes?': 'human', 'boucher': 'human', 'père': 'human', 'psychiatres?': 'human', 
 'belles?-soeurs?': 'human', 'petite?-amie?': 'human', 'copines?': 'human', 'beaux?-pères?': 'human', 
-'grands?-pères?': 'human', 'filles?$': 'human', 'boulanger': 'human', 'docteurs?': 'human', 'mère': 'human', 
-'profs?': 'human', 'professeurs?': 'human', 'professions?':'obj', 'chats?': 'animal', 'chiens?': 'animal', 'poissons?': 'animal', #'poissons? rouges?': 'animal',
-'voitures?': 'obj', 'maisons?': 'obj', 'travail$': 'obj', 'jobs?': 'obj','métiers?': 'obj', 'enfants?$': 'human', 'ordinateurs?':'obj',
+'grands?-pères?': 'human', 'filles?': 'human', 'boulanger': 'human', 'docteurs?': 'human', 'mère': 'human', 
+'profs?': 'human', 'professeurs?': 'human', 'professions?':'obj', 'chats?': 'animal', 'chiens?': 'animal', 'poissons?': 'animal', 'poissons? rouges?': 'animal',
+'voitures?': 'obj', 'maisons?': 'obj', 'travail': 'obj', 'jobs?': 'obj','métiers?': 'obj', 'enfants?': 'human', 'ordinateurs?':'obj',
 'bureaux?': 'obj'}
 
-psychoVerbs = {'plaire': 'PosSurprise', 'déplaire': 'NegSad', 'ébahir': 'NeutralSurprise', 'surprendre': 'NeutralSurprise', 'souffler': 'NeutralSurprise', 'terroriser': 'NegFear', 'éblouir': 'PosSurprise', 
-'renverser': 'NeutralSurprise', 'admirer': 'NeutralSurprise', 'effrayer': 'NegFear', 'attrister': 'NegSad', 'haïr': 'LoveHate', 'aimer': 'LoveHate', 
-'interdire': 'NeutralSurprise', 'étonner': 'NeutralSurprise', 'interloquer': 'NeutralSurprise', 'émotionner': 'PosSensitive', 
-'stupéfier': 'NeutralSurprise', 'chiffonner': 'NegSad', 'méduser': 'NeutralSurprise', 'désoler': 'NegSad', 'épater': 'NeutralSurprise', 'détester': 'LoveHate', 
-'troubler': 'PosSensitive', 'remuer': 'PosSensitive', 'abasourdir': 'NeutralSurprise', 'effaroucher': 'NegFear', 'intimider': 'NegFear',
-'peiner': 'NegSad', 'ébaubir': 'NeutralSurprise', 'saisir': 'NeutralSurprise', 'estomaquer': 'NeutralSurprise', 'ahurir': 'NeutralSurprise', 'adorer': 'LoveHate',
-'terrifier': 'NegFear', 'amuser': 'PosSensitive', 'affoler': 'NegFear', 'apeurer': 'NegFear', 'alarmer': 'NegFear', 'rembrunir': 'NegSad', 
-'chavirer': 'PosSensitive', 'paniquer': 'NegFear', 'affecter': 'NegSad', 'toucher': 'PosSensitive', 'chagriner': 'NegSad', 'confondre': 'NeutralSurprise', 
-'tournebouler': 'PosSensitive', 'atteindre': 'NegSad', 'contrarier': 'NegSad', 'affliger': 'NegSad', 'époustoufler': 'NeutralSurprise', 'glacer': 'NegFear', 
-'horrifier': 'NegFear', 'frapper': 'NeutralSurprise', 'scier': 'NeutralSurprise', 'bouleverser': 'PosSensitive', 
-'émouvoir': 'PosSensitive', 'chambouler': 'PosSensitive', 'inquiéter': 'NegFear', 'émerveiller': 'PosSurprise', 'épouvanter': 'NegFear', 'angoisser': 'NegFear', 
-'assombrir': 'NegSad', 'navrer': 'NegSad', 'ébouriffer': 'NeutralSurprise', 'sidérer': 'NeutralSurprise', 'préoccuper': 'NegSad', 'dégoûter': 'NegSad' }   
-
+psychoVerbs = {'haïr': 'Hate', 'aimer': 'Love',  'détester': 'Hate', 'adorer': 'Love',
+'terroriser': 'NegFear', 'effrayer': 'NegFear' , 'alarmer': 'NegFear', 'terrifier': 'NegFear',
+'paniquer': 'NegFear', 'intimider': 'NegFear', 'peiner': 'NegSad', 'attrister': 'NegSad',  
+'inquiéter': 'NegFear', 'épouvanter': 'NegFear', 'angoisser': 'NegFear', 'abhorrer': 'Hate', 
+'mépriser': 'Hate', 'dénigrer': 'Hate', 'paniquer': 'NegFear', 'jouir': 'Love', 'apprécier': 'Love', 
+'stresser': 'NegFear', 'plaire': 'Love'}
 
 myPronouns = {'je':'vous', 'j\'':'vous', 'me':'vous', 'm\'':'vous', 'moi':'vous', 'tu':'je', 'te':'me', 't\'':'me', 
 'toi':'moi', 'nous':'vous', 'mien':'vôtre','tien':'mien', 'sien':'sien','mienne':'vôtre', 'tienne':'mienne', 
@@ -799,6 +796,6 @@ myPronouns = {'je':'vous', 'j\'':'vous', 'me':'vous', 'm\'':'vous', 'moi':'vous'
 
 reflexive = {'me' : 'vous', 'm\'' : 'vous', 'se' : 'se', 's\'' : 's\'', 'nous' : 'vous', 'te' : 'me', 't\'' : 'm\'', 'vous' : 'me'}
 
-detPoss = det = {'ma':['votre'], 'mon':['votre'], 'un':['cet'], 'une':['cette'], 'des':['ces'], 'nos':['vos'], 'notre':['votre']}
+detPoss = {'ma':['votre'], 'mon':['votre'], 'un':['cet'], 'une':['cette'], 'des':['ces'], 'nos':['vos'], 'notre':['votre']}
 
 
