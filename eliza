@@ -13,55 +13,70 @@ Created on Tue Apr 23 10:36:29 2013
 
 @author: BAbemonty, MChassang, KKiranova, JTanon
 """
-class eliza(): 
+class eliza():
+    
+    """
+    The core class of Eliza that contains all the fundamental functions.
+    """
 
     def __init__(self):
         
         """
-        @param String self.input                -   user entry from GUI
-        @param str-List self.tokenInput         -   token list from user input   
-        @param str-List self.subjectInput       -   token list for subject scope
-        @param str-List self.objectInput        -   token list for object scope
-        @param String self.verb                 -   identified verb
-        @param str-Tuple self.verbtuple         -   tuple infinitif + flexion
-        @param tuple-List self.stack            -   stack of keywords and objects (Eliza's memory)
-        @param String self.output               -   calculated answer (to be sent back to GUI)  
-        @param String-dict self.myPronouns      -   pronouns dictionary
-        @param String-dict self.talkToMeMore    -   random sentence (if self.output is empty)
-        @param String-dict self.psychoVerbs     -   psychological verbs dictionary
-        @param String-dict self.allMyKeywords   -   keywords dictionary
+        creates an instance of Eliza
+        
+        fields:
+        String self.input                -   user entry from GUI
+        str-List self.tokenInput         -   token list from user input   
+        str-List self.subjectInput       -   token list for subject
+        str-List self.objectInput        -   token list for object
+        String self.verb                 -   identified verb
+        str-Tuple self.verbtuple         -   tuple (infinitive + flexion)
+        tuple-List self.stack            -   stack of keywords (Eliza's memory)
+        String self.output               -   calculated answer (to be sent back to GUI)  
+        String refl_pro                  -   identified reflexive pronoun
+        boolean neg                      -   negative/positive status of the input
+        dict self.myPronouns             -   pronouns dictionary
+        dict self.talkToMeMore           -   random sentence (if self.output is empty)
+        dict self.psychoVerbs            -   psychological verbs dictionary
+        dict self.allMyKeywords          -   keywords dictionary
+        String file_lefff                -   the name of the text file containing LEFFF
 
         """
+
+
         
-        self.input = "" 
-        self.tokenInput = [] 
-        self.subjectInput = []  
-        self.objectInput = []  
-        self.verb = ""  
-        self.verbtuple = [] 
-        self.stack = stack.stack()
+        self.input = ""
+        self.tokenInput = []
+        self.subjectInput = []
+        self.objectInput = []
+        self.verb = ""
+        self.verbtuple = []
+        self.stack = stack()
         self.output = "" 
-        self.refl_pro = "" #pronom reflechi eventuellement #AJOUTE 19/06 Kira
+        self.refl_pro = "" 
+        self.neg = False 
         self.myPronouns = myPronouns
         self.talkToMeMore = talkToMeMore
         self.psychoVerbs = psychoVerbs
-        self.reflexive = reflexive
         self.allMyKeywords = allMyKeywords
+        self.reflexive = reflexive
+        self.file_lefff = "Lefff.txt"
+        
     
     
     def setInput(self, text):
         """
-        @param String text  -   user entry
+        passes a string to Eliza as input
+        :param text: user entry
         """
+        self.input = text.encode('utf-8')
         
-        self.input = text.encode('utf-8').lower() #lower, sauf si on decide de mettre un truc genre "ne criez pas!"
-        #self.input # NEW tuesday 18
         
-
-
     def tokenize (self, entry):
         """
-        @param String entry     -   user entry
+        tokenizes a string (divides a text by words)
+        :param entry: input phrase (user entry)
+        :returns: a list of words
         """
         
         s = entry
@@ -71,8 +86,8 @@ class eliza():
         elision = ['c', 'd', 'j', 'l', 'm', 'n', 's', 't'] # short words elided before an apostrophe, like me - m', ce - c'
         ponct = ['.', ',', '!', '?', ';', ':', '"', '(', ')', '[', ']']
         while f < len(s):
-            word = ""
-            sponct = "" 
+            word = "" # the next token
+            sponct = "" # the next punctuation mark
             if(s[f] == " "):
                 word = s[d:f]
                 f += 1
@@ -97,7 +112,7 @@ class eliza():
                         d = f
                     else: # it is a word with an apostrophe in the middle (like "aujourd'hui")
                         f += 1
-                else: # not a lettre from the elision list : it can't be two words
+                else: # not a lettre from the elision list : it is a word with an apostrophe in the middle
                     f += 1
             else:
                 f += 1
@@ -112,56 +127,62 @@ class eliza():
             token_list.append(word)
         
         if token_list[-1] in ponct:
-            token_list = token_list[:-1] # on ne garde pas le point a la fin 
+            token_list = token_list[:-1] # cut the punctuation mark in the end of the phrase
         
         self.tokenInput = token_list
+        return self.tokenInput
+          
     
-    #NEW - ADDED WED 19
-    def negation (self, t):
+    def negation (self, text):
+        """
+        determines if the phrase is negative or positive
+        :param text: phrase in the input
+        """
         lst1 = ["jamais", "rien", "ne", "n\'", "ni"]
         
-        lst3 = ["pas", "plus", "point"]
+        lst2 = ["pas", "plus", "point"]
         
-        for e in t:
+        for e in text:
             if e in lst1 :
                 return True
-            elif e in lst3:
+            elif e in lst2:
                 for elem  in lst1:
-                    if elem in t:
+                    if elem in text:
                         return True
-    
         return False
     
-    def tagging(self): #ma version de tagging - Kira
-
-        print "testtagg"
+    
+    def tagging(self): 
+        """
+        identifies the main verb, the subject and the object of the phrase
+        """
+       
         lst = self.tokenInput
-        #print lst
-        # recherche de verbe
-        posVerb = len(lst)-1
         
-        #pronouns = ['c\'', 'j\'', 'm\'', 'n\'', 's\'', 't\'', 'me', 'te', 'se', 'ne'] #precedent toujours un verbe
-        for elem in range(len(lst)):
-            for i in self.allMyKeywords:
-                if re.match(i, lst[elem]): #recherche avec regex
-                    self.stackWrite(lst[elem]) #stakWrite prend un argu?? oui c'est push!
-
-        if self.verb == "":
+              
+        for elem in range(len(lst)): # looks for keywords in the phrase. If found, adds them to the stack(memory) 
+            if elem > 0: # first element has no DET so it cannot form a tuple (det+noun)
+                for i in self.allMyKeywords.keys():
+                    if re.match(i, lst[elem]): # search with regex in the keywords 
+                        self.stackWrite(lst[elem-1:elem+1])
+        
+        # verb identification
+        
+        posVerb = len(lst)-1 # the position of the verb, by default it is the last word in the phrase
+  
+                        
+        if self.verb == "": # looking for the verb form in LEFFF
             lefff = self.split_lefff()
             for e in range(len(lst)):
-                if lst[e] != 'tu': #sinon elle pense que tu est le participe passe de taire!
+                if lst[e] not in ['tu', 'lui']: # homonymous with past participle of verbs "taire" et "luire"
                     in_lefff = self.recup_inf(lefff, lst[e], lst[:e])
-                    if in_lefff != 0: # si verbe trouve dans Lefff
+                    if in_lefff != 0: # if verb form found in LEFFF
                         self.verb = lst[e]
-                        print "test"
-                        print len(self.verb)
-                        self.verbtuple = in_lefff #infinitif+flexion
-                        print self.verb
-                        print self.verbtuple
+                        self.verbtuple = in_lefff # infinitive form  + flexion of the verb
                         posVerb = e
-                        subjectScope =  lst[:posVerb]
-                        if self.verbtuple[0] in self.psychoVerbs:
-                            if self.negation(self.tokenInput) == True: 
+                        
+                        if self.verbtuple[0] in self.psychoVerbs: # if the verb is psychologically marked, use one of the precomposed answers
+                            if self.neg: 
                                 if self.psychoVerbs[self.verbtuple[0]] == 'NegFear':
                                     if self.tuple[0] in ['paniquer', 'angoisser', 'stresser']:  
                                         lst = ["Faire preuve de self-contrôle est une bonne chose! Continuez, je voudrais en savoir plus sur ce sujet.", 
@@ -220,28 +241,26 @@ class eliza():
                                     "Comment se fait-il que vous ayez une opinion si négative ?", "Expliquez-moi ce qui ne va pas."]
                                     self.output = random.choice(lst)
                                     return self.output
-                        else:
-                            
-                            posVerb = e
-
-                            if e > 1: #s'il y a au moins 2 mots avant le verbe alors il peut y avoir un pronom reflechi
-                                if lst[e-1] in self.reflexive.keys():
-                                    if lst[e-1] == 'nous':
-                                        for i in range(0,e-1):
-                                            if lst[i] == 'nous':
-                                                self.refl_pro = 'vous'
-                                    elif lst[e-1] == 'vous':
-                                        for i in range(0,e-1):
-                                            if lst[i] == 'vous':
-                                                self.refl_pro = 'nous'
-                                    else:
-                                        self.refl_pro = self.reflexive[lst[e-1]]
-                            break
-
-        #recherche de sujet
-        subjectScope = lst[:posVerb]
+                      
+                        if e > 1: # if there are at least 2 words before the verb, there can be a reflexive pronoun
+                            if lst[e-1] in self.reflexive.keys():
+                                if lst[e-1] == 'nous': # the pronouns "nous" and "vous" are considered reflexive only if there is another "nous" or "vous" in the phrase
+                                    for i in range(0,e-1):
+                                        if lst[i] == 'nous':
+                                            self.refl_pro = 'vous' # inversion of the reflexive pronoun
+                                elif lst[e-1] == 'vous':
+                                    for i in range(0,e-1):
+                                        if lst[i] == 'vous':
+                                            self.refl_pro = 'nous' # inversion of the reflexive pronoun
+                                else:
+                                    self.refl_pro = self.reflexive[lst[e-1]] # inversion of the reflexive pronoun
+                        break
+           
+        # subject identification
+        
+        subjectScope = lst[:posVerb] # all the part of the phrase before the verb may be the subject (example : "Ma petite fille blonde est venue")
         ponct = ['.', ',', '!', '?', ';', ':']
-        newScope = subjectScope
+        newScope = subjectScope # we consider as subject only the part of the phrase after the punctuation marks
         
         for i in range(len(subjectScope)):
             if subjectScope[i] in ponct:
@@ -252,34 +271,43 @@ class eliza():
         
         subjectScope = newScope
                 
-        
-        #print subjectScope
         if len(subjectScope) > 0:
-            self.searchSubject(subjectScope)
+            self.subjectInput = self.searchSubject(subjectScope)
         
         
-        #recherche d'objet
-        idx = posVerb + 1
-        if idx != len(lst):
-            self.objectInput = lst[idx:]                   
-        
-        
-           
+        # object identification
     
+        idx = posVerb + 1
+        while idx < len(lst) and lst[idx] not in ['.', '!', '?', ';', ':']:
+            self.objectInput.append(lst[idx]) # the object is the part of the phrase between the verb and the end of the phrase
+            idx += 1
+        
+
     def searchSubject(self, subjectScope):
-        lstPro = ['je$', 'tu$', 'ils?$', 'j\'$', 'elles?$', 'on$'] # les $ apres chaque mot servent a marquer que c'est la fin du mot. Sinon on trouve "lesssss" pour les?, "lac" pour la, "savoir" pour sa etc.
+        """
+        search for subject in the text given
+        :param subjectScope: the first part of the phrase (a token list)
+        :returns: the subject of the phrase
+        """
+        lstPro = ['je$', 'tu$', 'ils?$', 'j\'$', 'elles?$', 'on$', 'ça$'] # these words before the verb are always subjects
         for e in subjectScope:
             for pro in lstPro:
                 if re.match(pro, e):
                     self.subjectInput.append(e)
                     return self.subjectInput
+        
         return self.searchDet(subjectScope)
 
     
     def searchDet(self, subjectScope):
+        """
+        search for a couple DET+noun in the text given
+        :param subjectScope: the first part of the phrase (a token list)
+        :returns: the subject of the phrase
+        """
         length = len(subjectScope)-1
-        elem = subjectScope[length] #- !! ALWAYS OUT OF RANGE !! reglé - on n'appelle pas la fonction si subjectScope est vide - Kira
-        pronouns = ['c\'', 'l\'', 'm\'', 'n\'', 's\'', 't\'', 'me', 'te', 'se', 'ne', 'la', 'le', 'les']
+        elem = subjectScope[length] # the word just before the verb (last word of subjectScope)
+        pronouns = ['c\'', 'l\'', 'm\'', 'n\'', 's\'', 't\'', 'me', 'te', 'se', 'ne', 'la', 'le', 'les'] # words that can precede the verb but should not be in the subject
         lstDet = ['les?$', 'la$', 'une?$', 'des$', 'l\'$', 'mon$', 'ton$',
         'son$', 'ma$', 'ta$', 'sa$', 'mes$', 'tes$', 'ses$', 'nos$', 'vos$', 'leurs?$',
         'notre$', 'votre$', 'ce.{0,3}$', 'deux$', 'trois$', 'quatre$', 'cinq$', 'aucun.*',
@@ -293,18 +321,38 @@ class eliza():
                     else:
                         self.subjectInput = subjectScope[e:length+1]
                     return self.subjectInput
+        
+        # if there is no nominal group with DET found
+        i = length
+        
+        while i >= 0: # must not include in the subject the pronouns
+            if subjectScope[i] in pronouns:
+                length -= 1
+            i -= 1
+             
+        if length == 0: # if there is left only one word, it is very probably the subject
+            self.subjectInput.append(subjectScope[0])
+            return self.subjectInput
+        
         return self.subjectInput
-
+            
 
 
     def defaultOutput(self):
+        """
+        continue the conversation (if Eliza didn't understand the phrase)
+        :returns: a random phrase
+        """
         return random.choice(self.talkToMeMore)
 
-    def getFinalAnswer(self): #reponse finale d'eliza
-       
-        # ma version - Kira - Super - reste plus qu'à gérer les cas ou y'a un mot vulgaire ou un verbe psycho, mais ça sera sûrement ailleurs, on voit ça mercredi!
-        f = self.input
-        x = ["C'est votre opinion qui m'intéresse.", "C'est moi qui pose les questions.", "Parlez-moi de vous plutôt."]
+    def getFinalAnswer(self): 
+        """
+        process the input entry, compose an answer and return it
+        :returns: the answer of Eliza
+        """
+        
+        question = ["C'est votre opinion qui m'intéresse.", "C'est moi qui pose les questions.", "Parlez-moi de vous plutôt."]
+        
         rudeWords = ["chier","chie","chié","chiez","chiant","merde","sous-merde","emmerde","emmerdeur",
         "emmerdeuse","emmerdez","emmerder","conasse","connasse","conne","pétasse","poufiasse","grogniasse",
         "grognasse","abrutie","fiotte","connard","abruti","salopard","tasspe","sale porc","batard",
@@ -314,94 +362,95 @@ class eliza():
         answers = ["Ne soyez pas grossier, s'il vous plait!", "Recentrez-vous sur votre objectif !",
         "Veillez à soigner votre langage !", "Vous semblez ne pas avoir compris le but de cette thérapie !",
         "Insulter ceux qui veulent vous aider ne vous mènera à rien !"]
-        if f[:-1] == "?": #Si jamais l'input c'est une question
-            self.output = random.choice(x)
+        
+        if self.input[:-1] == "?": # if the user entry is a question
+            self.output = random.choice(question)
             return self.output
+        
+        
         self.tokenize(self.input)
+        
         testP = self.tokenInput
-        for e in testP: #Si jamais input vulgaire - 
-            if e in rudeWords:
+        for e in testP:  
+            if e in rudeWords: # if the user uses rude words
                 self.output = random.choice(answers)
                 return self.output
-        
+            
+        self.neg = self.negation(self.tokenInput)
         self.tagging()
         self.setPhrase()
-    
-        return self.output
         
+        return self.output
+            
 
-    #def returnFinal(self, sentence):
+    def switchMe(self, p, dic):
+        """
+        looks for a key p in the dictionary dic and returns its value
+        :param p: a key (string)
+        :param dic: a dictionary 
+        :returns: if the key p is in the dictionary, returns the corresponding value, if not, returns the key p itself 
+        """
+      
+        if p in dic:
+            return dic[p]
+        else:
+            return p
 
-
-    #LEFFF
-    def split_lefff (self):
     
-        f = open("Lefff.txt", 'r') #Ouverture du fichier (lecture)
+    def split_lefff (self):
+        
+        """
+        reads the LEFFF from text file
+        :returns: a list of 4-tuples that represent lines of LEFFF
+        """
+    
+        f = open(self.file_lefff, 'r')
         texte = f.readline()
         lefff = []
     
         while texte != "":
             texte.strip
             sl = texte.split("\t")
-            if len(sl) == 4: #sinon donne index out of range - Kira
-                i = (sl[0], sl[1], sl[2], sl[3]) #Tuple :  0-Forme conjuguée, 1-v, 2-Infinitif, 3-Code flexion
+            if len(sl) == 4: 
+                i = (sl[0], sl[1], sl[2], sl[3]) # tuple : 0-Conjugated form, 1-v, 2-Infinitive, 3-Flexion code
                 lefff.append(i)
             texte = f.readline()
-        return lefff  
-        
+        return lefff
+    
     
     def recup_inf (self, lefff, verbe, subjectScope):
 
-        """Fonction qui recupere l'infinitif et la flexion du verbe en input
-        @param lefff le lefff 'splitted' (e-List)
-        @param verbe le verbe de l'input (e)
-        @param subjectScope la partie de la phrase dans laquelle se trouve le sujet du verbe
-        @return tuple infinitif+flexion (e-Tuple)
         """
-        
+        finds the infinitive form and the flexion code for a verb form
+        :param lefff: splitted LEFFF (list of 4-tuples)
+        :param verbe: the verb form to be analysed (String)
+        :param subjectScope: the part of the phrase that precedes the verb (token list)
+        :returns: tuple (infinitive + flexion) for that verb form
+        """
+        # dichotomic search does not work when we need to compare strings with diacritic characters (for example, ê). So we had to use brute-force search.
         pos = 0
-        while pos < len(lefff): #ici, on ne peut pas utiliser la recherche dichotomique a cause des verbes irreguliers (suis - etre : loin dans l'alphabet)
+        while pos < len(lefff): 
                 verbform = lefff[pos]
                 if verbe == verbform[0]:
                     return (verbform[2], self.prepare_flexion(verbform[3], subjectScope))
                 pos += 1
         return 0
         
-        #return self.recup_inf_rec(lefff, verbe, 0, len(lefff), subjectScope)
-        
-        
-    def recup_inf_rec(self, lefff, verbe, debut, fin, subjectScope): #fonction recursive
-        # recherche dichotomique
-        
-        while debut < fin:
 
-            m = (debut+fin)/2;
-            val = lefff[m]
-            
-            if(val[0] == verbe):
-                return (val[2], val[3])
-            elif(val[0] > verbe):
-                return self.recup_inf_rec(lefff, verbe, debut, m, subjectScope)
-            else:
-                return self.recup_inf_rec(lefff, verbe, m+1, fin, subjectScope)
-            
-        return 0
-        
-    
+
     
     def flexion (self, f):
         
-        """ Fonction qui determine la flexion de l'output
-        @param f tuple infinitif+flexion (e-Tuple)
-        @return f[1] la flexion de l'output (e)
-        @return la flexion de l'output (e)"""
+        """ 
+        changes the flexion of the verb to the opposite person, if possible
+        :param f: a tuple (infinitif + flexion) 
+        :returns: the flexion of the verb in the output of Eliza
+        """
 
         if f[1] in ["Ps1\n", "PSs1\n"]:
-            return "Pp2\n" #Pp2 et pas P2p - Kira
+            return "Pp2\n"
         if f[1] == "Fs1\n":
             return "Fp2\n"
-        if f[1] == "PSs3\n":
-            return "PSs3\n"
         if f[1] == "Is2\n":
             return "Ip2\n"
         if f[1] == "Js2\n":
@@ -410,7 +459,7 @@ class eliza():
             return "Sp1\n"
         if f[1] == "Ts1\n":
             return "Tp1\n"
-        if f[1] == "PSp3\n": 
+        if f[1] == "PSp3\n":
             return "PSp3\n"
         if f[1] == "PSp1\n":
             return "PSp2\n"
@@ -431,86 +480,64 @@ class eliza():
 
     def conjugaison (self, verbtuple, subjectScope):
 
-        """ Fonction qui renvoie le verbe conjugue pour l'output
-        @param t_inf_flex tuple infinitif+flexion output (e-Tuple)
-        @param lefff le lefff "splited" (e-List)
-        @param subjectScope la partie de la phrase ou se trouve le sujet du verbe
-        @return le verbe conjugue (e)"""
-        
-        """
-        s = self.verb
-        f = split_lefff()
-        v = recup_inf (f, s)
-        t_inf_flex = (v[0], flexion(v))
-        pos = 0
-        while pos < len(lefff):
-            if lefff[pos][2] == t_inf_flex[0] and lefff[pos][3] == t_inf_flex[1]:
-                return lefff[pos][0]
-            pos = pos + 1
-        return talkToMeMore()
+        """ 
+        composes a verb form by its infinitive and its flexion
+        :param verbtuple: tuple (infinitif + flexion) for the verb in the output
+        :param subjectScope: the part of the phrase that precedes the verb (token list)
+        :returns: the conjugated verb form
         """
         
-        #version modifiee - Kira
-        print verbtuple
         flexion = self.flexion(verbtuple)
-        if flexion != verbtuple[1]: #evite de parcourir le Leff si la forme du verbe ne change pas
+        if flexion != verbtuple[1]: # if the form of the verb does not change, there is no need to search in LEFFF
             lefff = self.split_lefff()
             pos = 0
-            while pos < len(lefff): #ici, on ne peut pas utiliser la recherche dichotomique a cause des verbes irreguliers (suis - etre : loin dans l'alphabet)
+            while pos < len(lefff): # cannot use dichotomic search here, because two elements are compared
                 verbform = lefff[pos]
                 if verbform[2] == verbtuple[0] and self.prepare_flexion(verbform[3],subjectScope) == flexion:
                     self.verb = verbform[0]
                     return self.verb
                 pos += 1
-        print self.verb
-        return self.verb
         
-    
+        return self.verb
 
-     # nouvelle fonction qui gere des ambiguites dans lefff - Kira
-    def prepare_flexion(self, flexion, subjectScope):
-        print "testest"
-        if flexion[0] == 'Y': #si ca peut etre un imperatif
-            flexion = flexion[1:]
-        for i in range(len(flexion)):
-            if flexion[i] == '1':
-                if i+1 < len(flexion):
-                    if flexion[i+1] in ['2','3']: # si on a 12 ou 13 dans la flexion
-                        for e in subjectScope:
-                            if e in ['je', 'j\'']: #c'est la premiere personne
-                                new_flexion = flexion[:i+1]
-                                if i+2 < len(flexion):
-                                    new_flexion += flexion[i+2:]
-                                return new_flexion
-                    
-                        #sinon ce n'est pas la premiere personne
-                        if i>0:
-                            new_flexion = flexion[:i]
-                        else:
-                            new_flexion = []
-                        
-                        new_flexion += flexion[i+1:]
-                        return new_flexion
-        return flexion
     
-    def stackRead(self): #lecture de la pile # MARINE
+    def stackRead(self):
+        """
+        reads an element from the stack
+        :returns: the last element put in the stack
+        """
+        
         return self.stack.pop()
     
-    def stackWrite(self, s): #ecriture de la pile # MARINE
+    
+    def stackWrite(self, s): 
+        """
+        puts an element in the stack
+        :param s: the element to be put on top of the stack
+        """
+        
         self.stack.push(s)
         
-    def setPhrase(self): # fonction qui genere l'output
-        #print self.subjectInput
+    
+    def setPhrase(self): 
+        """
+        builds an output phrase from pieces
+        :returns: the output phrase (the phrase to be shown to the user)
+        """
+        
         determinants = ['un', 'une', 'la', 'le', 'les', 'l\'', 'des', 'ma', 'ta', 'sa', 'mon', 'ton', 'son', 'mes', 'tes', 'ses', 'nos', 'vos', 'leur', 'leurs', 'notre', 'votre']
+        
         objectOutput = ""
-        for e in range(len(self.objectInput)): #on change je-vous dans l'objet et on le transforme en chaine de caracteres
+        for e in range(len(self.objectInput)): # to obtain the object of the output phrase, we transform all the pronouns in the object of the input phrase
             self.objectInput[e] = self.switchMe(self.objectInput[e], self.myPronouns)
             objectOutput += self.objectInput[e]
             objectOutput += " "
         objectOutput.strip()
         
-        if self.verb == "" and len(self.subjectInput) == 0: # si on a rien, on cherche des mots-cles dans l'objet
-            for i in range(len(self.objectInput)):
+        # if Eliza did not understand the verb AND the subject of the input
+        
+        if self.verb == "" and len(self.subjectInput) == 0: 
+            for i in range(len(self.objectInput)): # search for keywords in the object
                 word = self.objectInput[i]
                 for key in allMyKeywords.keys():
                     if re.match(key, word):
@@ -524,15 +551,14 @@ class eliza():
                             
                             phrase1 = "Je vois, et que représente " + wordOutput + " pour vous?"
                             phrase2 = "Passez-vous beaucoup de temps avec " + wordOutput + "?"
-                            phrase3 = "Et que pense " + wordOutput + "de ceci?"
+                            phrase3 = "Et que pense " + wordOutput + " de ceci?"
                             phrase4 = "Vous en avez parlé avec " + wordOutput + "?"
                             phrase5 = "Parlez-moi encore de " + wordOutput + "."
                             phrase6 = "Parlez-moi de vos relations avec " + wordOutput + "."
                             self.output = random.choice([phrase1, phrase2, phrase3, phrase4, phrase5, phrase6])
-                            #res = self.output
-                            #self.res_fields() #-AJOUT MON 17
-                            #return res #old -
+                            
                             return self.output
+                        
                         else:
                             wordOutput = "cela"
                             if i > 0 and self.objectInput[i-1] in determinants:
@@ -544,52 +570,46 @@ class eliza():
                             phrase1 = "Je vois, et que représente " + wordOutput + " pour vous?"
                             phrase2 = "Parlez-moi plus de " + wordOutput + "."
                             phrase3 = "Est-ce que " + wordOutput + ", c'est important pour vous?"
-                            phrase4 = "Quel role joue " + wordOutput + "dans votre vie?"
+                            phrase4 = "Quel role joue " + wordOutput + " dans votre vie?"
                             self.output = random.choice([phrase1, phrase2, phrase3, phrase4])
-                            #res = self.output #-AJOUT MON 17
-                            #self.res_fields() #-AJOUT MON 17
-                            #return res #old
+                            
                             return self.output
                         
-            if self.stack.size() > 0: # sinon on prend de la pile
-                memory = self.stackRead() #NEW - ajouter un det ici, non? Comme "votre chat"? oui mais pour ca il faut que le nom dans la pile soit avec son det
+            if self.stack.size() > 0: # if there are no keywords in the phrase, search for topics in the stack
+                memory = ""
+                tuple_memory = self.stackRead()
+                memory = tuple_memory[0] + " " + tuple_memory[1]
                 phrase1 = "Revenons a " + memory + ". Pourriez-vous m'en parlez plus?"
                 phrase2 = "Parlez-moi plus de " + memory + ", s'il vous plait."
                 phrase3 = "Parlez-moi encore de " + memory + ", c'est important pour vous?"
                 self.output = random.choice([phrase1, phrase2, phrase3])
-                #res = self.output #-AJOUT MON 17
-                #self.res_fields() #-AJOUT MON 17
-                #return res #old
+            
                 return self.output
-            else:
+            else: # if the stack is empty, Eliza gives a random answer
                 self.output = self.defaultOutput()
-                #res = self.output #-AJOUT MON 17
-                #self.res_fields() #-AJOUT MON 17
-                #return res #old
+                
                 return self.output
         
-        elif self.verb == "" and len(self.subjectInput) > 0: #si on a le sujet mais pas le verbe
+        # if Eliza understood the subject, but not the verb
+        elif self.verb == "" and len(self.subjectInput) > 0: 
             subjectOutput = ""
-            if len(self.subjectInput) > 1: #determinant + nom + eventuellement des adjectifs
-                for i in range(len(self.subjectInput)):
+            if len(self.subjectInput) > 1: #determinant + noun + extensions
+                for i in range(len(self.subjectInput)): #to obtain the subject of the output, we change the pronouns in the subject of the input
                     self.subjectInput[i] = self.switchMe(self.subjectInput[i], self.myPronouns)
                     subjectOutput += self.subjectInput[i]
                     subjectOutput += " "
                 subjectOutput.strip()
-            else:
+            else: # if the subject is a single word
                 if self.subjectInput[0] in ["tu", "t'", "vous"]:
                     self.output = random.choice(["Vous etes la pour parler de vous, pas de moi.", "On ne parle pas de moi ici.", "On est ici pour parler de vous."])
                     return self.output
                 elif self.subjectInput[0] in ["je", "j'", "nous"]:
                     self.output = random.choice(["Parlez-moi plus de vous, s'il vous plait.", "C'est important, continuez.", "Parlez-moi davantage sur votre vie.", "Parlez-moi de vos relations avec les autres."])
-                    #res = self.output #-AJOUT MON 17
-                    #self.res_fields() #-AJOUT MON 17
-                    #return res #old
                     return self.output
                 else:
                     subjectOutput = self.switchMe(self.subjectInput[0], self.myPronouns)
             
-            if subjectOutput == "":
+            if subjectOutput == "": # impossible
                 self.output = self.defaultOutput()
                 return self.output
                 
@@ -599,15 +619,21 @@ class eliza():
             phrase3 = "Est-ce que " + subjectOutput + ", c'est important pour vous?"
             phrase4 = "Quel role joue " + subjectOutput + "dans votre vie?"
             phrase5 = "Parlez-moi encore de " + subjectOutput + "."
+            
+            self.output = random.choice([phrase1, phrase2, phrase3, phrase4, phrase5])
+            
+            return self.output
         
-        elif len(self.subjectInput) > 0 and self.verb != "": # on a le sujet ET le verbe
-            #verbOutput = self.verb
+        # if Eliza understood the subject AND the verb
+        elif len(self.subjectInput) > 0 and self.verb != "": 
+            
+            verbOutput = self.verb
             if len(self.verbtuple) > 0:
-                verbOutput = self.conjugaison(self.verbtuple, self.subjectInput)
+                verbOutput = self.conjugaison(self.verbtuple, self.subjectInput) # switch the verb
             
             
             subjectOutput = ""
-            if len(self.subjectInput) > 1: #determinant + nom + eventuellement des adjectifs
+            if len(self.subjectInput) > 1: 
                 for i in range(len(self.subjectInput)):
                     self.subjectInput[i] = self.switchMe(self.subjectInput[i], self.myPronouns)
                     subjectOutput += self.subjectInput[i]
@@ -616,21 +642,16 @@ class eliza():
             else:
                 if self.subjectInput[0] in ["tu", "t'", "vous"]:
                     self.output = random.choice(["Vous etes la pour parler de vous, pas de moi.", "On ne parle pas de moi ici.", "On est ici pour parler de vous."])
-                    #res = self.output #-AJOUT MON 17
-                    #self.res_fields() #-AJOUT MON 17
-                    #return res #old
                     return self.output
                 else:
                     subjectOutput = self.switchMe(self.subjectInput[0], self.myPronouns)
             
-            if subjectOutput == "":
+            if subjectOutput == "": # impossible
                 self.output = self.defaultOutput()
-                #res = self.output #-AJOUT MON 17
-                #self.res_fields() #-AJOUT MON 17
-                #return res #old
                 return self.output
-
-            if self.negation(self.tokenInput) == True:
+            
+                
+            if self.neg:
                 variability = ['Pourquoi ne ', 'Mais d\'après vous, pourquoi ne ', 'Je vois, mais selon vous, pourquoi ne ', 
                 'Mais selon vous, pourquoi ne ', 'Et d\'après vous, pourquoi ne ', 'D\'accord, mais pourquoi ne ', 'Et pourquoi ne ',
                 'Je vois, et selon vous, pourquoi ne ', 'Très bien, mais pourquoi ne ', 'Et selon vous, pourquoi ne ', 
@@ -659,10 +680,10 @@ class eliza():
                     self.output = random.choice(variability) + self.refl_pro + " " + verbOutput + "-" + subjectOutput + " " + objectOutput + "?"
                     
                 else:
-                    phrase1 = "Pourquoi dites-vous que " + subjectOutput + self.refl_pro + " " + verbOutput + " " + objectOutput + "?"
-                    phrase2 = "Pourquoi pensez-vous que " + subjectOutput + self.refl_pro + " " + verbOutput + " " + objectOutput + "?"
-                    phrase3 = "Qu'est ce que vous fait dire que " + subjectOutput + self.refl_pro + " " + verbOutput + " " + objectOutput + "?"
-                    phrase4 = "Je vois, " + subjectOutput + self.refl_pro + " " + verbOutput + " " + objectOutput + ". Continuez, s'il vous plait."
+                    phrase1 = "Pourquoi dites-vous que " + subjectOutput + " ne " + self.refl_pro + " " + verbOutput + " " + objectOutput + "?"
+                    phrase2 = "Pourquoi pensez-vous que " + subjectOutput + " ne " + self.refl_pro + " " + verbOutput + " " + objectOutput + "?"
+                    phrase3 = "Qu'est ce que vous fait dire que " + subjectOutput + " ne " + self.refl_pro + " " + verbOutput + " " + objectOutput + "?"
+                    phrase4 = "Je vois, " + subjectOutput + " ne " + self.refl_pro + " " + verbOutput + " " + objectOutput + ". Continuez, s'il vous plait."
                 
                     self.output = random.choice([phrase1, phrase2, phrase3, phrase4])
             else:
@@ -700,42 +721,50 @@ class eliza():
                     phrase4 = "Je vois, " + subjectOutput + self.refl_pro + " " + verbOutput + " " + objectOutput + ". Continuez, s'il vous plait."
                     
                     self.output = random.choice([phrase1, phrase2, phrase3, phrase4])
+                        
                 
-        if self.output == "":
-            self.output = self.defaultOutput()
         
+        if self.output == "": # impossible
+            self.output = self.defaultOutput()
+            
         return self.output
-              
-              
+                
     
-   
-
     def res_fields(self):
+        """
+        reset all fields to 0
+        """
         self.input = ""
         self.tokenInput = []
         self.subjectInput = []
         self.objectInput = []
         self.verb = ""
+        self.neg = False
         self.output = ""
-        self.personResponse = ""
-        self.objectResponse = ""      
+        self.refl_pro = ""     
     
-    # nouvelle fonction qui gere des ambiguites dans lefff - Kira
+    
     def prepare_flexion(self, flexion, subjectScope):
-        if flexion[0] == 'Y': #si ca peut etre un imperatif
+        """
+        prepare flexions in LEFFF for the flexion(f) function (desambiguation of LEFFF flexion codes)
+        :param flexion: the flexion code in LEFFF
+        :param subjectScope: the part of the phrase that precedes the verb (token list)
+        :returns: the desambiguated flexion code
+        """
+        if flexion[0] == 'Y': # this verb form can be an imperative - we don't need this information
             flexion = flexion[1:]
         for i in range(len(flexion)):
             if flexion[i] == '1': 
                 if i+1 < len(flexion):
-                    if flexion[i+1] in ['2','3']: # si on a 12 ou 13 dans la flexion
+                    if flexion[i+1] in ['2','3']: # this form can correspond to 1st and 2nd person or to 1st and 3rd person
                         for e in subjectScope:
-                            if e in ['je', 'j\'']: #c'est la premiere personne
+                            if e in ['je', 'j\'']: # it is 1st person - we delete the second number
                                 new_flexion = flexion[:i+1]
                                 if i+2 < len(flexion):
                                     new_flexion += flexion[i+2:]
                                 return new_flexion
                     
-                        #sinon ce n'est pas la premiere personne
+                        # if it is not 1st person, we delete '1'
                         if i>0:
                             new_flexion = flexion[:i]
                         else:
@@ -747,34 +776,23 @@ class eliza():
                     
                     
     
-  
-
-   
-
- 
- 
-    #def easter()
- 
-whatsTheWordHummingbird = [['Je vois et que représente',' ', 'pour vous?'], ['Pourquoi dites-vous que ',' ', " ? "], ["Et que pense ", " ", " de ceci ?"],
-["Pourquoi pensez-vous que ", " ", " ?"], ["Qu'est-ce qui vous faire dire que ", " ", " ?"]]
-
-talkToMeMore = ["Pourriez-vous m'en dire plus?", "Que voulez-vous dire?", "Pourriez-vous élaborer?", "Pourriez-vous développer sur ce sujet?", 
+talkToMeMore = ["Pourriez-vous m'en dire plus?", "Que voulez-vous dire?", "Pourriez-vous élaborer?", "Pourriez-vous développer sur ce sujet?",
         "Que voulez-vous dire par là?", "Pourriez-vous m'en dire d'avantage?", "Qu'est-ce que cela veut dire pour vous?", "Ceci a-t-il un sens particulier pour vous?",
         "Et que ceci vous inspire-t-il?"]
 
-allMyKeywords={'propriétaires?': 'human', 'familles?': 'human', 'fils': 'human', 'électricien.{0,3}': 'human', 'épou.{1,2}': 'human', 
-'patron.{0,3}': 'human', 'voisin.{0,2}': 'human', 'frères?': 'human', 'soeurs?': 'human', 
-'comptables?': 'human','copains?': 'human', 'femmes?': 'human', 'fromagers?': 'human', 
-'belles?-filles?': 'human', 'maris?': 'human', 'diéticien.{0,3}': 'human', 'grands?-mères?': 'human', 
-'beaux?-frères?': 'human', 'oncles?': 'human', 'belles?-mères?': 'human', 'potes?': 'human', 
-'cousin.{0,2}': 'human', 'ami.{0,2}': 'human', 'élèves?': 'human', 'petits?-fils': 'human', 
-'pédiatres?': 'human', 'femme de ménage': 'human', 'psychologues?': 'human', 'médecins?': 'human', 
-'beaux?-fils': 'human', 'petites?-fille': 'human', 'plombiers?': 'human', 'collègues?': 'human', 
-'architectes?': 'human', 'tantes?': 'human', 'boucher': 'human', 'père': 'human', 'psychiatres?': 'human', 
-'belles?-soeurs?': 'human', 'petite?-amie?': 'human', 'copines?': 'human', 'beaux?-pères?': 'human', 
-'grands?-pères?': 'human', 'filles?': 'human', 'boulanger': 'human', 'docteurs?': 'human', 'mère': 'human', 
-'profs?': 'human', 'professeurs?': 'human', 'professions?':'obj', 'chats?': 'animal', 'chiens?': 'animal', 'poissons?': 'animal', 'poissons? rouges?': 'animal',
-'voitures?': 'obj', 'maisons?': 'obj', 'travail': 'obj', 'jobs?': 'obj','métiers?': 'obj', 'enfants?': 'human', 'ordinateurs?':'obj',
+allMyKeywords={'propriétaires?': 'human', 'familles?': 'human', 'fils': 'human', 'électricien.{0,3}': 'human', 'épou.{1,2}': 'human',
+'patron.{0,3}$': 'human', 'voisin.{0,2}$': 'human', 'frères?': 'human', 'soeurs?': 'human',
+'comptables?': 'human','copains?': 'human', 'femmes?': 'human', 'fromagers?': 'human',
+'belles?-filles?': 'human', 'maris?': 'human', 'diéticien.{0,3}': 'human', 'grands?-mères?': 'human',
+'beaux?-frères?': 'human', 'oncles?': 'human', 'belles?-mères?': 'human', 'potes?': 'human',
+'cousin.{0,2}': 'human', 'ami.{0,2}$': 'human', 'élèves?': 'human', 'petits?-fils': 'human',
+'pédiatres?': 'human', 'femme de ménage': 'human', 'psychologues?': 'human', 'médecins?': 'human',
+'beaux?-fils': 'human', 'petites?-fille': 'human', 'plombiers?': 'human', 'collègues?': 'human',
+'architectes?': 'human', 'tantes?': 'human', 'boucher': 'human', 'père': 'human', 'psychiatres?': 'human',
+'belles?-soeurs?': 'human', 'petite?-amie?': 'human', 'copines?': 'human', 'beaux?-pères?': 'human',
+'grands?-pères?': 'human', 'filles?': 'human', 'boulanger': 'human', 'docteurs?': 'human', 'mère': 'human',
+'profs?$': 'human', 'professeurs?': 'human', 'professions?':'obj', 'chats?$': 'animal', 'chiens?': 'animal', 'poissons?$': 'animal', #'poissons? rouges?': 'animal',
+'voitures?': 'obj', 'maisons?': 'obj', 'travail$': 'obj', 'jobs?': 'obj','métiers?': 'obj', 'enfants?': 'human', 'ordinateurs?':'obj',
 'bureaux?': 'obj'}
 
 psychoVerbs = {'haïr': 'Hate', 'aimer': 'Love',  'détester': 'Hate', 'adorer': 'Love',
@@ -784,18 +802,16 @@ psychoVerbs = {'haïr': 'Hate', 'aimer': 'Love',  'détester': 'Hate', 'adorer':
 'mépriser': 'Hate', 'dénigrer': 'Hate', 'paniquer': 'NegFear', 'jouir': 'Love', 'apprécier': 'Love', 
 'stresser': 'NegFear', 'plaire': 'Love'}
 
-myPronouns = {'je':'vous', 'j\'':'vous', 'me':'vous', 'm\'':'vous', 'moi':'vous', 'tu':'je', 'te':'me', 't\'':'me', 
-'toi':'moi', 'nous':'vous', 'mien':'vôtre','tien':'mien', 'sien':'sien','mienne':'vôtre', 'tienne':'mienne', 
-'sienne':'sienne', 'miens':'vôtres', 'tiens':'miens','siens':'siens','miennes':'vôtres', 'tiennes':'miennes', 
+myPronouns = {'je':'vous', 'j\'':'vous', 'me':'vous', 'm\'':'vous', 'moi':'vous', 'tu':'je', 'te':'me', 't\'':'me',
+'toi':'moi', 'nous':'vous', 'mien':'vôtre','tien':'mien', 'sien':'sien','mienne':'vôtre', 'tienne':'mienne',
+'sienne':'sienne', 'miens':'vôtres', 'tiens':'miens','siens':'siens','miennes':'vôtres', 'tiennes':'miennes',
 'siennes':'siennes','nôtre':'vôtre','vôtre':'mien', 'leur':'leur','nôtre':'vôtre', 'vôtre':'mienne','leur':'leur',
 'nôtres':'vôtres','vôtres':'miennes', 'leurs':'leurs', 'ma':'votre', 'ta':'ma', 'mon':'votre', 'ton':'mon', 'mes':'vos', 
 'notre':'votre', 'tes':'mes', 'votre':'mon', 'nos':'vos', 'vos':'mes'}
 
-#reflexive = {'je me' : 'vous vous', 'je m\'' : 'vous vous', 'il se' : 'il se', 'il s\'' : 'il s\'', 'elle se' : 'elle se', 'elle s\'' : 'elle s\s'', 'nous nous' : 'vous vous', 'ils se' : 'ils se', 'ils s\'' : 'ils s\'', 'elles se' : 'elles se', 'elles s\'' : 'elles s\''}
-
-
 reflexive = {'me' : 'vous', 'm\'' : 'vous', 'se' : 'se', 's\'' : 's\'', 'nous' : 'vous', 'te' : 'me', 't\'' : 'm\'', 'vous' : 'me'}
 
-detPoss = {'ma':['votre'], 'mon':['votre'], 'un':['cet'], 'une':['cette'], 'des':['ces'], 'nos':['vos'], 'notre':['votre']}
+
+detPoss = det = {'ma':['votre'], 'mon':['votre'], 'un':['cet'], 'une':['cette'], 'des':['ces'], 'nos':['vos'], 'notre':['votre']}
 
 
