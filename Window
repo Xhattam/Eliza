@@ -9,32 +9,46 @@ import eliza
 @author: BAbemonty, MChassang, KKiranova, JTanon
 """
 
+       
 class window(object):
-
+    """
+    A window object - the interface used to talk to Eliza. 
+    """
     def __init__(self, root):
-    
-        #self.display.grid(side='left', expand=0, fill='both')
-        #self.textfield.insert(0.0, data)
+        """
+        creates a new window
         
-        self.eliza = eliza.eliza()
-        self.root = root
-        self.frameText = Tkinter.Frame(root)
+        fields:
+        self.eliza                -   eliza object imported
+        self.root                 -   root parameter (acts as a pointer towards the window created in the main)  
+        self.frameText            -   frame for the window
+        self.scrollbar            -   the scrollbar
+        self.main                 -   the label
+        self.display              -   formatted text display
+        self.user_entry           -   the entry of the user
+        self.send_button          -   "Send" button  
+        self.quit_button          -   "Quit" button
+        self.entry                -   the text of the entry of the user
+        """
 
-        #self.scroll = Tkinter.Scrollbar()
+        self.eliza = eliza()  
+        self.root = root
+        self.frameText = Tkinter.Frame(root) 
+        
         self.scrollbar = Tkinter.Scrollbar(self.frameText)
+        self.main = Tkinter.Label(text = "Eliza", borderwidth = 10, font = "Arial 14")
         self.display = Tkinter.Text(self.frameText, yscrollcommand=self.scrollbar.set)
         self.display.pack(side='left', fill='x')
         self.scrollbar.pack(side='right', fill='y')
         self.scrollbar.config(command=self.display.yview)
-        #)side='right', fill='y')
+        
         self.main = Tkinter.Label(text = "Eliza", borderwidth = 10, font = "Arial 14")
-        #self.display = Tkinter.Text(font = "Times 10", state = Tkinter.DISABLED)
+        
         self.user_entry = Tkinter.Entry()
         self.send_button = Tkinter.Button(text = "Envoyer", command = self.speakToMe)
         self.quit_button = Tkinter.Button(text = "Quitter Eliza", command = self.root.quit) 
-    
-        self.user_entry.config(width = 70) # user's entry
-        #self.display.config(width = 100, height = 15) # displays Eliza's answer
+        
+        self.user_entry.config(width = 70) 
 
         self.entry = ""
         
@@ -47,7 +61,6 @@ class window(object):
         
         #Binding events to buttons/keys
         self.quit_button.bind("<Button-1>", self.byeThen)
-        #self.quit_button.bind("<Key>", self.byeThen) #SUPPR ??? 
         self.quit_button.focus_set()
         
         self.user_entry.bind("<Key>", self.speakToMe)
@@ -57,89 +70,83 @@ class window(object):
         self.send_button.bind("<Key>", self.speakToMe)
         self.send_button.focus_set()
         
-        #self.count = 0
         self.sayHelloEliza()
 
 
-    #Makes Eliza display a hello message when launched
     def sayHelloEliza(self):
+        """
+        makes Eliza display a hello message when launched
+        """
         self.display.config(state = Tkinter.NORMAL)
         self.display.insert("0.0", "Bonjour, je suis Eliza. Comment allez-vous ?")
         self.display.config(state = Tkinter.DISABLED)
-
-    #speakToMe: Gets user input, Adds input to stack
-    #Displays user's entry in main window while deleting it from user_entry window
+        
     
-    def speakToMe(self, event): 
+    def speakToMe(self, event):
+        """
+        gets user input, adds input to stack. Displays user's entry in main window while deleting it from user_entry window.
+        :param event: a Tkinter event
+        """
         if event.keysym == "Return" or event.num == 1:
-            #print count
             self.display.config(state = Tkinter.NORMAL)
             self.entry = self.user_entry.get()
-             #self???? TO TEST
-            #eliza.stackWrite(str(entry.strip())) #adds user's entry to stack
-            self.display.insert(Tkinter.END, "\nVous: "+self.user_entry.get()) #self??? TO TEST
+            self.display.insert(Tkinter.END, "\nVous: "+self.user_entry.get())
             self.user_entry.delete(0, len(self.user_entry.get()))
             self.send_button.config(state = Tkinter.DISABLED)
             self.user_entry.config(state = Tkinter.DISABLED)
             self.display.config(state = Tkinter.DISABLED)
+            self.eliza.setInput(self.entry.lower())
+            self.hereComesYourAnswer()
 
-            response = self.eliza.setInput(self.entry) 
-            #appelle toutes fonctions dans eliza
-
-            #AJOUTER ETAPES DE REPONSE
-            self.hereComesYourAnswer()#premiere etape de calcul de reponse
-            #self.itsTheFinalCountdown()
-            #print self.entry
-
-    
-    # heresYourAnswer: Takes the final calculated answer from Eliza and displays it in Eliza's window
     
     def hereComesYourAnswer(self):
-        answer = self.eliza.getFinalAnswer() #recupere la reponse finale d'eliza
+        """
+        takes the final calculated answer from Eliza and displays it in Eliza's window
+        """
+        answer = self.eliza.getFinalAnswer()
         self.eliza.res_fields()
-        
         self.display.config(state = Tkinter.NORMAL)
-        self.display.insert(Tkinter.END, "\n"+ answer)
+        self.display.insert(Tkinter.END, "\nEliza:"+ answer)
         self.display.config(state = Tkinter.DISABLED)
         self.send_button.config(state = Tkinter.NORMAL)
         self.user_entry.config (state = Tkinter.NORMAL)
-        #self.itsTheFinalCountdown()
 
     
-    #counts up to 100 - then calls areYouStillHere to make Eliza talk
-
-    def itsTheFinalCountdown(self):     
-    #Attention, prevoir une remise à zéro dés qu'on a une saisie clavier 
-        count = 0
-        while count < 5:
-            time.sleep(1)
-            count += 1
-            if count == 5:
-                self.areYouStillHere()  
-                
-
-
-    #Makes Eliza speak after 100 secs of inactivity from the user
-    def areYouStillHere(self): 
-        lst = ["Ne voulez-vous pas m'en dire plus?" , "Etes-vous toujours là?" , "Si vous souhaitez de l'aide, il faut me parler!" , "Allons, dites-m'en encore un peu!"]
-        i = random.randint(0, len(lst) - 1)  
-        self.display.config(state = Tkinter.NORMAL)
-        self.display.insert(Tkinter.END, "\n"+ lst[i])
-        self.display.config(state = Tkinter.DISABLED)
-    
-
     
     # byThen: NOT FULLY FUNCTIONNAL YET (only clic works and message not displayed)
     
     def byeThen(self, event):
-        if event.keysym == "Return" or event.num == 1: 
+        """
+        if the user clicked on the quit button, prints a goodbye message and closes the window
+        :param event: a Tkinter event
+        """
+        if event.keysym == "Return" or event.num == 1:
             self.display.config(state = Tkinter.NORMAL)
             self.display.insert(Tkinter.END, "\n"+ "Passez une bonne journée!")
             self.display.config(state = Tkinter.DISABLED)
-            #time.sleep(2) 
+            
+    
+    #counts up to 100 - then calls areYouStillHere to make Eliza talk
+
+    def itsTheFinalCountdown(self):
+    #Attention, prevoir une remise à zéro dés qu'on a une saisie clavier
+        count = 0
+        while count != 5:
+            time.sleep(1)
+            count += 1
+            if count == 5:
+                self.areYouStillHere()
 
 
-   
+
+    #Makes Eliza speak after 100 secs of inactivity from the user
+    def areYouStillHere(self):
+        lst = ["Ne voulez-vous pas m'en dire plus?" , "Etes-vous toujours là?" , "Si vous souhaitez de l'aide, il faut me parler!" , "Allons, dites-m'en encore un peu!"]
+        i = random.randint(0, len(lst) - 1)
+        self.display.config(state = Tkinter.NORMAL)
+        self.display.insert(Tkinter.END, "\n"+ lst[i])
+        self.display.config(state = Tkinter.DISABLED)
+      
 
 
 
