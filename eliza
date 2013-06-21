@@ -186,7 +186,7 @@ class eliza():
                         if self.verbtuple[0] in self.psychoVerbs: # if the verb is psychologically marked, use one of the precomposed answers
                             if self.neg: 
                                 if self.psychoVerbs[self.verbtuple[0]] == 'NegFear':
-                                    if self.tuple[0] in ['paniquer', 'angoisser', 'stresser']:  
+                                    if self.verbtuple[0] in ['paniquer', 'angoisser', 'stresser']:  
                                         lst = ["Faire preuve de self-contrôle est une bonne chose! Continuez, je voudrais en savoir plus sur ce sujet.", 
                                         "Prendre les choses calmement, voilà une bonne approche! Dites m'en plus.", 
                                         "Savoir prendre les choses du bon côté est une vertu. Dites m'en plus!"]
@@ -216,7 +216,7 @@ class eliza():
 
                             else:             
                                 if self.psychoVerbs[self.verbtuple[0]] == 'NegFear':
-                                    if self.tuple[0] in ['paniquer', 'angoisser', 'stresser']:  
+                                    if self.verbtuple[0] in ['paniquer', 'angoisser', 'stresser']:  
                                         lst = ["Decrivez-moi précisement vos sentiments à ce sujet, que ressentez-vous vraiment ?", 
                                         "Pourquoi vous sentez-vous mal par rapport à cela ?", "Qu'est-ce que cela fait ressurgir chez vous ?"]
                                     else:
