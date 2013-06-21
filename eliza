@@ -467,8 +467,34 @@ class eliza():
         self.address()
         return self.output
             
+    def getName(self):
+        """
+        if the phrase is "Je suis N" ou "Je m'appelle N", Eliza memorizes his name
+        :returns: user name
+        """
+       
+        name = ""
+        
+        if "je" in self.subjectInput:
+            if self.verb == "suis":
+                for e in self.objectInput:
+                    if e[0].isupper(): #if the word begins by an uppercase letter, it may be a name
+                        name += e
+                        name += " "
+            elif self.verb == "appelle" and self.refl_pro == " vous":
+                for i in self.objectInput:
+                    if i[0].isupper():
+                        name += i
+                        name += " "
+        
+        if name != "":
+            name.strip()
+            self.name = name
+        
+        return name
+                    
             
-def switchMe(self, p, dic):
+    def switchMe(self, p, dic):
         """
         looks for a key p in the dictionary dic and returns its value
         :param p: a key (string)
