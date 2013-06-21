@@ -181,6 +181,8 @@ class eliza():
                         self.verbtuple = in_lefff # infinitive form  + flexion of the verb
                         posVerb = e
                         
+                        # search for minimal context
+                        
                         if self.verbtuple[0] in self.psychoVerbs: # if the verb is psychologically marked, use one of the precomposed answers
                             if self.neg: 
                                 if self.psychoVerbs[self.verbtuple[0]] == 'NegFear':
