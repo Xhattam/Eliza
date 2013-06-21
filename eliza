@@ -1,7 +1,6 @@
 #!/bin/env python
 # -*- coding: utf-8 -*-
 
-import time
 import random
 import Tkinter
 import re
@@ -35,6 +34,7 @@ class eliza():
         String self.output               -   calculated answer (to be sent back to GUI)  
         String refl_pro                  -   identified reflexive pronoun
         boolean neg                      -   negative/positive status of the input
+        String name                      -   user name
         dict self.myPronouns             -   pronouns dictionary
         dict self.talkToMeMore           -   random sentence (if self.output is empty)
         dict self.psychoVerbs            -   psychological verbs dictionary
@@ -55,6 +55,7 @@ class eliza():
         self.output = "" 
         self.refl_pro = "" 
         self.neg = False 
+        self.name = ""
         self.myPronouns = myPronouns
         self.talkToMeMore = talkToMeMore
         self.psychoVerbs = psychoVerbs
@@ -64,6 +65,14 @@ class eliza():
         
     
     
+    def setInput(self, text):
+        """
+        passes a string to Eliza as input
+        :param text: user entry
+        """
+        self.input = text.encode('utf-8')
+        
+        
     def setInput(self, text):
         """
         passes a string to Eliza as input
@@ -129,8 +138,10 @@ class eliza():
         if token_list[-1] in ponct:
             token_list = token_list[:-1] # cut the punctuation mark in the end of the phrase
         
+        token_list[0] = token_list[0].lower() #turn first letter to lower case
         self.tokenInput = token_list
         return self.tokenInput
+          
           
     
     def negation (self, text):
@@ -142,6 +153,8 @@ class eliza():
         
         lst2 = ["pas", "plus", "point"]
         
+       
+        
         for e in text:
             if e in lst1 :
                 return True
@@ -150,6 +163,8 @@ class eliza():
                     if elem in text:
                         return True
         return False
+    
+    
     
     
     def tagging(self): 
@@ -194,17 +209,20 @@ class eliza():
                                         lst = ["C'est plutôt une bonne chose, non?", "Etes-vous d'acord pour dire que c'est une bonne chose?"
                                         "Pensez-vous que ce soit une mauvaise chose ?"]
                                     self.output = random.choice(lst)
+                                    
                                     return self.output
 
                                 elif self.psychoVerbs[self.verbtuple[0]] == 'NegSad':
                                     lst = ["C'est plutôt une bonne chose, ne pensez-vous pas ?", "C'est bien! Dites-m'en plus!"]
                                     self.output = random.choice(lst)
+                                    
                                     return self.output
                                 
                                 elif self.psychoVerbs[self.verbtuple[0]] == 'Love':
                                     lst = ["C'est un peu triste, pourquoi donc ?", "Pourriez-vous me dire pourquoi ?", 
                                     "Pensez-vous que ceci est lié à une mauvaise expérience passée ?"]
                                     self.output = random.choice(lst)
+                                    
                                     return self.output
 
                                 else:
@@ -212,6 +230,7 @@ class eliza():
                                     "D'accord, le sentiment n'est pas complètement négatif. Pourquoi pas simplement positif ? ", 
                                     "C'est mieux que rien! N'êtes-vous pas d'accord ?"]
                                     self.output = random.choice(lst)
+                                    
                                     return self.output
 
                             else:             
@@ -223,6 +242,7 @@ class eliza():
                                         lst = ["Pourquoi faire cela ? Qu'est-ce que ça vous apporte ?", "Pourquoi faire cela ? Est-ce que ça vous amuse ?",
                                         "J'aimerais comprendre vos motivations, pourquoi agir ainsi ?"]
                                     self.output = random.choice(lst)
+                                    
                                     return self.output
 
                                 elif self.psychoVerbs[self.verbtuple[0]] == 'NegSad':
@@ -230,18 +250,21 @@ class eliza():
                                     "Je comprends... Dans ce cas, ne gardez pas ça pour vous, racontez-moi l'histoire."
                                     "Continuez, garder ceci pour vous ne vous aidera pas, je suis là pour vous aider."]
                                     self.output = random.choice(lst)
+                                    
                                     return self.output
                                 
                                 elif self.psychoVerbs[self.verbtuple[0]] == 'Love':
                                     lst = ["C'est un sentiment plutôt positif! Continuez!", "Je comprends, c'est un bon sentiment! Dites m'en plus!",
                                     "Très bien, ne vous arrêtez pas en si bon chemin, c'est une idée positive!"]
                                     self.output = random.choice(lst)
+                                    
                                     return self.output
 
                                 else:
                                     lst = ["Pourquoi un sentiment aussi négatif ?", "J'aimerais comprendre l'origine de ce sentiment négatif, cotinuez s'il vous plait.",
                                     "Comment se fait-il que vous ayez une opinion si négative ?", "Expliquez-moi ce qui ne va pas."]
                                     self.output = random.choice(lst)
+                                    
                                     return self.output
                       
                         if e > 1: # if there are at least 2 words before the verb, there can be a reflexive pronoun
@@ -249,13 +272,13 @@ class eliza():
                                 if lst[e-1] == 'nous': # the pronouns "nous" and "vous" are considered reflexive only if there is another "nous" or "vous" in the phrase
                                     for i in range(0,e-1):
                                         if lst[i] == 'nous':
-                                            self.refl_pro = 'vous' # inversion of the reflexive pronoun
+                                            self.refl_pro = ' vous' # inversion of the reflexive pronoun
                                 elif lst[e-1] == 'vous':
                                     for i in range(0,e-1):
                                         if lst[i] == 'vous':
-                                            self.refl_pro = 'nous' # inversion of the reflexive pronoun
+                                            self.refl_pro = ' nous' # inversion of the reflexive pronoun
                                 else:
-                                    self.refl_pro = self.reflexive[lst[e-1]] # inversion of the reflexive pronoun
+                                    self.refl_pro = " " + self.reflexive[lst[e-1]] # inversion of the reflexive pronoun
                         break
            
         # subject identification
@@ -297,6 +320,9 @@ class eliza():
                 if re.match(pro, e):
                     self.subjectInput.append(e)
                     return self.subjectInput
+            if e == "c\'" and self.verb == "est":
+                self.subjectInput.append(e)
+                return self.subjectInput
         
         return self.searchDet(subjectScope)
 
@@ -346,6 +372,17 @@ class eliza():
         :returns: a random phrase
         """
         return random.choice(self.talkToMeMore)
+    
+    def address(self):
+        """
+        if Eliza has the user's name, she uses it sometimes to address the user
+        """
+        if self.output != "" and self.name != "":
+            name_or_not = [1,2,3]
+            if random.choice(name_or_not) == 1: #address the user by his name 
+                first_letter = self.output[0].lower()
+                self.output = self.name + ", " + first_letter + self.output[1:]
+        
 
     def getFinalAnswer(self): 
         """
@@ -365,8 +402,10 @@ class eliza():
         "Veillez à soigner votre langage !", "Vous semblez ne pas avoir compris le but de cette thérapie !",
         "Insulter ceux qui veulent vous aider ne vous mènera à rien !"]
         
-        if self.input[:-1] == "?": # if the user entry is a question
+        if self.input[-1] == "?": # if the user entry is a question
             self.output = random.choice(question)
+            
+            self.address()
             return self.output
         
         
@@ -376,6 +415,7 @@ class eliza():
         for e in testP:  
             if e in rudeWords: # if the user uses rude words
                 self.output = random.choice(answers)
+                self.address()
                 return self.output
                 
         
@@ -412,12 +452,23 @@ class eliza():
             
         self.neg = self.negation(self.tokenInput)
         self.tagging()
-        self.setPhrase()
         
+        if "je" in self.subjectInput and self.verb == "sais": # the case of "Je ne sais pas"
+            self.output = self.defaultOutput()
+            return self.output
+            
+        if not self.neg and self.name == "":
+            if self.getName() != "": # if the user says his name, Eliza asks him to talk about himself
+                self.output = "Parlez-moi de vous."
+                return self.output
+            
+        self.setPhrase()
+            
+        self.address()
         return self.output
             
-
-    def switchMe(self, p, dic):
+            
+def switchMe(self, p, dic):
         """
         looks for a key p in the dictionary dic and returns its value
         :param p: a key (string)
@@ -591,6 +642,7 @@ class eliza():
                             phrase6 = "Parlez-moi de vos relations avec " + wordOutput + "."
                             self.output = random.choice([phrase1, phrase2, phrase3, phrase4, phrase5, phrase6])
                             
+                
                             return self.output
                         
                         else:
@@ -607,6 +659,7 @@ class eliza():
                             phrase4 = "Quel rôle joue " + wordOutput + " dans votre vie?"
                             self.output = random.choice([phrase1, phrase2, phrase3, phrase4])
                             
+                            
                             return self.output
                         
             if self.stack.size() > 0: # if there are no keywords in the phrase, search for topics in the stack
@@ -618,9 +671,11 @@ class eliza():
                 phrase3 = "Parlez-moi encore de " + memory + ", c'est important pour vous?"
                 self.output = random.choice([phrase1, phrase2, phrase3])
             
+                
                 return self.output
             else: # if the stack is empty, Eliza gives a random answer
                 self.output = self.defaultOutput()
+                
                 
                 return self.output
         
@@ -636,25 +691,43 @@ class eliza():
             else: # if the subject is a single word
                 if self.subjectInput[0] in ["tu", "t'", "vous"]:
                     self.output = random.choice(["Vous êtes là pour parler de vous, pas de moi.", "On ne parle pas de moi ici.", "On est ici pour parler de vous."])
+                    
                     return self.output
                 elif self.subjectInput[0] in ["je", "j'", "nous"]:
-                    self.output = random.choice(["Parlez-moi plus de vous, s'il vous plait.", "C'est important, continuez.", "Parlez-moi davantage sur votre vie.", "Parlez-moi de vos relations avec les autres."])
+                    self.output = random.choice(["Parlez-moi plus de vous, s'il vous plaît.", "C'est important, continuez.", "Parlez-moi davantage sur votre vie.", "Parlez-moi de vos relations avec les autres."])
+                    
                     return self.output
                 else:
                     subjectOutput = self.switchMe(self.subjectInput[0], self.myPronouns)
             
-            if subjectOutput == "": # impossible
-                self.output = self.defaultOutput()
-                return self.output
                 
+            if subjectOutput not in ['je', 'moi', 'toi', 'tu', 't\'', 'il', 'elle', 'eux', 'ils', 'elles', 'nous', 'vous', 'lui']:
+                phrase1 = "Je vois, et que représente " + subjectOutput + " pour vous?"
+                phrase2 = "Parlez-moi plus de " + subjectOutput + "."
+                phrase3 = "Est-ce que " + subjectOutput + ", c'est important pour vous?"
+                phrase4 = "Quel rôle joue " + subjectOutput + "dans votre vie?"
+                phrase5 = "Parlez-moi encore de " + subjectOutput + "."
+                
+                self.output = random.choice([phrase1, phrase2, phrase3, phrase4, phrase5])
             
-            phrase1 = "Je vois, et que représente " + subjectOutput + " pour vous?"
-            phrase2 = "Parlez-moi plus de " + subjectOutput + "."
-            phrase3 = "Est-ce que " + subjectOutput + ", c'est important pour vous?"
-            phrase4 = "Quel rôle joue " + subjectOutput + "dans votre vie?"
-            phrase5 = "Parlez-moi encore de " + subjectOutput + "."
+            elif self.stack.size() > 0: # if the subject is a personal pronoun, search for topics in the stack
+                memory = ""
+                tuple_memory = self.stackRead()
+                memory = tuple_memory[0] + " " + tuple_memory[1]
+                phrase1 = "Revenons a " + memory + ". Pourriez-vous m'en parlez plus?"
+                phrase2 = "Parlez-moi plus de " + memory + ", s'il vous plait."
+                phrase3 = "Parlez-moi encore de " + memory + ", c'est important pour vous?"
+                self.output = random.choice([phrase1, phrase2, phrase3])
             
-            self.output = random.choice([phrase1, phrase2, phrase3, phrase4, phrase5])
+            
+            else: # if the stack is empty, Eliza gives a random answer
+                self.output = self.defaultOutput()
+               
+            if subjectOutput == "": 
+                self.output = self.defaultOutput()
+                
+                return self.output
+            
             
             return self.output
         
@@ -676,12 +749,14 @@ class eliza():
             else:
                 if self.subjectInput[0] in ["tu", "t'", "vous"]:
                     self.output = random.choice(["Vous êtes là pour parler de vous, pas de moi.", "On ne parle pas de moi ici.", "On est ici pour parler de vous."])
+                    
                     return self.output
                 else:
                     subjectOutput = self.switchMe(self.subjectInput[0], self.myPronouns)
             
-            if subjectOutput == "": # impossible
+            if subjectOutput == "": 
                 self.output = self.defaultOutput()
+                
                 return self.output
             
                 
@@ -714,17 +789,17 @@ class eliza():
                     self.output = random.choice(variability) + self.refl_pro + " " + verbOutput + "-" + subjectOutput + " " + objectOutput + "?"
                     
                 else:
-                    phrase1 = "Pourquoi dites-vous que " + subjectOutput + " ne " + self.refl_pro + " " + verbOutput + " " + objectOutput + "?"
-                    phrase2 = "Pourquoi pensez-vous que " + subjectOutput + " ne " + self.refl_pro + " " + verbOutput + " " + objectOutput + "?"
-                    phrase3 = "Qu'est ce que vous fait dire que " + subjectOutput + " ne " + self.refl_pro + " " + verbOutput + " " + objectOutput + "?"
-                    phrase4 = "Je vois, " + subjectOutput + " ne " + self.refl_pro + " " + verbOutput + " " + objectOutput + ". Continuez, s'il vous plait."
+                    phrase1 = "Pourquoi dites-vous que " + subjectOutput + " ne" + self.refl_pro + " " + verbOutput + " " + objectOutput + "?"
+                    phrase2 = "Pourquoi pensez-vous que " + subjectOutput + " ne" + self.refl_pro + " " + verbOutput + " " + objectOutput + "?"
+                    phrase3 = "Qu'est ce que vous fait dire que " + subjectOutput + " ne" + self.refl_pro + " " + verbOutput + " " + objectOutput + "?"
+                    phrase4 = "Je vois, " + subjectOutput + " ne" + self.refl_pro + " " + verbOutput + " " + objectOutput + ". Continuez, s'il vous plait."
                 
                     self.output = random.choice([phrase1, phrase2, phrase3, phrase4])
             else:
-                variability = ['Pourquoi ', 'Mais d\'après vous, pourquoi ', 'Je vois, mais selon vous, pourquoi ', 
-                'Mais selon vous, pourquoi ', 'Et d\'après vous, pourquoi ', 'D\'accord, mais pourquoi ', 'Et pourquoi ',
-                'Et en quoi ', 'Je vois, et selon vous, pourquoi ', 'Très bien, mais pourquoi ', 'Et selon vous, pourquoi ' 
-                'Et en quoi ', 'Selon vous, en quoi ', 'D\'après vous, en quoi']
+                variability = ['Pourquoi', 'Mais d\'après vous, pourquoi', 'Je vois, mais selon vous, pourquoi', 
+                'Mais selon vous, pourquoi', 'Et d\'après vous, pourquoi', 'D\'accord, mais pourquoi', 'Et pourquoi',
+                'Et en quoi', 'Je vois, et selon vous, pourquoi', 'Très bien, mais pourquoi', 'Et selon vous, pourquoi', 
+                'Selon vous, en quoi', 'D\'après vous, en quoi']
                 if subjectOutput in ['vous', 'ils', 'elles']:
                     self.output = random.choice(variability) + self.refl_pro + " " + verbOutput + "-" + subjectOutput + " " + objectOutput + "?"
                 elif subjectOutput in ['il', 'elle']:
@@ -758,9 +833,10 @@ class eliza():
                         
                 
         
-        if self.output == "": # impossible
+        if self.output == "":
             self.output = self.defaultOutput()
-            
+        
+        
         return self.output
                 
     
@@ -844,8 +920,4 @@ myPronouns = {'je':'vous', 'j\'':'vous', 'me':'vous', 'm\'':'vous', 'moi':'vous'
 'notre':'votre', 'tes':'mes', 'votre':'mon', 'nos':'vos', 'vos':'mes'}
 
 reflexive = {'me' : 'vous', 'm\'' : 'vous', 'se' : 'se', 's\'' : 's\'', 'nous' : 'vous', 'te' : 'me', 't\'' : 'm\'', 'vous' : 'me'}
-
-
-detPoss = det = {'ma':['votre'], 'mon':['votre'], 'un':['cet'], 'une':['cette'], 'des':['ces'], 'nos':['vos'], 'notre':['votre']}
-
 
