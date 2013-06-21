@@ -377,6 +377,38 @@ class eliza():
             if e in rudeWords: # if the user uses rude words
                 self.output = random.choice(answers)
                 return self.output
+                
+        
+        #this part deals with specific keywords and makes Eliza reply in a different way if they are encountered
+        
+        badKeywords = ['mort.{0,2}$', 'décédé.{0,2}$', 'défunt.{0,2}$', 'suicidé', 'malades?$', 'malheureux',
+        'malheureuse']
+            
+        for e in testP:
+            for i in badKeywords:
+                if re.match(e, i):
+                    if self.negation(testP) == True:
+                        self.output = "C'est bien, il faut continuer à positiver!"
+                        return self.output
+                    else:
+                        lst = ["Je suis désolée d\'apprendre ceci, parler vous fera du bien, continuez. ",
+                        "Comme cela est triste... racontez-moi, ceci vous aidera.", "Quelle triste nouvelle... et que ceci vous fait-il ressentir ?"]
+                        self.output = random.choice(lst)
+                        return self.output 
+
+        goodKeywords = ['heureux', 'heureuse', 'content.{0,2}$', 'joyeux', 'joyeuse', 'joie', 'bonheur',
+        'bonne santé']
+        for e in testP:
+            for i in goodKeywords:
+                if re.match(e, i):
+                    if self.negation(testP) == True:
+                        self.output = "Pourquoi, d'après-vous ? Il faudrait y réfléchir!"
+                        return self.output
+                    else:
+                        lst = ["C\'est une bonne nouvelle ! Dites-m'en plus!", "C'est une très bonne chose, contiuez !"]
+                        self.output = random.choice(lst)
+                        return self.output 
+
             
         self.neg = self.negation(self.tokenInput)
         self.tagging()
